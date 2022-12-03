@@ -1,12 +1,4 @@
 baseURL = 'http://garden.leolleo.dev/'
 languageCode = 'en-us'
 title = "Leolleo's Digital Garden"
-theme = 'PaperMod'
-
-[params]
-    author = "Leonardo Prado (leolleo)"
-    description = "This is my Digital Garden, opinions are my own."
-    showRss = false
-    enableSidebarLayout = false
-    tocInSidebar = false
-    infiniteScrolling = true
+theme = 'ananke'
