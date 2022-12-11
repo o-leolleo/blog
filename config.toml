@@ -1,42 +1,28 @@
 baseURL = '/'
 languageCode = 'en-us'
 title = "Leolleo's Digital Garden"
-theme = 'terminal'
-paginate = 5
+theme = 'hugo-book'
+
+enableGitInfo = true
+defaultContentLanguageInSubdir = true
 
 [params]
-    contentTypeName = 'posts'
-    themeColor = 'orange'
-    showMenuItems = 2
-    showLanguageSelector = false
-    fullWidthTheme = false
-    centerTheme = true
-    showLastUpdated = false
+BookTheme = 'dark'
+BookToC = true
+# BookRepo = 'https://github.com/o-leolleo/garden'
+BookComments = false
 
 [languages]
   [languages.en]
+    contentDir = 'content/en'
     languageName = "English"
     title = "(DEV) Leolleo's Digital Garden"
     subtitle = "Powered by Hugo"
-    owner = ""
-    keywords = ""
-    copyright = ""
-    menuMore = "Show more"
-    readMore = "Read more"
-    readOtherPosts = "Read other posts"
-    missingContentMessage = "Page not found..."
-    missingBackButtonLabel = "Back to home page"
+    weight = 1
 
-    [languages.en.params.logo]
-      logoText = "Terminal"
-      logoHomeLink = "/"
-
-    [languages.en.menu]
-      [[languages.en.menu.main]]
-        identifier = "about"
-        name = "About"
-        url = "/about"
-      [[languages.en.menu.main]]
-        identifier = "showcase"
-        name = "Showcase"
-        url = "/showcase"
+  [languages.pt-br]
+    contentDir = 'content/pt-br'
+    languageName = "Português (Brasil)"
+    title = "(DEV) Jardim Digital do Leolleo"
+    subtitle = "Feito em Hugo"
+    weight = 2
