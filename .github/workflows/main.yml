@@ -9,9 +9,6 @@ on:
   push:
     branches: [$default-branch]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
 # Allow one concurrent deployment
 concurrency:
   group: "pages"
@@ -44,7 +41,7 @@ jobs:
           # For maximum backward compatibility with Hugo modules
           HUGO_ENVIRONMENT: production
           HUGO_ENV: production
-        run: hugo --minify --baseURL "${BASE_URL}"
+        run: hugo --minify
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
@@ -66,6 +63,7 @@ jobs:
           name: build
 
       - name: show info
+        shell: bash
         run: |
           ls -l
 
