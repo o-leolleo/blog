@@ -55,7 +55,7 @@ jobs:
 
   # Deployment job
   deploy:
-    if: $GITHUB_EVENT_NAME == 'workflow_dispatch'
+    if: env.GITHUB_EVENT_NAME == 'workflow_dispatch'
     environment:
       name: cloudflare
       url: ${BASE_URL}
