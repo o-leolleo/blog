@@ -16,13 +16,13 @@ BookComments = false
   [languages.en]
     contentDir = 'content/en'
     languageName = "English"
-    title = "(DEV) Leolleo's Digital Garden"
+    title = "Leolleo's Digital Garden"
     subtitle = "Powered by Hugo"
     weight = 1
 
   [languages.pt-br]
     contentDir = 'content/pt-br'
     languageName = "Português (Brasil)"
-    title = "(DEV) Jardim Digital do Leolleo"
+    title = "Jardim Digital do Leolleo"
     subtitle = "Feito em Hugo"
     weight = 2
