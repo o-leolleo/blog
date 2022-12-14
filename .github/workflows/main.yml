@@ -1,5 +1,5 @@
 # Sample workflow for building and deploying a Hugo site to GitHub Pages
-name: Deploy Hugo site to CloudFlare pages
+name: main
 
 env:
   BASE_URL: garden.leolleo.dev
@@ -52,7 +52,7 @@ jobs:
   # Deployment job
   deploy:
     environment:
-      name: github-pages
+      name: cloudflare
       url: ${BASE_URL}
     runs-on: ubuntu-latest
     needs: build
