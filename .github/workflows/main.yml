@@ -55,7 +55,7 @@ jobs:
 
   # Deployment job
   deploy:
-    if: github.event.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     environment:
       name: cloudflare
       url: ${BASE_URL}
