@@ -55,6 +55,7 @@ jobs:
 
   # Deployment job
   deploy:
+    if: GITHUB_EVENT_NAME == 'workflow_dispatch'
     environment:
       name: cloudflare
       url: ${BASE_URL}
@@ -65,11 +66,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build
-
-      - name: show info
-        shell: bash
-        run: |
-          ls -l
 
       - name: Publish app
         uses: cloudflare/wrangler-action@2.0.0
