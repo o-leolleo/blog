@@ -50,8 +50,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          name: build
-          path: public
+          path: ./public
 
   # Deployment job
   deploy:
@@ -62,12 +61,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Downloads artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: build
-          path: public
-
       - name: Publish app
         uses: cloudflare/wrangler-action@2.0.0
         with:
