@@ -51,7 +51,7 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           name: build
-          path: ./public
+          path: public
 
   # Deployment job
   deploy:
@@ -71,7 +71,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build
-          path: ./public
 
       - name: Show directory contents
         run: ls -R
