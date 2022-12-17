@@ -66,10 +66,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build
-
-      - name: Show directory contents
-        run: ls -R
-        working-directory: public
+          path: public
 
       - name: Publish app
         uses: cloudflare/wrangler-action@2.0.0
