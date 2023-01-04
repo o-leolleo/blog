@@ -1,0 +1,9 @@
+{{ define "main" }}
+{{ $image := resources.GetMatch "images/me.jpg" }}
+<img src="{{ $image.RelPermalink }}" width="{{ $image.Width }}" height="{{ $image.Height }}">
+<ul>
+  <li>GitHub</li>
+  <li>Linkedin</li>
+  <li>Email</li>
+</ul>
+{{ end }}
