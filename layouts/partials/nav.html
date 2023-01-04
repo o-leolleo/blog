@@ -1,5 +1,6 @@
 <nav class="sidebar-nav">
   <a class="sidebar-nav-item" href="{{ .Site.BaseURL }}" title="{{ .Site.Home.LinkTitle }}">Home</a>
+
   {{ $currentPage := . }}
   {{ range .Site.Menus.main }}
   <a
