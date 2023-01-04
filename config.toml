@@ -1,28 +1,4 @@
 baseURL = '/'
 languageCode = 'en-us'
-title = "Leolleo's Digital Garden"
-theme = 'hugo-book'
-
-enableGitInfo = true
-defaultContentLanguageInSubdir = true
-
-[params]
-BookTheme = 'dark'
-BookToC = true
-# BookRepo = 'https://github.com/o-leolleo/garden'
-BookComments = false
-
-[languages]
-  [languages.en]
-    contentDir = 'content/en'
-    languageName = "English"
-    title = "Leolleo's Digital Garden"
-    subtitle = "Powered by Hugo"
-    weight = 1
-
-  [languages.pt-br]
-    contentDir = 'content/pt-br'
-    languageName = "Português (Brasil)"
-    title = "Jardim Digital do Leolleo"
-    subtitle = "Feito em Hugo"
-    weight = 2
+title = 'Leonardo Prado'
+sectionPagesMenu = "main"
