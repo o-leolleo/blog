@@ -1,10 +1,10 @@
-<nav class="sidebar-nav">
-  <a class="sidebar-nav-item" href="{{ .Site.BaseURL }}" title="{{ .Site.Home.LinkTitle }}">Home</a>
+<nav class="flex flex-row justify-end text-sky-50 bg-sky-600">
+  <a class="mr-3 text-black" href="{{ .Site.BaseURL }}" title="{{ .Site.Home.LinkTitle }}">Home</a>
 
   {{ $currentPage := . }}
   {{ range .Site.Menus.main }}
   <a
-    class="sidebar-nav-item{{if or ($currentPage.IsMenuCurrent " main" .) ($currentPage.HasMenuCurrent "main" .) }} active{{end}}"
+    class="mr-3 {{if or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) }}text-black{{end}}"
     href="{{ .URL }}"
     title="{{ .Title }}"
   >

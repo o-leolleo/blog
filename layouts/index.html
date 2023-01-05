@@ -1,10 +1,16 @@
 {{ define "main" }}
 {{ $image := resources.GetMatch "images/me.jpg" }}
-<img src="{{ $image.RelPermalink }}" width="{{ $image.Width }}" height="{{ $image.Height }}">
-<ul>
-  <li>Medium</li>
-  <li>GitHub</li>
-  <li>Linkedin</li>
-  <li>Email</li>
-</ul>
+<div class="flex flex-col items-center">
+  <img
+    src="{{ $image.RelPermalink }}"
+    width="{{ $image.Width }}"
+    height="{{ $image.Height }}"
+  >
+  <ul class="flex flex-row">
+    <li>Medium</li>
+    <li>GitHub</li>
+    <li>Linkedin</li>
+    <li>Email</li>
+  </ul>
+</div>
 {{ end }}
