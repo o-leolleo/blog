@@ -1,7 +1,7 @@
-<nav class="flex flex-row justify-end text-black mb-6">
+<nav class="flex flex-row justify-center text-black mb-6">
   {{ $directory := cond .IsHome "~" .Title | lower }}
   <a
-    class="mr-auto text-gray-900 font-bold"
+    class="mr-10 text-gray-900 font-bold"
     href="{{ .Site.BaseURL }}"
     title="{{ .Site.Home.LinkTitle }}"
   >

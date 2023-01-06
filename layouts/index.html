@@ -1,16 +1,32 @@
 {{ define "main" }}
 {{ $image := resources.GetMatch "images/me.jpg" }}
+{{ $image := $image.Resize "440x"}}
 <div class="flex flex-col items-center">
-  <img
-    src="{{ $image.RelPermalink }}"
-    width="{{ $image.Width }}"
-    height="{{ $image.Height }}"
-  >
-  <ul class="flex flex-row">
-    <li>Medium</li>
-    <li>GitHub</li>
-    <li>Linkedin</li>
-    <li>Email</li>
+  <img class="rounded-full" src="{{ $image.RelPermalink }}" width="{{ $image.Width }}" height="{{ $image.Height }}">
+  <ul class="flex flex-row mt-8 w-full justify-center">
+    <li class="mx-3">
+      <a target="_blank" href="https://github.com/o-leolleo">
+        <i class="hover:text-indigo-500 text-4xl lab la-github"></i>
+      </a>
+    </li>
+
+    <li class="mr-3">
+      <a target="_blank" href="https://medium.com/@leolleo">
+        <i class="hover:text-indigo-500 text-4xl lab la-medium"></i>
+      </a>
+    </li>
+
+    <li class="mr-3">
+      <a target="_blank" href="https://www.youtube.com/channel/UCNwIxxl5aoqjGrniw2Smviw">
+        <i class="hover:text-indigo-500 text-4xl lab la-youtube"></i>
+      </a>
+    </li>
+
+    <li class="mr-3">
+      <a target="_blank" href="https://www.linkedin.com/in/leonardo-cavalcante-do-prado/">
+        <i class="hover:text-indigo-500 text-4xl lab la-linkedin"></i>
+      </a>
+    </li>
   </ul>
 </div>
 {{ end }}
