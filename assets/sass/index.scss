@@ -1,0 +1,17 @@
+.terminal-cursor {
+  animation: cursor .8s infinite;
+}
+
+@keyframes cursor {
+  from {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}

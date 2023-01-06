@@ -1,10 +1,20 @@
-<nav class="flex flex-row justify-end text-sky-50 bg-sky-600">
-  <a class="mr-3 text-black" href="{{ .Site.BaseURL }}" title="{{ .Site.Home.LinkTitle }}">Home</a>
+<nav class="flex flex-row justify-end text-black mb-6">
+  {{ $directory := cond .IsHome "~" .Title | lower }}
+  <a
+    class="mr-auto text-gray-900 font-bold"
+    href="{{ .Site.BaseURL }}"
+    title="{{ .Site.Home.LinkTitle }}"
+  >
+    <span class="text-lime-500">leonardo-prado</span>:<span class="text-indigo-500">{{ $directory }}</span>$
+    <span class="terminal-cursor">&#9610;</span>
+  </a>
 
   {{ $currentPage := . }}
   {{ range .Site.Menus.main }}
+  {{ $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) }}
+  {{ $activeClass := "border-b-4 border-indigo-500" }}
   <a
-    class="mr-3 {{if or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) }}text-black{{end}}"
+    class="mr-6 text-gray-700 font-semibold {{ if $active }}{{ $activeClass }}{{ end }}"
     href="{{ .URL }}"
     title="{{ .Title }}"
   >

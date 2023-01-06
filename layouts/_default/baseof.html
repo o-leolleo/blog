@@ -5,14 +5,21 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <link rel="stylesheet" href="{{ .Site.BaseURL }}output.css">
+  {{ $sass := resources.Get "sass/index.scss" }}
+  {{ $style := $sass | resources.ToCSS | resources.Minify | resources.Fingerprint }}
+  <link rel="stylesheet" href="{{ $style.Permalink }}">
+
   <title>{{ .Page.Title }}</title>
 </head>
 
-<body class="p-0 container mx-auto">
-  {{ partial "nav.html" . }}
-  {{ block "main" . }}
-  {{ end }}
+<body class="font-mono">
+  <main class="container mx-auto p-10 max-w-screen-lg	">
+    {{ partial "nav.html" . }}
+    {{ block "main" . }}
+    {{ end }}
+  </main>
 </body>
 
 </html>
