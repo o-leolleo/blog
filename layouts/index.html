@@ -1,32 +1,41 @@
 {{ define "main" }}
 {{ $image := resources.GetMatch "images/me.jpg" }}
-{{ $image := $image.Resize "440x"}}
-<div class="flex flex-col items-center">
-  <img class="rounded-full" src="{{ $image.RelPermalink }}" width="{{ $image.Width }}" height="{{ $image.Height }}">
-  <ul class="flex flex-row mt-8 w-full justify-center">
-    <li class="mx-3">
-      <a target="_blank" href="https://github.com/o-leolleo">
-        <i class="hover:text-indigo-500 text-4xl lab la-github"></i>
-      </a>
-    </li>
+{{ $image := $image.Resize "400x"}}
+<div class="flex flex-col md:flex-row items-center pt-8">
+  <div class="shrink-0 mb-12 md:mr-12">
+    <img class="rounded-full" src="{{ $image.RelPermalink }}" width="{{ $image.Width }}" height="{{ $image.Height }}">
+  </div>
 
-    <li class="mr-3">
-      <a target="_blank" href="https://medium.com/@leolleo">
-        <i class="hover:text-indigo-500 text-4xl lab la-medium"></i>
-      </a>
-    </li>
+  <div class="flex flex-col">
+    <div class="prose text-center md:text-left">
+      {{ .Content }}
+    </div>
 
-    <li class="mr-3">
-      <a target="_blank" href="https://www.youtube.com/channel/UCNwIxxl5aoqjGrniw2Smviw">
-        <i class="hover:text-indigo-500 text-4xl lab la-youtube"></i>
-      </a>
-    </li>
+    <ul class="flex flex-row mt-8 w-full justify-center md:justify-start">
+      <li class="mr-3">
+        <a target="_blank" href="https://github.com/o-leolleo">
+          <i class="hover:text-indigo-500 text-4xl lab la-github"></i>
+        </a>
+      </li>
 
-    <li class="mr-3">
-      <a target="_blank" href="https://www.linkedin.com/in/leonardo-cavalcante-do-prado/">
-        <i class="hover:text-indigo-500 text-4xl lab la-linkedin"></i>
-      </a>
-    </li>
-  </ul>
+      <li class="mr-3">
+        <a target="_blank" href="https://medium.com/@leolleo">
+          <i class="hover:text-indigo-500 text-4xl lab la-medium"></i>
+        </a>
+      </li>
+
+      <li class="mr-3">
+        <a target="_blank" href="https://www.youtube.com/channel/UCNwIxxl5aoqjGrniw2Smviw">
+          <i class="hover:text-indigo-500 text-4xl lab la-youtube"></i>
+        </a>
+      </li>
+
+      <li class="mr-3">
+        <a target="_blank" href="https://www.linkedin.com/in/leonardo-cavalcante-do-prado/">
+          <i class="hover:text-indigo-500 text-4xl lab la-linkedin"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
 </div>
 {{ end }}
