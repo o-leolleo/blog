@@ -1,16 +1,21 @@
 <nav class="flex flex-row text-black mb-6 pt-8">
   {{ $directory := cond .IsHome "~" (printf "%s%s" "~" .RelPermalink) | strings.TrimSuffix "/" | lower }}
-  <a
-    class="mr-auto text-gray-900 font-bold"
-    href="{{ .Site.BaseURL }}"
-    title="{{ .Site.Home.LinkTitle }}"
-  >
-    <span class="text-lime-500">leonardo-prado</span>:<span class="text-indigo-500">{{ $directory }}</span>$
-    {{ with .Params.Command }}
+  {{ $directory := cond .IsPage (path.Dir $directory) $directory }}
+  {{ $command := cond .IsPage (printf "cat '%s'" (.Title | lower | safeHTML | strings.Truncate 30)) (default "" .Params.Command) }}
+
+  <div class="mr-auto">
+    <a
+      class="text-gray-900 font-bold"
+      href="{{ .Site.BaseURL }}"
+      title="{{ .Site.Home.LinkTitle }}"
+    >
+      <span class="text-lime-500">leonardo-prado</span>:<span class="text-indigo-500">{{ $directory }}</span>$
+    </a>
+    {{ with $command }}
     <span class="font-normal">{{ . }}</span>
     {{ end }}
     <span class="terminal-cursor">&#9610;</span>
-  </a>
+  </div>
 
   {{ $currentPage := . }}
   {{ range .Site.Menus.main }}
