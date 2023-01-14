@@ -1,20 +1,22 @@
 {{ define "main" }}
 <div class="prose mt-10 mx-auto">
-  {{.Content}}
+  {{ .Content }}
 </div>
 
+{{ if len .Pages }}
 <div class="prose mx-auto mt-10 mb-6">
   <h2>All articles</h2>
 
   <ul>
-    {{ range .Pages.ByDate }}
+    {{ range .Pages.ByLastmod }}
     <li>
-      {{.Date.Format "Jan 02 2006"}}
+      {{ .Date.Format "Jan 02 2006" }}
       <a class="font-bold" href="{{.Permalink}}">
-        <span>{{.Title}}</span>
+        <span>{{ .Title }}</span>
       </a>
     </li>
     {{ end }}
   </ul>
 </div>
+{{ end }}
 {{ end }}

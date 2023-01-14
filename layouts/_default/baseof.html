@@ -15,12 +15,17 @@
   <title>{{ .Page.Title }}</title>
 </head>
 
-<body class="font-mono h-screen">
-  <main class="container h-full mx-auto mt-8 px-10 max-w-screen-lg">
-    {{ partial "nav.html" . }}
+<body class="font-mono h-screen container mx-auto px-10 max-w-screen-lg">
+  {{ partial "nav.html" . }}
+
+  <main>
     {{ block "main" . }}
     {{ end }}
   </main>
+
+  <footer class="text-center">
+    Powered by <a target="_blank" href="https://gohugo.io/">Hugo</a> and <a target="_blank" href="https://tailwindcss.com/">TailwindCSS</a>
+  </footer>
 </body>
 
 </html>

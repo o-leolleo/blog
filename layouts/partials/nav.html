@@ -1,4 +1,4 @@
-<nav class="flex flex-row text-black mb-6">
+<nav class="flex flex-row text-black mb-6 pt-8">
   {{ $directory := cond .IsHome "~" (printf "%s%s" "~" .RelPermalink) | strings.TrimSuffix "/" | lower }}
   <a
     class="mr-auto text-gray-900 font-bold"
