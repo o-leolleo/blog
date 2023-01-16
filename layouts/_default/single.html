@@ -1,7 +1,7 @@
 {{ define "main" }}
 <header class="max-w-prose mx-auto pb-10">
   <h1 class="text-4xl font-bold mb-4">{{ .Title }}</h1>
-  <p>{{ .Date.Format "Jan 02 2006" }} - {{ div (countwords .Content) 220.0 | math.Round}} min read </p>
+  <p>{{ .Date.Format "Jan 02 2006" }} - {{ partial "minread.html" . }}</p>
 </header>
 
 <article class="prose mx-auto">

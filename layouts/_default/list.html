@@ -7,13 +7,12 @@
 <div class="prose mx-auto mt-10 mb-6">
   <h2>All articles</h2>
 
-  <ul>
+  <ul class="not-prose list-outside">
     {{ range .Pages.ByLastmod }}
     <li>
-      {{ .Date.Format "Jan 02 2006" }}
-      <a class="font-bold" href="{{.Permalink}}">
-        <span>{{ .Title }}</span>
-      </a>
+      <a class="font-medium text-blue-700 hover:underline" href="{{ .Permalink }}">{{ .Title }}</a>
+      <span class="text-sm">:: {{ .Date.Format "Jan, 02 2006" }}</span>
+      <span class="text-sm">:: {{ partial "minread.html" . }}</span>
     </li>
     {{ end }}
   </ul>
