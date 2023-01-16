@@ -1,18 +1,18 @@
 {{ define "main" }}
-<div class="prose mx-auto">
+{{ $shouldCenter := cond (gt (len .Pages) 0) "text-center" "" }}
+<div class="{{ $shouldCenter }} prose mx-auto">
   {{ .Content }}
 </div>
 
 {{ if len .Pages }}
-<div class="prose mx-auto mt-10 mb-6">
-  <h2>All articles</h2>
+<div class="prose max-w-none mx-auto mt-10 mb-6">
+  <h2 class="text-center">All articles</h2>
 
   <ul class="not-prose list-outside">
-    {{ range .Pages.ByLastmod }}
-    <li>
-      <a class="font-medium text-blue-700 hover:underline" href="{{ .Permalink }}">{{ .Title }}</a>
-      <span class="text-sm">:: {{ .Date.Format "Jan, 02 2006" }}</span>
-      <span class="text-sm">:: {{ partial "minread.html" . }}</span>
+    {{ range .Pages.ByLastmod.Reverse }}
+    <li class="flex flex-row justify-around">
+      <a class="mr-auto font-medium text-blue-700 hover:underline" href="{{ .Permalink }}">{{ .Title }}</a>
+      <span class="text-sm">:: {{ .Date.Format "Jan, 02 2006" }} :: {{ partial "minread.html" . }}</span>
     </li>
     {{ end }}
   </ul>
