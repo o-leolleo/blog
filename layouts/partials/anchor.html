@@ -1,0 +1,9 @@
+{{ $href := .href }}
+{{ $text := .title }}
+{{ $target := default "_self" .target }}
+{{ $extraClasses := default "" .extraClasses }}
+<a
+  class="font-medium text-blue-700 dark:text-blue-400 hover:underline {{ $extraClasses }}"
+  target="{{ $target }}"
+  href="{{ $href }}"
+>{{ $text }}</a>

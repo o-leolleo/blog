@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ .Page.Language }}">
+<html class="dark" lang="{{ .Page.Language }}">
 
 <head>
   <meta charset="UTF-8">
@@ -15,7 +15,7 @@
   <title>{{ .Page.Title }}</title>
 </head>
 
-<body class="font-mono h-screen container mx-auto px-10 max-w-screen-lg flex flex-col">
+<body class="font-mono dark:bg-stone-900 dark:text-white h-screen container mx-auto px-10 max-w-screen-lg flex flex-col">
   {{ partial "nav.html" . }}
 
   <main class="grow mt-10">
@@ -25,9 +25,9 @@
 
   <footer class="text-center mt-10 pb-4 text-sm">
     Powered by
-    <a class="font-medium text-blue-700 hover:underline" target="_blank" href="https://gohugo.io/">Hugo</a>
+    {{ partial "anchor.html" (dict "href" "https://gohugo.io/" "title" "Hugo" "target" "_blank") }}
     and
-    <a class="font-medium text-blue-700 hover:underline" target="_blank" href="https://tailwindcss.com/">TailwindCSS</a>
+    {{ partial "anchor.html" (dict "href" "https://tailwindcss.com/" "title" "TailwindCSS" "target" "_blank") }}
     <span class="text-xl">&#10084;</span>
   </footer>
 </body>

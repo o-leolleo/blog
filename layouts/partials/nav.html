@@ -1,11 +1,11 @@
-<nav class="flex flex-row text-black mb-6 pt-8">
+<nav class="flex flex-row mb-6 pt-8">
   {{ $directory := cond .IsHome "~" (printf "%s%s" "~" .RelPermalink) | strings.TrimSuffix "/" | lower }}
   {{ $directory := cond .IsPage (path.Dir $directory) $directory }}
   {{ $command := cond .IsPage (printf "cat '%s'" (.Title | lower | safeHTML | strings.Truncate 30)) (default "" .Params.Command) }}
 
   <div class="mr-auto">
     <a
-      class="text-gray-900 font-bold"
+      class="font-bold"
       href="{{ .Site.BaseURL }}"
       title="{{ .Site.Home.LinkTitle }}"
     >
@@ -22,7 +22,7 @@
   {{ $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) }}
   {{ $activeClass := "border-b-4 border-indigo-500" }}
   <a
-    class="mr-6 text-gray-700 font-semibold {{ if $active }}{{ $activeClass }}{{ end }}"
+    class="mr-6 font-semibold {{ if $active }}{{ $activeClass }}{{ end }}"
     href="{{ .URL }}"
     title="{{ .Title }}"
   >

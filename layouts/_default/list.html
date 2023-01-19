@@ -1,17 +1,17 @@
 {{ define "main" }}
 {{ $shouldCenter := cond (gt (len .Pages) 0) "text-center" "" }}
-<div class="{{ $shouldCenter }} prose mx-auto">
+<div class="{{ $shouldCenter }} prose  dark:prose-invert mx-auto">
   {{ .Content }}
 </div>
 
 {{ if len .Pages }}
-<div class="prose max-w-none mx-auto mt-10 mb-6">
+<div class="prose dark:prose-invert max-w-none mx-auto mt-10 mb-6">
   <h2 class="text-center">All articles</h2>
 
   <ul class="not-prose list-outside">
     {{ range .Pages.ByLastmod.Reverse }}
     <li class="flex flex-row justify-around">
-      <a class="mr-auto font-medium text-blue-700 hover:underline" href="{{ .Permalink }}">{{ .Title }}</a>
+      {{ partial "anchor.html" (dict "href" .Permalink "title" .Title "extraClasses" "mr-auto") }}
       <span class="text-sm">:: {{ .Date.Format "Jan, 02 2006" }} :: {{ partial "minread.html" . }}</span>
     </li>
     {{ end }}
