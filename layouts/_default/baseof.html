@@ -30,6 +30,9 @@
     {{ partial "anchor.html" (dict "href" "https://tailwindcss.com/" "title" "TailwindCSS" "target" "_blank") }}
     <span class="text-xl">&#10084;</span>
   </footer>
+
+  {{ $js := resources.Get "js/index.js" | js.Build | resources.Minify | fingerprint }}
+  <script src="{{ $js.Permalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
 </body>
 
 </html>

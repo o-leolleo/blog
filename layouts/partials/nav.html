@@ -17,10 +17,10 @@
     <span class="terminal-cursor">&#9610;</span>
   </div>
 
-  {{ $currentPage := . }}
-  {{ range .Site.Menus.main }}
-  {{ $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) }}
-  {{ $activeClass := "border-b-4 border-indigo-500" }}
+  {{- $currentPage := . -}}
+  {{- range .Site.Menus.main -}}
+  {{- $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) -}}
+  {{- $activeClass := "border-b-4 border-indigo-500" -}}
   <a
     class="mr-6 font-semibold {{ if $active }}{{ $activeClass }}{{ end }}"
     href="{{ .URL }}"
@@ -29,4 +29,6 @@
     {{ .Name }}
   </a>
   {{ end }}
+
+  <button id="dark-mode-btn"><i id="dark-mode-icon" class="las la-moon text-lg"></i></button>
 </nav>
