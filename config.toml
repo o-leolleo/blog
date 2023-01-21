@@ -7,3 +7,17 @@ summaryLength = 40
 
 [params]
   dateFormat = 'Jan 02, 2006'
+
+[menu]
+[[menu.main]]
+  identifier = 'blog'
+  name = 'Blog'
+  title = 'Blog'
+  pageref = '/blog'
+  weight = -110
+[[menu.main]]
+  identifier = 'about'
+  name = 'About'
+  title = 'About'
+  pageref = '/about'
+  weight = -100
