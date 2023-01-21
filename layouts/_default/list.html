@@ -11,9 +11,10 @@
   <ul class="list-outside">
     {{ range .Pages.ByLastmod.Reverse }}
     <li class="flex flex-col">
-      <h2>{{ partial "anchor.html" (dict "href" .Permalink "title" .Title) }}</h2>
+      <h2>{{ .Title }}</h2>
       <p class="text-sm">:: {{ .Date.Format .Site.Params.DateFormat }} :: {{ partial "minread.html" . }}</p>
       <p>{{ .Summary }}</p>
+      {{ partial "anchor.html" (dict "href" .Permalink "title" "More") }}
     </li>
     {{ end }}
   </ul>
