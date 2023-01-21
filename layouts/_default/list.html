@@ -8,11 +8,12 @@
 <div class="prose dark:prose-invert max-w-none mx-auto mt-10 mb-6">
   <h2 class="text-center">All articles</h2>
 
-  <ul class="not-prose list-outside">
+  <ul class="list-outside">
     {{ range .Pages.ByLastmod.Reverse }}
-    <li class="flex flex-row justify-around">
-      {{ partial "anchor.html" (dict "href" .Permalink "title" .Title "extraClasses" "mr-auto") }}
-      <span class="text-sm">:: {{ .Date.Format "Jan, 02 2006" }} :: {{ partial "minread.html" . }}</span>
+    <li class="flex flex-col">
+      <h2>{{ partial "anchor.html" (dict "href" .Permalink "title" .Title) }}</h2>
+      <p class="text-sm">:: {{ .Date.Format .Site.Params.DateFormat }} :: {{ partial "minread.html" . }}</p>
+      <p>{{ .Summary }}</p>
     </li>
     {{ end }}
   </ul>
