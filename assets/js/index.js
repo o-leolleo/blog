@@ -1,5 +1,8 @@
+const darkModeIcon = document.getElementById('dark-mode-icon');
+const darkModeButton = document.getElementById('dark-mode-btn');
+
 function main() {
-  document.getElementById('dark-mode-btn').addEventListener('click', toggleDarkMode);
+  darkModeButton.addEventListener('click', toggleDarkMode);
 
   if (isLightTheme()) {
     setLightTheme();
@@ -24,21 +27,17 @@ function toggleDarkMode() {
 }
 
 function setDarkTheme() {
-  const icon = document.getElementById('dark-mode-icon');
-
   document.documentElement.classList.add('dark');
-  icon.classList.replace('la-sun', 'la-moon');
+  darkModeIcon.classList.replace('la-sun', 'la-moon');
 
   localStorage.theme = 'dark';
 }
 
 function setLightTheme() {
-  const icon = document.getElementById('dark-mode-icon');
-
   document.documentElement.classList.remove('dark');
-  icon.classList.replace('la-moon', 'la-sun');
+  darkModeIcon.classList.replace('la-moon', 'la-sun');
 
   localStorage.theme = 'light';
 }
 
-main();
+window.addEventListener('DOMContentLoaded', main);
