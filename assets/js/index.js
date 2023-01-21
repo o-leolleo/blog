@@ -1,33 +1,39 @@
 function main() {
   document.getElementById('dark-mode-btn').addEventListener('click', toggleDarkMode);
 
-  if (localStorage.theme && localStorage.theme !== 'dark') {
-    setTheme(localStorage.theme);
+  if (isLightTheme()) {
+    setLightTheme();
   }
+}
+
+function isLightTheme() {
+  return localStorage.theme && localStorage.theme !== 'dark';
 }
 
 function toggleDarkMode() {
   const theme = localStorage.theme || 'dark';
 
+  document.body.classList.add('transition-colors', 'duration-1000');
+
   if (theme !== 'dark') {
-    setTheme('dark');
+    setDarkTheme();
     return;
   }
 
-  setTheme('light');
+  setLightTheme();
 }
 
-function setTheme(theme = 'dark') {
+function setDarkTheme() {
   const icon = document.getElementById('dark-mode-icon');
 
-  if (theme === 'dark') {
-    document.documentElement.classList.add('dark');
-    icon.classList.replace('la-sun', 'la-moon');
+  document.documentElement.classList.add('dark');
+  icon.classList.replace('la-sun', 'la-moon');
 
-    localStorage.theme = 'dark';
+  localStorage.theme = 'dark';
+}
 
-    return;
-  }
+function setLightTheme() {
+  const icon = document.getElementById('dark-mode-icon');
 
   document.documentElement.classList.remove('dark');
   icon.classList.replace('la-moon', 'la-sun');
