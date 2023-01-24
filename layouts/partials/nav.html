@@ -9,7 +9,7 @@
       href="{{ .Site.BaseURL }}"
       title="{{ .Site.Home.LinkTitle }}"
     >
-      <span class="text-lime-500">leonardo-prado</span>:<span class="text-indigo-500">{{ $directory }}</span>$
+      <span class="text-lime-500">leonardo-prado</span>:<span class="text-indigo-700 dark:text-indigo-400">{{ $directory }}</span>$
     </a>
     {{ with $command }}
     <span class="font-normal">{{ . }}</span>
@@ -22,7 +22,7 @@
   {{- $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) -}}
   {{- $activeClass := "border-b-4 border-indigo-500" -}}
   <a
-    class="mr-6 font-semibold {{ if $active }}{{ $activeClass }}{{ end }}"
+    class="mr-6 font-semibold hover:text-indigo-700 dark:hover:text-indigo-400 {{ if $active }}{{ $activeClass }}{{ end }}"
     href="{{ .URL }}"
     title="{{ .Title }}"
   >
