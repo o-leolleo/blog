@@ -14,25 +14,25 @@
     <ul class="flex flex-row mt-8 w-full justify-center md:justify-start">
       <li class="mr-3">
         <a target="_blank" href="https://github.com/o-leolleo">
-          <i class="hover:text-indigo-500 text-4xl lab la-github"></i>
-        </a>
-      </li>
-
-      <li class="mr-3">
-        <a target="_blank" href="https://medium.com/@leolleo">
-          <i class="hover:text-indigo-500 text-4xl lab la-medium"></i>
-        </a>
-      </li>
-
-      <li class="mr-3">
-        <a target="_blank" href="https://www.youtube.com/channel/UCNwIxxl5aoqjGrniw2Smviw">
-          <i class="hover:text-indigo-500 text-4xl lab la-youtube"></i>
+          {{ partial "icons/github.html" . }}
         </a>
       </li>
 
       <li class="mr-3">
         <a target="_blank" href="https://www.linkedin.com/in/leonardo-cavalcante-do-prado/">
-          <i class="hover:text-indigo-500 text-4xl lab la-linkedin"></i>
+          {{ partial "icons/linkedin.html" . }}
+        </a>
+      </li>
+
+      <li class="mr-3">
+        <a target="_blank" href="https://medium.com/@leolleo">
+          {{ partial "icons/medium.html" . }}
+        </a>
+      </li>
+
+      <li class="mr-3">
+        <a target="_blank" href="https://www.youtube.com/channel/UCNwIxxl5aoqjGrniw2Smviw">
+          {{ partial "icons/youtube.html" . }}
         </a>
       </li>
     </ul>
