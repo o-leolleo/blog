@@ -1,11 +1,11 @@
 {{ define "main" }}
 {{ $shouldCenter := cond (gt (len .Pages) 0) "text-center" "" }}
-<div class="{{ $shouldCenter }} prose  dark:prose-invert mx-auto">
+<article class="{{ $shouldCenter }} prose  dark:prose-invert mx-auto">
   {{ .Content }}
-</div>
+</article>
 
 {{ if len .Pages }}
-<div class="prose dark:prose-invert max-w-none mx-auto mt-10 mb-6">
+<article class="prose dark:prose-invert max-w-none mx-auto mt-10 mb-6">
   <h2 class="text-center">All articles</h2>
 
   <ul class="list-outside">
@@ -20,6 +20,6 @@
     </li>
     {{ end }}
   </ul>
-</div>
+</article>
 {{ end }}
 {{ end }}
