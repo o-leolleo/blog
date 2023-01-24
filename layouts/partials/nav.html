@@ -1,4 +1,4 @@
-<nav class="flex flex-row mb-6 pt-8">
+<nav class="flex flex-row mb-3 md:mb-6 pt-8">
   {{ $directory := cond .IsHome "~" (printf "%s%s" "~" .RelPermalink) | strings.TrimSuffix "/" | lower }}
   {{ $directory := cond .IsPage (path.Dir $directory) $directory }}
   {{ $command := cond .IsPage (printf "cat '%s'" (.Title | lower | safeHTML | strings.Truncate 30)) (default ""
@@ -20,7 +20,7 @@
   {{- range .Site.Menus.main.ByWeight -}}
   {{- $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) -}}
   {{- $activeClass := "border-b-4 border-indigo-500" -}}
-  <a class="mr-6 invisible md:visible font-semibold hover:text-indigo-700 dark:hover:text-indigo-400 {{ if $active }}{{ $activeClass }}{{ end }}"
+  <a class="mr-6 hidden md:inline font-semibold hover:text-indigo-700 dark:hover:text-indigo-400 {{ if $active }}{{ $activeClass }}{{ end }}"
     href="{{ .URL }}" title="{{ .Title }}">
     {{- .Name -}}
   </a>
@@ -32,11 +32,11 @@
   </button>
 </nav>
 
-<div class="flex flex-col items-center">
+<div class="flex flex-row items-center">
   {{- range .Site.Menus.main.ByWeight -}}
   {{- $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) -}}
   {{- $activeClass := "border-b-4 border-indigo-500" -}}
-  <a class="visible mb-4 md:invisible font-semibold hover:text-indigo-700 dark:hover:text-indigo-400 {{ if $active }}{{ $activeClass }}{{ end }}"
+  <a class="mr-6 inline md:hidden font-semibold hover:text-indigo-700 dark:hover:text-indigo-400 {{ if $active }}{{ $activeClass }}{{ end }}"
     href="{{ .URL }}" title="{{ .Title }}">
     {{- .Name -}}
   </a>
