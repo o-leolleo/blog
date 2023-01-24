@@ -1,15 +1,11 @@
 // const darkModeIcon = document.getElementById('dark-mode-icon');
 const darkModeButton = document.getElementById('dark-mode-btn');
-const darkModeIcon = document.getElementById('dark-mode-icon');
-const lightModeIcon = document.getElementById('light-mode-icon');
 
 function main() {
   darkModeButton.addEventListener('click', toggleDarkMode);
 
   if (isLightTheme()) {
     setLightTheme();
-  } else {
-    setDarkTheme();
   }
 }
 
@@ -32,19 +28,11 @@ function toggleDarkMode() {
 
 function setDarkTheme() {
   document.documentElement.classList.add('dark');
-
-  lightModeIcon.classList.add('hidden');
-  darkModeIcon.classList.remove('hidden');
-
   localStorage.theme = 'dark';
 }
 
 function setLightTheme() {
   document.documentElement.classList.remove('dark');
-
-  lightModeIcon.classList.remove('hidden');
-  darkModeIcon.classList.add('hidden');
-
   localStorage.theme = 'light';
 }
 
