@@ -1,8 +1,7 @@
 <nav class="flex flex-row mb-3 md:mb-6 pt-8">
   {{ $directory := cond .IsHome "~" (printf "%s%s" "~" .RelPermalink) | strings.TrimSuffix "/" | lower }}
   {{ $directory := cond .IsPage (path.Dir $directory) $directory }}
-  {{ $command := cond .IsPage (printf "cat '%s'" (.Title | lower | safeHTML | strings.Truncate 30)) (default ""
-  .Params.Command) }}
+  {{ $command := cond .IsPage (printf "cat content.txt") (default "" .Params.Command) }}
 
   <div class="mr-auto">
     <a class="font-bold" href="{{ .Site.BaseURL }}" title="{{ .Site.Home.LinkTitle }}">
