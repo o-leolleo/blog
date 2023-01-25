@@ -7,6 +7,6 @@ command: "ls -la"
 
 # Mostly tech, but you can also find random stuff
 
-rem markdownum loqui inimica primus utuntur *aures*, sine calentibus teneram
-manus amat, quo gratia, me tantaque induruit. *Laticem pietatis contingere*
-temperie tuo congeriem alte.
+I'm writing without a specific schedule, and about the things that at the time of writing interests me the most. The idea is that I can learn at the same time I share knowledge. **_Learn in public_** they say.
+
+That being said there isn't any post here **yet** 🤷‍♂️.

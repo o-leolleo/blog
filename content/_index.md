@@ -5,6 +5,6 @@ draft: true
 command: cd ~
 ---
 
-# Lorem Ipsum
+# Hello there! 👋
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam purus leo, tempus in aliquam eget, sodales vitae sem. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Quisque euismod vel lectus ac dignissim.
+This is my blog, here I write about tech, DevOps and some interesting topics, at least to me. Hope you enjoy the reading!
