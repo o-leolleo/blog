@@ -1,6 +1,9 @@
 {{ define "main" }}
+
 <header class="max-w-prose mx-auto pb-10">
-  <h1 class="text-4xl font-bold mb-4">{{ .Title }}</h1>
+  <a class="anchor" href="{{ (index .Ancestors 0).Permalink }}">&#x21BC; Back to list</a>
+
+  <h1 class="text-4xl font-bold mt-8 mb-4">{{ .Title }}</h1>
   <p>{{ .Date.Format .Site.Params.DateFormat }} - {{ partial "minread.html" . }}</p>
 </header>
 

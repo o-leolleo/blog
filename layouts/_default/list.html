@@ -15,7 +15,7 @@
       <p class="text-sm">:: {{ .Date.Format .Site.Params.DateFormat }} :: {{ partial "minread.html" . }}</p>
       <p>{{ .Summary }}</p>
       <div class="not-prose">
-        {{ partial "anchor.html" (dict "href" .Permalink "title" "Read more &#x21C0;") }}
+        <a class="anchor" href="{{ .Permalink }}">Read more &#x21C0;</a>
       </div>
     </li>
     {{ end }}
