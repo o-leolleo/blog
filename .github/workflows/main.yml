@@ -73,3 +73,10 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           command: pages publish --env production --project-name blog ./public
+
+      - name: Purge cloudflare cache
+        run: |
+          curl -X POST "https://api.cloudflare.com/client/v4/zones/a5f4d54fc54af37e05218d9b4e8cd4d9/purge_cache" \
+          -H "Authorization: Bearer ${{ secrets.CF_API_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          --data '{"purge_everything":true}'
