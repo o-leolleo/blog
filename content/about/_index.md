@@ -5,4 +5,4 @@ draft: true
 command: whoami
 ---
 
-My name is Leonardo Cavalcante do Prado, I'm a DevOps engineer with around X years experience.
+My name is Leonardo Cavalcante do Prado, I'm a DevOps Engineer with around X years experience.
