@@ -55,7 +55,6 @@ jobs:
 
   # Deployment job
   deploy:
-    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     environment:
       name: leolleo.dev
       url: https://leolleo.dev
