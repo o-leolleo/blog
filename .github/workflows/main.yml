@@ -73,7 +73,6 @@ jobs:
           command: pages publish --env preview --branch ${{ github.ref_name }}-preview --project-name blog ./public
 
   deploy-live:
-    if: github.ref == 'refs/heads/main'
     environment:
       name: leolleo.dev
       url: https://leolleo.dev
