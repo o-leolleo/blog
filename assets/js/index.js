@@ -1,4 +1,3 @@
-// const darkModeIcon = document.getElementById('dark-mode-icon');
 const darkModeButton = document.getElementById('dark-mode-btn');
 
 function main() {
