@@ -10,18 +10,11 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Allow one concurrent deployment
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
-# Default to bash
 defaults:
   run:
     shell: bash
 
 jobs:
-  # Build job
   build:
     runs-on: ubuntu-latest
     env:
@@ -54,6 +47,9 @@ jobs:
           path: public
 
   deploy-preview:
+    concurrency:
+      group: "${{ github.ref_name }}-preview"
+      cancel-in-progress: true
     environment:
       name: ${{ github.ref_name }}-preview
       url: https://${{ github.ref_name }}-preview.garden-cbf.pages.dev
@@ -73,6 +69,9 @@ jobs:
           command: pages publish --env preview --branch ${{ github.ref_name }}-preview --project-name blog ./public
 
   deploy-live:
+    concurrency:
+      group: "leolleo.dev"
+      cancel-in-progress: true
     environment:
       name: leolleo.dev
       url: https://leolleo.dev
