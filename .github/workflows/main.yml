@@ -27,7 +27,7 @@ jobs:
     steps:
       - id: ref_slug
         name: Generate ref slug
-        run: echo "this=$(${GITHUB_REF_NAME}" | iconv -t ascii//TRANSLIT | sed -E -e 's/[^[:alnum:]]+/-/g' -e 's/^-+|-+$//g' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+        run: echo "this=$(echo ${GITHUB_REF_NAME} | iconv -t ascii//TRANSLIT | sed -E -e 's/[^[:alnum:]]+/-/g' -e 's/^-+|-+$//g' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
 
       - uses: actions/setup-node@v3
         with:
