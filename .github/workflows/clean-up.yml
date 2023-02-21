@@ -1,0 +1,28 @@
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  info:
+    runs-on: ubuntu-latest
+    outputs:
+      ref_name_slug: ${{ steps.ref_name_slug.outputs.this }}
+    steps:
+      # Taken from https://github.com/rlespinasse/slugify-value/blob/v1.x/slugify.sh
+      - id: ref_name_slug
+        run: |
+          slug=$(\
+            echo ${GITHUB_REF_NAME} \
+              | sed -E -e 's#refs/[^\/]*/##;s/[^a-zA-Z0-9._-]+/-/g;s/^-*//' -e 's/-*$//' \
+          )
+
+          echo "this=${slug}"  >> "${GITHUB_OUTPUT}"
+
+  if_merged:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    needs: info
+    steps:
+    - run: |
+        echo ${{ needs.info.outputs.ref_name_slug }}
