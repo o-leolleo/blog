@@ -22,7 +22,12 @@ jobs:
               | sed -E -e 's#refs/[^\/]*/##;s/[^a-zA-Z0-9._-]+/-/g;s/^-*//' -e 's/-*$//' \
           )
 
-          echo "this=${slug}"  >> "${GITHUB_OUTPUT}"
+          if [ "${slug}" = 'main' ]; then
+            echo "this=stg" >> "${GITHUB_OUTPUT}"
+          else
+            echo "this=${slug}"  >> "${GITHUB_OUTPUT}"
+          fi
+
 
   build:
     runs-on: ubuntu-latest
