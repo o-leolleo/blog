@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 import os
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 
 @dataclass
 class CloudflareConfig:
@@ -35,6 +38,7 @@ config = Config(
     cloudflare=CloudflareConfig(
         token=os.environ['CF_API_TOKEN'],
         account_id=os.environ['CF_ACCOUNT_ID'],
+        project_name=os.environ['REPO_NAME']
     ),
 
     github=GitHubConfig(
