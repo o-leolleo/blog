@@ -7,7 +7,7 @@ env:
   CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
   CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
   CF_PROJECT_NAME: ${{ vars.CF_PROJECT_NAME }}
-  REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
+  GH_REPO_TOKEN: ${{ secrets.GH_REPO_TOKEN }}
 
 jobs:
   info:
@@ -30,33 +30,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: info
     env:
-      REF_NAME_SLUG: ${{ needs.info.outputs.ref_name_slug }}
+      REF_SLUG: ${{ needs.info.outputs.ref_name_slug }}
     steps:
-      - run: |
-          apt-get install --assume-yes jq
-
-          deployments_ids=$(\
-            curl \
-              -X GET \
-              -H "Content-Type: application/json;charset=UTF-8" \
-              -H "Authorization: Bearer ${CF_API_TOKEN}" \
-              "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PROJECT_NAME}/deployments" \
-              | jq ".result[]|select(.deployment_trigger.metadata.branch == '${REF_NAME_SLUG}')" \
-          )
-
-          echo "Clearing deployment for $REF_NAME_SLUG..."
-
-          curl \
-            -X DELETE \
-            -H "Content-Type: application/json;charset=UTF-8" \
-            -H "Authorization: Bearer ${CF_API_TOKEN}" \
-            "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PROJECT_NAME}/deployments"
-
-          echo "Clearing GitHub env for $REF_NAME_SLUG..."
-
-          curl \
-            -X DELETE \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${REPO_TOKEN}"\
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY_OWNER}/${GITHUB_REPOSITORY}/environments/${REF_NAME_SLUG}"
+      - name: Clean UP GitHub envs and Cloudflare Deployments
+        run: ./.github/scripts/clean_up.py
+        shell: python3
