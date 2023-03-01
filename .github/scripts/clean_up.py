@@ -48,8 +48,8 @@ config = Config(
 )
 
 def main():
-    print('Starting...')
-    print(f"Deleting GitHub Environment {config.ref_slug}...")
+    print('Starting')
+    print(f"Deleting GitHub Environment {config.ref_slug}")
     delete_github_environment()
 
     for d in fetch_deployments():
