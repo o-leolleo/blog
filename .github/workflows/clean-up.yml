@@ -32,6 +32,11 @@ jobs:
     env:
       REF_SLUG: ${{ needs.info.outputs.ref_name_slug }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
       - name: Clean UP GitHub envs and Cloudflare Deployments
         run: ./.github/scripts/clean_up.sh
         shell: bash
