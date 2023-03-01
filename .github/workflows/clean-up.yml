@@ -33,6 +33,6 @@ jobs:
       REF_SLUG: ${{ needs.info.outputs.ref_name_slug }}
     steps:
       - name: Clean UP GitHub envs and Cloudflare Deployments
-        working-directory: ./.github/scripts
+        working-directory: .github/scripts
         run: ./.github/scripts/clean_up.sh
         shell: bash
