@@ -38,6 +38,6 @@ jobs:
           submodules: recursive
 
       - name: Clean UP GitHub envs and Cloudflare Deployments
-        run: ./.github/scripts/clean_up.sh
+        run: clean_up.sh
         working-directory: .github/scripts
         shell: bash
