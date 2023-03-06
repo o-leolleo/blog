@@ -63,11 +63,11 @@ jobs:
 
   deploy:
     concurrency:
-      group: "${{ needs.infos.outputs.infos.ref_name_slug }}"
+      group: "${{ needs.infos.outputs.ref_name_slug }}"
       cancel-in-progress: true
     environment:
-      name: ${{ needs.infos.outputs.infos.env_name }}
-      url: ${{ needs.infos.outputs.infos.url }}
+      name: ${{ needs.infos.outputs.env_name }}
+      url: ${{ needs.infos.outputs.url }}
     runs-on: ubuntu-latest
     needs:
       - infos
@@ -83,7 +83,7 @@ jobs:
         uses: cloudflare/wrangler-action@2.0.0
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          command: pages publish --branch ${{ needs.infos.outputs.infos.ref_name_slug }} --project-name blog ./public
+          command: pages publish --branch ${{ needs.infos.outputs.ref_name_slug }} --project-name blog ./public
 
       - name: Purge cloudflare cache
         if: github.ref == 'refs/heads/main'
