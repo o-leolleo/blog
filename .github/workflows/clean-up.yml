@@ -13,7 +13,9 @@ jobs:
   infos:
     runs-on: ubuntu-latest
     outputs:
-      infos: ${{ steps.infos.outputs }}
+      ref_name_slug: ${{ steps.infos.outputs.ref_name_slug }}
+      env_name: ${{ steps.infos.outputs.env_name }}
+      url: ${{ steps.infos.outputs.url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -23,7 +25,6 @@ jobs:
       - id: infos
         run: ./gen-infos.sh
         working-directory: .github/scripts
-
 
   if_merged:
     if: github.event.pull_request.merged == true
