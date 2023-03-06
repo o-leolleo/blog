@@ -13,7 +13,7 @@ jobs:
   infos:
     runs-on: ubuntu-latest
     outputs:
-      infos: ${{ steps.ref_name_slug.outputs }}
+      infos: ${{ steps.infos.outputs }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
