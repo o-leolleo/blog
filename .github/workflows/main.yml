@@ -63,7 +63,7 @@ jobs:
       url: ${{ needs.infos.outputs.infos.url }}
     runs-on: ubuntu-latest
     needs:
-      - info
+      - infos
       - build
     steps:
       - name: Downloads artifact

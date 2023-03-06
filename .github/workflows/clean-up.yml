@@ -23,7 +23,7 @@ jobs:
   if_merged:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-    needs: info
+    needs: infos
     env:
       REF_SLUG: ${{ needs.infos.outputs.infos.ref_name_slug }}
     steps:
