@@ -23,7 +23,7 @@ jobs:
           submodules: recursive
 
       - id: infos
-        run: ./gen-infos.sh
+        run: ./gen_infos.sh
         working-directory: .github/scripts
 
   if_merged:
