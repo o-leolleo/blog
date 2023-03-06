@@ -2,7 +2,7 @@
 
 # Taken from https://github.com/rlespinasse/slugify-value/blob/v1.x/slugify.sh
 ref_name_slug=$(\
-  echo ${GITHUB_REF_NAME} \
+  echo ${GITHUB_HEAD_REF} \
     | sed -E -e 's#refs/[^\/]*/##;s/[^a-zA-Z0-9._-]+/-/g;s/^-*//' -e 's/-*$//' \
 )
 
