@@ -20,7 +20,7 @@ jobs:
       infos: ${{ steps.ref_name_slug.outputs }}
     steps:
       - id: infos
-        run: ./gen-infos.sh
+        run: ./gen_infos.sh
         working-directory: .github/scripts
 
   build:
