@@ -16,4 +16,4 @@ fi
 
 echo "ref_name_slug=${ref_name_slug}" >> "${GITHUB_OUTPUT}"
 echo "env_name=${env_name}" >> "${GITHUB_OUTPUT}"
-echo "url=${URL}" >> "${GITHUB_OUTPUT}"
+echo "url=${url}" >> "${GITHUB_OUTPUT}"
