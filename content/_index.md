@@ -4,6 +4,8 @@ date: 2023-01-04T17:08:40-03:00
 command: cd ~
 ---
 
-# Hello there! 👋
+# Hello 👋
 
-This is my blog, here I write about tech, DevOps and some interesting topics, at least to me. Hope you enjoy the reading!
+I'm Leo, this is my blog and my own place on the web. Soon I'm writing about tech and some interesting topics.
+
+Hope you enjoy the reading!
