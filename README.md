@@ -1,4 +1,4 @@
-# Leolleo's Blog  ![ci/cd](https://github.com/o-leolleo/blog/actions/workflows/cicd/badge.svg)
+# Leolleo's Blog  ![ci/cd](https://github.com/o-leolleo/blog/actions/workflows/cicd.yml/badge.svg)
 
 My personal blog. Powered by [Hugo](https://gohugo.io/) and [TailwindCSS](https://tailwindcss.com/).
 
