@@ -1,4 +1,4 @@
-name: main
+name: cicd
 
 on:
   push:
