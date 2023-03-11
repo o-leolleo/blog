@@ -15,4 +15,4 @@ $ npm run build   # Run production build
 
 ## Kudos
 
-For setting up Hugo and TailwindCSS I've followed up [this nice blog post](https://tailwindcss.com/).
+For setting up Hugo and TailwindCSS I've followed up [this nice blog post](https://functional.style/hugo/general/tailwind/).
