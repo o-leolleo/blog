@@ -7,3 +7,21 @@
     @apply font-medium text-indigo-700 dark:text-indigo-400 hover:underline;
   }
 }
+
+.terminal-cursor {
+  animation: cursor .8s infinite;
+}
+
+@keyframes cursor {
+  from {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}

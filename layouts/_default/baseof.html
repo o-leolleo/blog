@@ -7,11 +7,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="icon" type="image/x-icon" href="{{ .Site.BaseURL }}favicon.ico">
-  <link rel="stylesheet" href="{{ .Site.BaseURL }}output.css">
 
-  {{ $sass := resources.Get "sass/index.scss" }}
-  {{ $style := $sass | resources.ToCSS | resources.Minify | resources.Fingerprint }}
-  <link rel="stylesheet" href="{{ $style.Permalink }}">
+  {{ $styles := resources.Get "css/index.css" | resources.PostCSS }}
+
+  {{ if .Site.IsServer }}
+    <link rel="stylesheet" href="{{ $styles.RelPermalink }}"/>
+  {{ else }}
+    {{ $styles := $styles | minify | fingerprint | resources.PostProcess }}
+    <link rel="stylesheet" href="{{ $styles.RelPermalink }}" integrity="{{ $styles.Data.Integrity }}"/>
+  {{ end }}
 
   <title>{{ .Page.Title }}</title>
 </head>
