@@ -1,6 +1,13 @@
 {{ define "main" }}
 {{ $shouldCenter := cond (gt (len .Pages) 0) "text-center" "" }}
-<article   class="{{ $shouldCenter }} prose  dark:prose-invert mx-auto">
+
+<article class="{{ $shouldCenter }} prose  dark:prose-invert mx-auto">
   {{ .Content }}
 </article >
+
+<section class="text-center mt-8">
+  <p>You can also find me on</p>
+  {{- .Scratch.Set "class" "flex mt-2 flex-row w-full justify-center" -}}
+  {{ partial "social.html" . }}
+</section>
 {{ end }}

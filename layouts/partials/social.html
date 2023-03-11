@@ -1,0 +1,26 @@
+{{- $class := default "flex flex-row mt-8 w-full justify-center md:justify-start" (.Scratch.Get "class") -}}
+<ul class="{{ $class }}">
+  <li class="mr-3">
+    <a target="_blank" href="https://github.com/o-leolleo">
+      {{ partial "icons/github.html" . }}
+    </a>
+  </li>
+
+  <li class="mr-3">
+    <a target="_blank" href="https://www.linkedin.com/in/leonardo-cavalcante-do-prado/">
+      {{ partial "icons/linkedin.html" . }}
+    </a>
+  </li>
+
+  <li class="mr-3">
+    <a target="_blank" href="https://medium.com/@leolleo">
+      {{ partial "icons/medium.html" . }}
+    </a>
+  </li>
+
+  <li class="mr-3">
+    <a target="_blank" href="https://www.youtube.com/channel/UCNwIxxl5aoqjGrniw2Smviw">
+      {{ partial "icons/youtube.html" . }}
+    </a>
+  </li>
+</ul>

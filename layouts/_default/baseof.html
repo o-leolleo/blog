@@ -8,6 +8,7 @@
 
   <link rel="icon" type="image/x-icon" href="{{ .Site.BaseURL }}favicon.ico">
   <link rel="stylesheet" href="{{ .Site.BaseURL }}output.css">
+
   {{ $sass := resources.Get "sass/index.scss" }}
   {{ $style := $sass | resources.ToCSS | resources.Minify | resources.Fingerprint }}
   <link rel="stylesheet" href="{{ $style.Permalink }}">
