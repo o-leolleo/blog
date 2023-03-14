@@ -11,6 +11,7 @@
   {{ $styles := resources.Get "css/index.css" | resources.PostCSS }}
 
   {{ if .Site.IsServer }}
+    {{ $styles := $styles | resources.ExecuteAsTemplate (printf "css/index.dev.%v.css" now.UnixMilli) . }}
     <link rel="stylesheet" href="{{ $styles.RelPermalink }}"/>
   {{ else }}
     {{ $styles := $styles | minify | fingerprint | resources.PostProcess }}
