@@ -9,8 +9,8 @@ My personal blog. Powered by [Hugo](https://gohugo.io/) and [TailwindCSS](https:
 
 ```console
 $ npm ci          # Install dependencies
-$ npm run dev     # Run development server
-$ npm run build   # Run production build
+$ hugo server -D  # Run development server
+$ hugo            # Run production build
 ```
 
 ## Kudos
