@@ -12,9 +12,43 @@ Life and career have changed a lot since my last [footprint](https://medium.com/
 
 ## Hugo
 
-Besides its popularity and speed, Hugo uses Go and its templates. I have working experience with Helm which uses the same stack, this enabled me to interchange skills and by using Hugo I would get better at Helm and vice-versa. Also, finding community content around it was very easy and made the whole process a breeze.
+Besides its popularity and speed, Hugo uses Go and its templates. I have working experience with Helm which uses the same stack, this enabled me to interchange skills and by using Hugo I would get better at Helm and vice-versa. Also, finding community content around it is very easy, which made the whole process a breeze.
 
-Some would list Go templates as driving the decision not to use Hugo, interestingly enough this brought me to it. However I have to agree that it's not as intuitive as other template engines like jinja2.
+Some would list Go templates as driving the decision not to use Hugo, interestingly enough this brought me to it. However I agree at first contact it's not as intuitive as other template engines like [jinja2](https://jinja.palletsprojects.com/en/3.1.x/templates/). To show the feeling of it, the snippet below shows the hugo code for this blog posts [page](/blog).
+
+```html
+{{ define "main" }}
+{{ $shouldCenter := cond (gt (len .Pages) 0) "text-center" "" }}
+<article class="{{ $shouldCenter }} prose  dark:prose-invert mx-auto">
+  {{ .Content }}
+</article>
+
+{{ if len .Pages }}
+<article class="prose dark:prose-invert mx-auto mt-10 mb-6">
+  <h2 class="text-center">All articles</h2>
+
+  <ul class="pl-0 list-outside">
+    {{ range .Pages.ByLastmod.Reverse }}
+    <li class="pl-0 flex flex-col">
+      <h2>{{ .Title }}</h2>
+      <p class="text-sm">
+        :: {{ .Date.Format .Site.Params.DateFormat }}
+        :: {{ partial "minread.html" . }}
+      </p>
+      <p>{{ .Summary }}</p>
+      <div class="not-prose">
+        <a class="anchor" href="{{ .Permalink }}">
+          Read more &#x21C0;
+        </a>
+      </div>
+    </li>
+    {{ end }}
+  </ul>
+</article>
+{{ end }}
+{{ end }}
+
+```
 
 ## Tailwind
 
