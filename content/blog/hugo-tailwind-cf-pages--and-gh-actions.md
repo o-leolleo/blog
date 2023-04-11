@@ -47,10 +47,50 @@ Some would list Go templates as driving the decision not to use Hugo, interestin
 </article>
 {{ end }}
 {{ end }}
-
 ```
 
 ## Tailwind
+
+Tailwind is a very popular framework, and its utility based approach claims to hardly require one to write any custom CSS. This looked very compelling as the popularity would make it easy to find resources online and its approach would fit my knowledge background --- I'm not too experienced into frontend so writing custom CSS would take more time than I'd like to.
+
+Claims proved to be true and you can check below a snippet showing all custom CSS used on this blog.
+
+```scss
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* This just gives an alias to common
+     Tailwind classes used altogether. */
+  .anchor {
+    @apply
+      font-medium
+      text-indigo-700
+      dark:text-indigo-400
+      hover:underline;
+  }
+}
+
+/* Custom CSS starts here :D */
+.terminal-cursor {
+  animation: cursor .8s infinite;
+}
+
+@keyframes cursor {
+  from {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+```
 
 ## Cloudflare Pages
 
