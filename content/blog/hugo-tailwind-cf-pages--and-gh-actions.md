@@ -12,9 +12,9 @@ Life and career have changed a lot since my last [footprint](https://medium.com/
 
 ## Hugo
 
-Besides its popularity and speed, Hugo uses Go and its templates. I have working experience with Helm which uses the same stack, this enabled me to interchange skills and by using Hugo I would get better at Helm and vice-versa. Also, finding community content around it is very easy, which made the whole process a breeze.
+Besides its popularity and speed, Hugo uses Go and its templates. I have working experience with Helm which uses the same stack, thus choosing Hugo would enable me to interchange skills and by using it I would get better at Helm and vice-versa. Also, based on its popularity, finding community content around it would be easy.
 
-Some would list Go templates as driving the decision not to use Hugo, interestingly enough this brought me to it. However I agree at first contact it's not as intuitive as other template engines like [jinja2](https://jinja.palletsprojects.com/en/3.1.x/templates/). To show the feeling of it, the snippet below shows the hugo code for this blog posts [page](/blog).
+Some would list Go templates as driving the decision not to use Hugo, interestingly enough this brought me to it. I have to agree though that at first glance it's not as intuitive as other template engines like [jinja2](https://jinja.palletsprojects.com/en/3.1.x/templates/). The snippet below shows the hugo code for this blog posts [page](/blog).
 
 ```html
 {{ define "main" }}
