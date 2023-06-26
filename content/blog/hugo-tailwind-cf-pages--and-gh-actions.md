@@ -94,7 +94,7 @@ Claims proved to be true and you can check below a snippet showing all custom CS
 
 ## Cloudflare Pages
 
-I needed an easy way of getting most out of static hosting built in. A few options were available like [GitHub pages](https://pages.github.com/), [Netlify](https://www.netlify.com/) and others. Since I host my domain configuration on cloudflare their solution sounded very compelling. Having a [cli](https://developers.cloudflare.com/workers/wrangler/) to automate the workflow on my own also looked interesting since this way I can add whatever custom steps I'd like to, for example:
+I needed an easy way of getting most out of static hosting built in. A few options were available like [GitHub pages](https://pages.github.com/), [Netlify](https://www.netlify.com/) and others. Since I host my domain configuration on cloudflare their solution sounded very compelling, things could be kept in one place. Having a [cli](https://developers.cloudflare.com/workers/wrangler/) to automate the workflow on my own also looked interesting since this way I can add whatever custom steps I'd like to, for example:
 
 - [purging the dns cache after deployments.](https://github.com/o-leolleo/blog/blob/main/.github/workflows/cicd.yml#L85)
 - [having support for feature environments with auto clean-up on pull requests.](https://github.com/o-leolleo/blog/blob/main/.github/workflows/clean-up.yml)
@@ -103,3 +103,8 @@ I needed an easy way of getting most out of static hosting built in. A few optio
 Wrangler (the cli) also has an official [GitHub action](https://github.com/marketplace/actions/deploy-to-cloudflare-workers-with-wrangler) with good docs which I use for deploying this blog.
 
 ## GitHub Actions
+
+This is the GitHub CI/CD builtin tool. Besides being a native solution it's a very easy tool with a huge community around it. You can find an action for pretty much everything, and also build your own where the existing ones don't fit.
+It has a very good documentation and a very clear structure. Didn't have to think much and went straight to using it.
+
+## Conclusion
