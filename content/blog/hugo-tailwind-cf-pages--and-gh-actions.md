@@ -108,3 +108,7 @@ This is the GitHub CI/CD builtin tool. Besides being a native solution it's a ve
 It has a very good documentation and a very clear structure. Didn't have to think much and went straight to using it.
 
 ## Conclusion
+
+I've finally assembled the tools and managed to get the time to write this very first post in a long time. The chosen tools made the whole process smooth especially due to the content and community around them. The idea is with time to fill this site with interesting posts 😄.
+
+Hope you enjoyed this first one!
