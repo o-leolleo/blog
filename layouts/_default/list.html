@@ -12,7 +12,7 @@
     {{ range .Pages.ByLastmod.Reverse }}
     <li class="pl-0 flex flex-col">
       <h2>{{ .Title }}</h2>
-      <p class="text-sm">:: {{ .Date.Format .Site.Params.DateFormat }} :: {{ partial "minread.html" . }}</p>
+      <p class="text-sm">{{ .Date.Format .Site.Params.DateFormat }} - {{ partial "minread.html" . }}</p>
       <p>{{ .Summary }}</p>
       <div class="not-prose">
         <a class="anchor" href="{{ .Permalink }}">Read more &#x21C0;</a>

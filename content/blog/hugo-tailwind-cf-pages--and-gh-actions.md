@@ -1,5 +1,5 @@
 ---
-title: "[DRAFT] Hugo, Tailwind, Cloudflare Pages and GitHub Actions"
+title: "Hugo, Tailwind, Cloudflare Pages and GitHub Actions"
 date: 2023-03-14T19:14:47Z
 language: en
 ---
@@ -12,9 +12,9 @@ Life and career have changed a lot since my last [footprint](https://medium.com/
 
 ## Hugo
 
-Besides its popularity and speed, Hugo uses Go and its templates. I have working experience with Helm which uses the same stack, thus choosing Hugo would enable me to interchange skills and by using it I would get better at Helm and vice-versa. Also, based on its popularity, finding community content around it would be easy.
+Besides its popularity and speed, Hugo uses Go and its templates. I have working experience with Helm which uses the same stack, thus choosing Hugo would enable me to interchange skills and by using it I would get better at Helm and vice-versa.
 
-Some would list Go templates as driving the decision not to use Hugo, interestingly enough this brought me to it. I have to agree though that at first glance it's not as intuitive as other template engines like [jinja2](https://jinja.palletsprojects.com/en/3.1.x/templates/). The snippet below shows the hugo code for this blog posts [page](/blog).
+Some would list Go templates as driving the decision not to use Hugo, interestingly enough this brought me to it. I have to agree though that at first glance it's not as intuitive as other template engines like [jinja2](https://jinja.palletsprojects.com/en/3.1.x/templates/). Too have a glimpse of how it looks, the snippet below shows the hugo code for this blog post [page](/blog).
 
 ```html
 {{ define "main" }}
@@ -94,13 +94,13 @@ Claims proved to be true and you can check below a snippet showing all custom CS
 
 ## Cloudflare Pages
 
-I needed an easy way of getting most out of static hosting built in. A few options were available like [GitHub pages](https://pages.github.com/), [Netlify](https://www.netlify.com/) and others. Since I host my domain configuration on cloudflare their solution sounded very compelling, things could be kept in one place. Having a [cli](https://developers.cloudflare.com/workers/wrangler/) to automate the workflow on my own also looked interesting since this way I can add whatever custom steps I'd like to, for example:
+I needed an easy way of getting most out of static hosting built in. A few options were available like [GitHub pages](https://pages.github.com/), [Netlify](https://www.netlify.com/) and others. Since I host my domain configuration on cloudflare their solution sounded interesting, things could be kept in one place. Having a [cli](https://developers.cloudflare.com/workers/wrangler/) to automate the workflow on my own also looked good since this way I could add whatever custom steps I'd like to, for example:
 
 - [purging the dns cache after deployments.](https://github.com/o-leolleo/blog/blob/main/.github/workflows/cicd.yml#L85)
 - [having support for feature environments with auto clean-up on pull requests.](https://github.com/o-leolleo/blog/blob/main/.github/workflows/clean-up.yml)
 - any future automated checks.
 
-Wrangler (the cli) also has an official [GitHub action](https://github.com/marketplace/actions/deploy-to-cloudflare-workers-with-wrangler) with good docs which I use for deploying this blog.
+Wrangler (the cli) also has an official [GitHub action](https://github.com/marketplace/actions/deploy-to-cloudflare-workers-with-wrangler) with good docs and which I use for deploying this blog.
 
 ## GitHub Actions
 
@@ -109,6 +109,4 @@ It has a very good documentation and a very clear structure. Didn't have to thin
 
 ## Conclusion
 
-I've finally assembled the tools and managed to get the time to write this very first post in a long time. The chosen tools made the whole process smooth especially due to the content and community around them. The idea is with time to fill this site with interesting posts 😄.
-
-Hope you enjoyed this first one!
+I've finally assembled the tools and managed to get the time to write this very first post in a long time. The chosen tools made the whole process smooth especially due to the content and community around them. With time, I can fill this place of the web with more and more content 😄. Hope you enjoyed this first one!

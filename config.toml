@@ -22,3 +22,7 @@ summaryLength = 40
   title = 'About'
   pageref = '/about'
   weight = -100
+
+[markup]
+  [markup.highlight]
+    style = 'monokai'
