@@ -5,14 +5,14 @@
 </article>
 
 {{ if len .Pages }}
-<article class="prose dark:prose-invert max-w-none mx-auto mt-10 mb-6">
+<article class="prose dark:prose-invert mx-auto mt-10 mb-6">
   <h2 class="text-center">All articles</h2>
 
-  <ul class="list-outside">
+  <ul class="pl-0 list-outside">
     {{ range .Pages.ByLastmod.Reverse }}
-    <li class="flex flex-col">
+    <li class="pl-0 flex flex-col">
       <h2>{{ .Title }}</h2>
-      <p class="text-sm">:: {{ .Date.Format .Site.Params.DateFormat }} :: {{ partial "minread.html" . }}</p>
+      <p class="text-sm">{{ .Date.Format .Site.Params.DateFormat }} - {{ partial "minread.html" . }}</p>
       <p>{{ .Summary }}</p>
       <div class="not-prose">
         <a class="anchor" href="{{ .Permalink }}">Read more &#x21C0;</a>

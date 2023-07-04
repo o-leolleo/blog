@@ -7,7 +7,14 @@
   <p>{{ .Date.Format .Site.Params.DateFormat }} - {{ partial "minread.html" . }}</p>
 </header>
 
-<article class="prose  dark:prose-invert mx-auto">
+<aside class="max-w-prose mb-8 mx-auto">
+  <h6 class="mb-4 text-sm">In this article</h6>
+  <div class="text-sm">
+    {{ .TableOfContents }}
+  </div>
+</aside>
+
+<article class="prose dark:prose-invert mx-auto">
   {{.Content}}
 </article>
 {{ end }}

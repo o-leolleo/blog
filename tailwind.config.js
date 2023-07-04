@@ -6,9 +6,6 @@ module.exports = {
     "./layouts/**/*.html",
     "./assets/js/**/*.js"
   ],
-  theme: {
-    extend: {},
-  },
   plugins: [
     require('@tailwindcss/typography')
   ],

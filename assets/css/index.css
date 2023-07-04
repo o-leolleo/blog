@@ -6,6 +6,10 @@
   .anchor {
     @apply font-medium text-indigo-700 dark:text-indigo-400 hover:underline;
   }
+
+  #TableOfContents a {
+    @apply anchor
+  }
 }
 
 .terminal-cursor {
