@@ -14,7 +14,20 @@
   </div>
 </aside>
 
-<article class="prose dark:prose-invert mx-auto">
+<article class="prose dark:prose-invert mx-auto mb-6">
   {{.Content}}
+
+  <hr>
 </article>
+
+<section class="max-w-prose mx-auto">
+  <script src="https://utteranc.es/client.js"
+          repo="o-leolleo/blog"
+          issue-term="title"
+          label="comments"
+          theme="github-dark"
+          crossorigin="anonymous"
+          async>
+  </script>
+</section>
 {{ end }}
