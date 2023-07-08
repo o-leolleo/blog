@@ -1,4 +1,6 @@
 const darkModeButton = document.getElementById('dark-mode-btn');
+const scrollToTopButton = document.getElementById('scroll-to-top');
+const rootElement = document.documentElement;
 
 function main() {
   darkModeButton.addEventListener('click', toggleDarkMode);
@@ -37,4 +39,24 @@ function setLightTheme() {
   localStorage.theme = 'light';
 }
 
+function scrollToTop() {
+  rootElement.scrollTo({
+    top: 0
+  });
+}
+
+function handleScroll() {
+  const scrollTotal = rootElement.scrollHeight - rootElement.clientHeight;
+
+  if ((rootElement.scrollTop / scrollTotal ) > 0.05 ) {
+    // Show button
+    scrollToTopButton.classList.remove("opacity-0", "translate-y-6");
+  } else {
+    // Hide button
+    scrollToTopButton.classList.add("opacity-0", "translate-y-6");
+  }
+}
+
+scrollToTopButton.addEventListener('click', scrollToTop);
+document.addEventListener('scroll', handleScroll);
 window.addEventListener('DOMContentLoaded', main);
