@@ -18,6 +18,15 @@
     <link rel="stylesheet" href="{{ $styles.RelPermalink }}" integrity="{{ $styles.Data.Integrity }}"/>
   {{ end }}
 
+  <style type="text/css" media="screen">
+    .dark .highlight {
+      {{ partial "css/syntax-dark.css" . | safeCSS }}
+    }
+    .light .highlight {
+      {{ partial "css/syntax-light.css" . | safeCSS }}
+    }
+  </style>
+
   <title>{{ .Page.Title }}</title>
 </head>
 

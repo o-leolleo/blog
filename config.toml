@@ -25,4 +25,4 @@ summaryLength = 40
 
 [markup]
   [markup.highlight]
-    style = 'monokai'
+    noClasses = false
