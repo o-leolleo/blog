@@ -48,7 +48,7 @@ function scrollToTop() {
 function handleScroll() {
   const scrollTotal = rootElement.scrollHeight - rootElement.clientHeight;
 
-  if ((rootElement.scrollTop / scrollTotal ) > 0.05 ) {
+  if ((rootElement.scrollTop / scrollTotal ) > 0.20 ) {
     // Show button
     scrollToTopButton.classList.remove("opacity-0", "translate-y-6");
   } else {
