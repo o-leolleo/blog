@@ -26,12 +26,14 @@ function toggleDarkMode() {
 }
 
 function setDarkTheme() {
+  document.documentElement.classList.remove('light');
   document.documentElement.classList.add('dark');
   localStorage.theme = 'dark';
 }
 
 function setLightTheme() {
   document.documentElement.classList.remove('dark');
+  document.documentElement.classList.add('light');
   localStorage.theme = 'light';
 }
 
