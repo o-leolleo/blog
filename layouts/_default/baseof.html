@@ -21,9 +21,11 @@
   <style type="text/css" media="screen">
     .dark .highlight {
       {{ partial "css/syntax-dark.css" . | safeCSS }}
+      .chroma .err { color: #f92672; background-color: #272822;}
     }
     .light .highlight {
       {{ partial "css/syntax-light.css" . | safeCSS }}
+      .chroma .err { color: #f92672; background-color: #fafafa;}
     }
   </style>
 
