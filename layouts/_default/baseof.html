@@ -40,19 +40,15 @@
     {{ end }}
   </main>
 
-  <footer class="text-center mt-4 pb-16 text-sm">
+  <footer class="text-center mt-4 pb-16 md:pb-4 text-sm">
     Powered by
     <a class="anchor" target="_blank" href="https://gohugo.io/">Hugo</a>
     and
     <a class="anchor" target="_blank" href="https://tailwindcss.com/">TailwindCSS</a>
     <span class="text-xl">&#10084;</span>
-    <button
-      id="scroll-to-top"
-      class="transition-all duration-500 opacity-0 translate-y-6 fixed right-4 bottom-4 w-12 h-12 rounded-full drop-shadow-md bg-indigo-500 text-white text-3xl text-bold"
-      title="Scroll to top"
-    >
-      &#8682;
-    </button>
+
+    {{ block "footer-extras" . }}
+    {{ end }}
   </footer>
 
   {{ $js := resources.Get "js/index.js" | js.Build | resources.Minify | fingerprint }}

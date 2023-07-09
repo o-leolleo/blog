@@ -57,6 +57,9 @@ function handleScroll() {
   }
 }
 
-scrollToTopButton.addEventListener('click', scrollToTop);
+if (scrollToTopButton) {
+  scrollToTopButton.addEventListener('click', scrollToTop);
+}
+
 document.addEventListener('scroll', handleScroll);
 window.addEventListener('DOMContentLoaded', main);
