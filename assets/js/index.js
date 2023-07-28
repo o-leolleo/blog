@@ -5,6 +5,11 @@ const rootElement = document.documentElement;
 function main() {
   darkModeButton.addEventListener('click', toggleDarkMode);
 
+  if (scrollToTopButton) {
+    scrollToTopButton.addEventListener('click', scrollToTop);
+    document.addEventListener('scroll', handleScroll);
+  }
+
   if (isLightTheme()) {
     setLightTheme();
   }
@@ -57,9 +62,4 @@ function handleScroll() {
   }
 }
 
-if (scrollToTopButton) {
-  scrollToTopButton.addEventListener('click', scrollToTop);
-}
-
-document.addEventListener('scroll', handleScroll);
 window.addEventListener('DOMContentLoaded', main);
