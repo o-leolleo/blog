@@ -24,9 +24,10 @@ AWS Nuke can be run on number of ways. One of those is to run it on a CI pipelin
 
 ## Configuring aws-nuke
 
-The following snippet shows my configuration --- Account ID and user name omitted.
+The following snippet shows my configuration (`nuke-config.yml`) --- Account ID and user name omitted.
 
 ```yaml
+# nuke-config.yml
 regions:
 - eu-north-1
 - ap-south-1
@@ -96,5 +97,41 @@ accounts:
 ```
 
 Let's dig a bit into it:
-- First, I declare all the regions I want to wipe out, in my case these are all the AWS `regions` plus global --- for global resources like IAM users.
-- Second, I exclude from the destroy the AWS default security groups --- they're saved from the aws-nuke blast radius.
+- First, I declare all the regions I want to wipe out. In my case these are all the AWS `regions` plus global --- for global resources like IAM users.
+- Second, I exclude from the destroy all AWS default security groups with `resource-types.excludes`.
+- Third, I define all resources I don't want to destroy on my account inside the `accounts` property. Basically these are the bare minimum I need in order to perform anything useful in it like logging in, keep being an admin, my access keys, ec2 ssh keys, etc.
+
+I replace `{{AWS_ACCESS_KEY_ID}}` by the access key used by the CI pipeline to perform the AWS actions --- otherwise I'd be able to run it only once 🤷.
+
+## Running aws-nuke
+
+With the `nuke-config.yml` file in place, I can run the commands explained on the snippet below. Whilst here I pass the access key id and secret explicitly, there are other options explained on the [tool docs](https://github.com/rebuy-de/aws-nuke#aws-credentials).
+
+```bash
+# dry run
+aws-nuke \
+  --access-key-id "<my-access-key-id>" \
+  --secret-access-key "<my-secret-access-key>" \
+  --config nuke-config.yml
+
+# perform the destroy actions, but first ask for confirmation
+aws-nuke \
+  --access-key-id "<my-access-key-id>" \
+  --secret-access-key "<my-secret-access-key>" \
+  --no-dry-run \
+  --config \
+  nuke-config.yml
+
+# perform the destroy actions without first asking for confirmation
+aws-nuke \
+  --access-key-id "<my-access-key-id>" \
+  --secret-access-key "<my-secret-access-key>" \
+  --no-dry-run \
+  --force \
+  --config \
+  nuke-config.yml
+```
+
+The final step is to wrap these things up and make them run on a schedule, in this case a [Gitlab CI schedule pipeline](https://docs.gitlab.com/ee/ci/pipelines/schedules.html).
+
+## The scheduled pipeline
