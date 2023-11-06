@@ -135,3 +135,55 @@ aws-nuke \
 The final step is to wrap these things up and make them run on a schedule, in this case a [Gitlab CI schedule pipeline](https://docs.gitlab.com/ee/ci/pipelines/schedules.html).
 
 ## The scheduled pipeline
+
+First of all we need a `gitlab-ci.yml` file. It's detailed below, with comments to explain what each block does.
+
+```yaml
+# Declares the pipeline stages
+stages:
+  - dry-run
+  - nuke
+
+# Declares the default image used on the pipeline jobs
+# also overrides the image's entrypoint,
+# so as not to conflict with GitLab default behavior
+image:
+  name: quay.io/rebuy/aws-nuke:v2.17.0
+  entrypoint: [""]
+
+# Here we define a job template which will run aws-nuke
+# in either dry-run or real run depending on the NO_DRY_RUN envvar value.
+# Pay attention to the replacement performed at the beginning, it replaces
+# the {{AWS_ACCESS_KEY_ID}} by the value of the access key used by the pipeline
+# to destroy the resources.
+.nuke-run:
+  script:
+    - sed -i "s/{{AWS_ACCESS_KEY_ID}}/${AWS_ACCESS_KEY_ID}/g" nuke-config.yml
+    - |
+      aws-nuke \
+        --force \
+        --access-key-id "${AWS_ACCESS_KEY_ID}" \
+        --secret-access-key "${AWS_SECRET_ACCESS_KEY}" \
+        ${NO_DRY_RUN:+--no-dry-run} \
+        --config nuke-config.yml
+
+# The dry-run job
+# it always run - useful for ensuring MRs and commits are correct -
+# and is always "interruptible" (see https://docs.gitlab.com/ee/ci/yaml/#interruptible)
+dry-run:
+  stage: dry-run
+  extends: .nuke-run
+  interruptible: true
+
+# Runs the aws nuke command
+# Only runs on schedules that run against the default branch
+nuke:
+  stage: nuke
+  extends: .nuke-run
+  variables:
+    NO_DRY_RUN: "yes"
+  rules:
+    - if: >
+        $CI_PIPELINE_SOURCE == 'schedule'
+        && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+```
