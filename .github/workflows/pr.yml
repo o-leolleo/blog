@@ -1,5 +1,5 @@
 name: PR
-run-name: PR -> ${{ github.event.pull_request.title }}
+run-name: PR -> ${{ github.event.head_commit.message }}
 
 on:
   pull_request:
