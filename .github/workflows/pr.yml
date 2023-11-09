@@ -46,7 +46,7 @@ jobs:
       cancel-in-progress: true
     environment:
       name: pr-${{ github.event.number }}
-      url: pr-${{ github.event.number }}.garden-cbf.pages.dev
+      url: https://pr-${{ github.event.number }}.garden-cbf.pages.dev
     runs-on: ubuntu-latest
     needs:
       - build
