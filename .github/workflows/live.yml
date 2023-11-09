@@ -1,5 +1,6 @@
 name: Live
-run-name: Live -> ${{ github.event.head_commit.message }}
+run-name: "Live: ${{ github.event.head_commit.message }}"
+
 on:
   push:
     branches:
