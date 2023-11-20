@@ -187,3 +187,17 @@ nuke:
         $CI_PIPELINE_SOURCE == 'schedule'
         && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
+
+With the pipeline in place the last bit needed is to add the schedule. This can be done from the GitLab Project's UI on Build -> Pipeline schedules -> New schedule. You should end up with something like on the image below.
+
+[![AWS Nuke schedule pipeline](/images/aws-nuke-gl-schedule.png)](/images/aws-nuke-gl-schedule.png)
+
+Pressing the play button will trigger the pipeline just like the schedule will, so you can test everything is working properly.
+
+## Conclusion
+
+That's all, now your account will be wiped out as specified on the `nuke-config.yml` file and based on the schedule you configure. Again, keep in mind that **this is a very dangerous solution so I can't emphasize enough how much careful you should be when setting it up, pay extra attention and care to confirm you know what you're doing**. The result is that now you have an account where you can do pretty much any labs and tests without the fear of a big AWS bill.
+
+💡 Be aware that there might be resources not deleted by aws-nuke as shown on their [issues](https://github.com/rebuy-de/aws-nuke/issues).
+
+Hope you enjoyed the reading 😁.
