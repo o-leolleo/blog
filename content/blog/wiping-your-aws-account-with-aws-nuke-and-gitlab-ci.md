@@ -1,7 +1,7 @@
 ---
 title: "Wiping your AWS account with AWS Nuke and Gitlab CI"
 date: 2023-07-10T21:54:55+01:00
-draft: true
+draft: false
 language: en
 ---
 
