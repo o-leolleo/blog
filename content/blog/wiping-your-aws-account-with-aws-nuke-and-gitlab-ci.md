@@ -188,7 +188,7 @@ nuke:
         && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
-With the pipeline in place the last bit needed is to add the schedule itself. This can be done from the GitLab Project's UI on Build -> Pipeline schedules -> New schedule. You should end up with something like on the image below (I normally use https://crontab.guru/ to validate my crons).
+With the pipeline in place the last bit needed is to add the schedule itself. This can be done from the GitLab Project's UI on Build -> Pipeline schedules -> New schedule. The schedule accepts crontab notation, which you can validate on https://crontab.guru/. Once finished you should end up with something like on the image below.
 
 [![AWS Nuke schedule pipeline](/images/aws-nuke-gl-schedule.png)](/images/aws-nuke-gl-schedule.png)
 
