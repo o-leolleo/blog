@@ -12,19 +12,19 @@ Wiping, cleaning up your AWS account, sounds a very dangerous, destructive actio
 ## Why?
 
 Well, there are some valid use cases for such tooling. **Hopefully none of these on live, production, user facing environments**. For example:
-- You have a personal, development, cloud account and you don't want to get an expensive cloud bill from AWS when you just want to test things out
+- You have a personal, development or cloud account, and you don't want to get an expensive cloud bill from AWS when you just want to test things out
 - You run tests for IaC which requires you to create resources and destroy them, often times leaving dangling resources behind
 - You have a team where each member has its own AWS account where they can do --- virtually --- anything, but like on the first use case, you don't want an expensive bill when people are just developing and testing things out!
 
-In such scenarios those accounts only host resources which are not intended to be used by the public. Whether this public are application users, developers, or anyone aside the person who create those resources and potentially her/his peers to whom she/he is showcasing things to. Also these very resources are better off being temporary, as they have a very short life-span: you create resources, confirm they work as you expect, then destroy them --- but often times you forget it.
+In such scenarios those accounts only host resources which are not intended to be used by the public. Whether this public is application users, developers or anyone aside the person who create those resources and potentially her/his peers to whom she/he is showcasing things to. Also, these very resources are better off being temporary, as they have a very short life-span: you create resources, confirm they work as you expect, then destroy them --- but often times you forget it.
 
-These use-cases are addressed by [aws-nuke](https://github.com/rebuy-de/aws-nuke). It destroys all your AWS resources on the specified accounts. _I discovered it when looking for something similar after forgetting an EKS cluster running for a week on my personal AWS account_ 😅, which didn't cost me more than $50.00 as far as I remember but it's useful to save money when possible and to avoid unnecessary costs, specially when next time I might not be so lucky.
+These use-cases are addressed by [aws-nuke](https://github.com/rebuy-de/aws-nuke). It destroys all your AWS resources on the specified accounts. _I discovered it when looking for something similar after forgetting an EKS cluster running for a week on my personal AWS account_ 😅, which didn't cost me more than $50.00 as far as I remember, but it's useful to save money when possible and to avoid unnecessary costs, specially when next time I might not be so lucky.
 
 AWS Nuke can be run on number of ways. One of those is to run it on a CI pipeline. This is the approach I choose and discuss on the next sections. I implemented it using GitLab CI for daily destroying all of my personal AWS account resources.
 
 ## Configuring aws-nuke
 
-The following snippet shows my configuration (`nuke-config.yml`) --- Account ID and user name omitted.
+The following snippet shows my configuration (`nuke-config.yml`) --- Account ID and username omitted.
 
 ```yaml
 # nuke-config.yml
@@ -105,7 +105,7 @@ I replace `{{AWS_ACCESS_KEY_ID}}` by the access key used by the CI pipeline to p
 
 ## Running aws-nuke
 
-With the `nuke-config.yml` file in place, I can run the commands explained on the snippet below. Whilst here I pass the access key id and secret explicitly, there are other options explained on the [tool docs](https://github.com/rebuy-de/aws-nuke#aws-credentials).
+With the `nuke-config.yml` file in place, I can run the commands explained on the snippet below. Whilst here I pass the access key ID and secret explicitly, there are other options explained on the [tool docs](https://github.com/rebuy-de/aws-nuke#aws-credentials).
 
 ```bash
 # dry run
@@ -136,7 +136,7 @@ The final step is to wrap these things up and make them run on a schedule, in th
 
 ## The scheduled pipeline
 
-First of all we need a `gitlab-ci.yml` file. It's detailed below, with comments to explain what each block does.
+First we need a `gitlab-ci.yml` file. It's detailed below, with comments to explain what each block does.
 
 ```yaml
 # Declares the pipeline stages
@@ -168,7 +168,7 @@ image:
         --config nuke-config.yml
 
 # The dry-run job
-# it always run - useful for ensuring MRs and commits are correct -
+# it always runs - useful for ensuring MRs and commits are correct -
 # and is always "interruptible" (see https://docs.gitlab.com/ee/ci/yaml/#interruptible)
 dry-run:
   stage: dry-run
@@ -196,7 +196,7 @@ Pressing the play button will trigger the pipeline just like the schedule will, 
 
 ## Conclusion
 
-That's all, now your account will be wiped out as specified on the `nuke-config.yml` file and based on the schedule you configure. Again, keep in mind that **this is a very dangerous solution so I can't emphasize enough how much careful you should be when setting it up, pay extra attention and care to confirm you know what you're doing**. The result is that now you have an account where you can do pretty much any labs and tests without the fear of a big AWS bill.
+That's all, now your account will be wiped out as specified on the `nuke-config.yml` file and based on the schedule you configure. Again, keep in mind that **this is a very dangerous solution, so I can't emphasize enough how much careful you should be when setting it up, pay extra attention and care to confirm you know what you're doing**. The result is that now you have an account where you can do pretty much any labs and tests without the fear of a big AWS bill.
 
 💡 Be aware that there might be resources not deleted by aws-nuke as shown on their [issues](https://github.com/rebuy-de/aws-nuke/issues).
 
