@@ -1,35 +1,12 @@
-name: cicd
+name: Live
+run-name: "Live: ${{ github.event.head_commit.message }}"
 
 on:
   push:
-  workflow_dispatch:
-
-defaults:
-  run:
-    shell: bash
-
-env:
-  LIVE_ENV_NAME: leolleo.dev
-  LIVE_ENV_URL: https://leolleo.dev
-  PREVIEW_ENV_DOMAIN: garden-cbf.pages.dev
+    branches:
+      - main
 
 jobs:
-  infos:
-    runs-on: ubuntu-latest
-    outputs:
-      ref_name_slug: ${{ steps.infos.outputs.ref_name_slug }}
-      env_name: ${{ steps.infos.outputs.env_name }}
-      url: ${{ steps.infos.outputs.url }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          submodules: recursive
-
-      - id: infos
-        run: ./gen_infos.sh
-        working-directory: .github/scripts
-
   build:
     runs-on: ubuntu-latest
     env:
@@ -60,14 +37,13 @@ jobs:
 
   deploy:
     concurrency:
-      group: "${{ needs.infos.outputs.ref_name_slug }}"
+      group: live
       cancel-in-progress: true
     environment:
-      name: ${{ needs.infos.outputs.env_name }}
-      url: ${{ needs.infos.outputs.url }}
+      name: live
+      url: https://leolleo.dev
     runs-on: ubuntu-latest
     needs:
-      - infos
       - build
     steps:
       - name: Downloads artifact
@@ -80,10 +56,9 @@ jobs:
         uses: cloudflare/wrangler-action@2.0.0
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          command: pages publish --branch ${{ needs.infos.outputs.ref_name_slug }} --project-name blog ./public
+          command: pages publish --branch main --project-name blog ./public
 
       - name: Purge cloudflare cache
-        if: github.ref == 'refs/heads/main'
         run: |
           curl -X POST "https://api.cloudflare.com/client/v4/zones/a5f4d54fc54af37e05218d9b4e8cd4d9/purge_cache" \
           -H "Authorization: Bearer ${{ secrets.CF_API_TOKEN }}" \
