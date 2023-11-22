@@ -18,9 +18,9 @@ Well, there are some valid use cases for such tooling. **Hopefully none of these
 
 In such scenarios those accounts only host resources which are not intended to be used by the public. Whether this public is application users, developers or anyone besides the person who created those resources and potentially her/his peers to whom she/he is showcasing things to. Also, these very resources are better off being temporary, as they have a very short life-span: you create resources, confirm they work as you expect, then destroy them --- which you often/sometimes forget.
 
-These use-cases are addressed by [aws-nuke](https://github.com/rebuy-de/aws-nuke). It destroys all your AWS resources on the specified accounts 💣. _I discovered it when looking for something similar after forgetting an EKS cluster running for a week on my personal AWS account_ 😅, this didn't cost me more than $50.00 as far as I remember, but it's useful to save money when possible and to avoid unnecessary costs, specially when next time I might not be so lucky.
+These use-cases are addressed by [aws-nuke](https://github.com/rebuy-de/aws-nuke). It destroys all your AWS resources on the specified accounts 💣. _I discovered it when looking for something similar after forgetting a EKS cluster running for a week on my personal AWS account_ 😅, this didn't cost me more than $50.00 as far as I remember, but it's useful to save money when possible and to avoid unnecessary costs, specially when next time I might not be so lucky.
 
-AWS Nuke can be run on a number of ways. For having a better control an manageability of it I prefer to run it on a CI pipeline. The following sections dig a bit deeper on this approach, where I show how I implemented it using GitLab CI for daily destroying all of my personal AWS account resources - but keeping some necessary ones.
+AWS Nuke can be run on a number of ways. For having a better control and manageability of it I prefer to run it on a CI pipeline. The following sections dig a bit deeper on this approach, where I show how I implemented it using GitLab CI for daily destroying all of my personal AWS account resources - but keeping some necessary ones.
 
 ## Configuring aws-nuke
 
