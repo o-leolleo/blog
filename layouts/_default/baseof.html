@@ -32,7 +32,7 @@
   <title>{{ .Page.Title }}</title>
 </head>
 
-{{ if .Site.Params.GoogleAnalyticsTag }}
+{{ if and (not .Site.IsServer) .Site.Params.GoogleAnalyticsTag }}
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id={{ .Site.Params.GoogleAnalyticsTag }}"></script>
 <script>
