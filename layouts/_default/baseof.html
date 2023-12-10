@@ -32,6 +32,18 @@
   <title>{{ .Page.Title }}</title>
 </head>
 
+{{ if .Site.Params.GoogleAnalyticsTag }}
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ .Site.Params.GoogleAnalyticsTag }}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '{{ .Site.Params.GoogleAnalyticsTag }}');
+</script>
+{{ end }}
+
 <body class="font-mono dark:bg-stone-900 dark:text-white h-screen container mx-auto px-10 max-w-screen-lg flex flex-col">
   {{ partial "nav.html" . }}
 

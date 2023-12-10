@@ -31,7 +31,7 @@ jobs:
           submodules: recursive
 
       - run: npm ci
-      - run: hugo
+      - run: hugo --config config.pr.toml
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
