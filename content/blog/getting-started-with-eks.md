@@ -5,7 +5,12 @@ draft: true
 language: en
 ---
 
-I’ve decided to experiment with different EKS scenarios and configurations. It turns out terraform and the aws eks module made for it are really useful for this purpose. Here I discuss how this can be done and steps to do after it. Also as I didn’t want to spend much when only performing tests, so here I relied on my aws-nuke setup and on terraform destroy to cleanup anything I’ve created.
+I’ve decided to experiment with different EKS scenarios and configurations. But also thought that giving an introductory blog post on how to bootrstrap your own EKS cluster might help someone out there trying to do the same thing.
+
+For that I'm using [Terraform](https://www.terraform.io/) and the [AWS EKS Terraform module](https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest). The first is a very well known solution for maintaining infrastructure as code (IaC). The later is the best community maintained module - that I know of - for it and which covers most (if not all) the different EKS use cases.
+
+I have to mention that this setup costs money, so if you're following it up, **I highly recommend that you destroy your terraform resources once finished, so you're not caught out of surprise with a considerable AWS bill**. I've even gone as far as [detroying my personal AWS account resources on a schedule](http://localhost:1313/blog/wiping-your-aws-account-with-aws-nuke-and-gitlab-ci/) - be careful if doing something similar.
+
 
 ## The variables
 
