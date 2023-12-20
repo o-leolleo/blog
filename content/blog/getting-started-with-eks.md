@@ -14,14 +14,41 @@ I have to mention that this setup costs money, so if you're following it up, **I
 
 ## The variables
 
+The setup relies on a YAML file for configuring what would be otherwise done via variables and a tfvars file. I've been convinced of the benefits of this approach by a [very nice blog post](https://xebia.com/blog/terraform-with-yaml-part-1/). To summarize, it allows greater flexibility on managing the inputs of your terraform workspace.
+
+Our inputs are shown on the snippet below.
+
 ```yaml
-region: eu-central-1
+# config.yaml
+region: eu-central-1 # Frankfurt
 cluster_name: eks-labs
 vpc:
-  cidr: "10.0.0.0/16"
-  azs: ["eu-central-1a", "eu-central-1b", "eu-central-1c"]
-  private_subnets: ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets: ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+  # Private IP range (see https://en.wikipedia.org/wiki/Private_network)
+  cidr: 10.0.0.0/16
+  # We'll create one private and public subnet per availability zone
+  azs: 
+    - eu-central-1a
+    - eu-central-1b
+    - eu-central-1c
+  # Each private subnet's IP range
+  private_subnets: 
+    - 10.0.1.0/24
+    - 10.0.2.0/24
+    - 10.0.3.0/24
+  # Each public subnet's IP range
+  public_subnets: 
+    - 10.0.101.0/24
+    - 10.0.102.0/24
+    - 10.0.103.0/24
+```
+
+And we later refer to the values on this file through
+
+```terraform
+# variables.tf
+locals {
+  config = yamldecode(file("config.yaml"))
+}
 ```
 
 ## The code
