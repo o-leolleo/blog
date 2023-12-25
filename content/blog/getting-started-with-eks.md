@@ -53,10 +53,11 @@ locals {
 
 ## The code
 
-Below is the code for setting everything up, it creates the VPC and the EKS cluster. Most of the configs are default ones
+With our configs in place we can start the code to create the cluster itself. 
+
+First, we declare our required providers and the provider block, shown on the snippet below. We're using the official AWS provider with a version between  `>=5.29` and `<6`, and we inform to the provider that our resources will be created in whatever `region` is specified on our `config.yaml`. On top of that, all resources we create are tagged accordingly to the workspace we use on our runs.
 
 ```terraform
-# terraform related setup
 terraform {
   required_providers {
     aws = {
@@ -67,7 +68,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "eu-central-1"
+  region = local.config.region
 
   default_tags {
     tags = {
@@ -75,8 +76,11 @@ provider "aws" {
     }
   }
 }
+```
 
-# Creates the VPC
+Second, we define the VPC (Virtual Private Network) onto which our resources will be created. We use a well known community module for this, you can read more about it [here](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest). 
+
+```terraform
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
@@ -93,62 +97,19 @@ module "vpc" {
   enable_dns_hostnames = true
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.config.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                             = 1
+    "kubernetes.io/role/elb" = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.config.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"                    = 1
+    "kubernetes.io/role/internal-elb" = 1
   }
-}
-
-# Creates the cluster
-module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.20"
-
-  cluster_name    = local.config.cluster_name
-  cluster_version = "1.27"
-
-  cluster_addons = {
-    coredns = {
-      most_recent = true
-    }
-    kube-proxy = {
-      most_recent = true
-    }
-    vpc-cni = {
-      most_recent = true
-    }
-  }
-
-  vpc_id                         = module.vpc.vpc_id
-  subnet_ids                     = module.vpc.private_subnets
-  cluster_endpoint_public_access = true
-
-  eks_managed_node_group_defaults = {
-    ami_type = "AL2_x86_64"
-  }
-
-  eks_managed_node_groups = {
-    main = {
-      min_size     = 1
-      max_size     = 3
-      desired_size = 1
-
-      instance_types = ["t3.small"]
-
-      capacity_type = "SPOT"
-    }
-  }
-}
-
-# Reads variables from yaml file
-locals {
-  config = yamldecode(file("config.yaml"))
 }
 ```
+
+The network is named after our cluster, its CIDR and most of its settings are passed from the `config.yaml` file, discussed earlier.
+We allow DNS name resolution on the VPC and reuse the same NAT gateway on all its subnets (TODO, put reference).
+
+The `kubernetes.io/role/elb` and `kubernetes.io/role/internal-elb` tags allows these subnets to be auto discovered by the [AWS Load Balancer Controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.1/deploy/subnet_discovery/), which we'll discuss in a later post about ingress controllers.
 
 ## Accessing the cluster
 
