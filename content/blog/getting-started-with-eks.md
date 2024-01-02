@@ -107,9 +107,70 @@ module "vpc" {
 ```
 
 The network is named after our cluster, its CIDR and most of its settings are passed from the `config.yaml` file, discussed earlier.
-We allow DNS name resolution on the VPC and reuse the same NAT gateway on all its subnets (TODO, put reference).
+We allow DNS name resolution on the VPC and [reuse the same NAT gateway on all its subnets](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest#single-nat-gateway).
 
 The `kubernetes.io/role/elb` and `kubernetes.io/role/internal-elb` tags allows these subnets to be auto discovered by the [AWS Load Balancer Controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.1/deploy/subnet_discovery/), which we'll discuss in a later post about ingress controllers.
+
+With the VPC in place we proceed to instantiate the module responsible to create the cluster and supporting resources, shown below.
+
+```terraform
+module "eks" {
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 19.20"
+
+  cluster_name    = local.config.cluster_name
+  cluster_version = "1.27"
+
+  cluster_addons = {
+    coredns = {
+      most_recent = true
+    }
+    kube-proxy = {
+      most_recent = true
+    }
+    vpc-cni = {
+      most_recent = true
+    }
+  }
+
+  vpc_id                         = module.vpc.vpc_id
+  subnet_ids                     = module.vpc.private_subnets
+  cluster_endpoint_public_access = true
+
+  eks_managed_node_group_defaults = {
+    ami_type = "AL2_x86_64"
+  }
+
+  eks_managed_node_groups = {
+    main = {
+      min_size     = 1
+      max_size     = 3
+      desired_size = 1
+
+      instance_types = ["t3.small"]
+
+      capacity_type = "SPOT"
+    }
+  }
+}
+```
+
+Next, We define cluster name from the `config.yaml` file, and the k8s version as 1.27. We install most of the EKS available addons. Explaning each of them would provide content for an entire blog post, we'll briefly go through them on the next section.
+
+We then pass the VPC ID of the VPC we created earlier, and its private subnets IDs. This can't be changed after cluster creation. Also, since I want to access our cluster API from the internet, I set `cluster_endpoint_public_access` to `true`, I use security groups to restrict the access so it's not exposed to the great public, just me - or more precisely my home network.
+
+Then comes the worker nodes themselves. Here we'll only use EKS managed node groups for simplicity.
+
+## EKS Cluster Addons
+
+Starting with CoreDNS, the [k8s official docs](https://kubernetes.io/docs/tasks/administer-cluster/coredns/#about-coredns) tell us that
+
+> CoreDNS is a flexible, extensible DNS server that can serve as the Kubernetes cluster DNS. Like Kubernetes, the CoreDNS project is hosted by the CNCF.
+> You can use CoreDNS instead of kube-dns in your cluster by replacing kube-dns in an existing deployment, or by using tools like kubeadm that will deploy and upgrade the cluster for you.
+
+EKS does the work of installing and managing CoreDNS for us, but we need to explicitly install it in order to use it as our cluster DNS.
+
+
 
 ## Accessing the cluster
 
