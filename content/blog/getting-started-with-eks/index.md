@@ -157,9 +157,21 @@ module "eks" {
 
 Next, We define cluster name from the `config.yaml` file, and the k8s version as 1.27. We install most of the EKS available addons. Explaning each of them would provide content for an entire blog post, we'll briefly go through them on the next section.
 
-We then pass the VPC ID of the VPC we created earlier, and its private subnets IDs. This can't be changed after cluster creation. Also, since I want to access our cluster API from the internet, I set `cluster_endpoint_public_access` to `true`, I use security groups to restrict the access so it's not exposed to the great public, just me - or more precisely my home network.
+We then pass the VPC ID of the VPC we created earlier, and its private subnets IDs. This can't be changed after cluster creation. Also, since I want to access the cluster API from the internet, I set `cluster_endpoint_public_access` to `true`. I use security groups to restrict the access so it's not exposed to the great public, just me - or more precisely my home network.
 
-Then comes the worker nodes themselves. Here we'll only use EKS managed node groups for simplicity.
+Then comes the worker nodes themselves. Here we'll only use EKS managed node groups for simplicity. We rely on AWS Linux `t3.small` SPOT instances, with a minimum of one and a maximum of three nodes. This will give us room to tests things out without spending too much money.
+
+With all this in place, we're ready to create our cluster.
+
+## Terraform plan and apply
+
+My terraform plan output is (partially) shown below. The warning is a [known issue within the module](https://github.com/terraform-aws-modules/terraform-aws-eks/issues/2635), due to some updates introduced by the AWS provider in its version v5.0.1
+
+[![Terraform plan output](terraform-eks-plan.png)](terraform-eks-plan.png)
+
+After reviewing it and making sure everything is as expected, we can apply it.
+
+
 
 ## EKS Cluster Addons
 
