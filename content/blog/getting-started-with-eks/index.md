@@ -155,7 +155,7 @@ module "eks" {
 }
 ```
 
-Next, We define cluster name from the `config.yaml` file, and the k8s version as 1.27. We install most of the EKS available addons. Explaning each of them would provide content for an entire blog post, we'll briefly go through them on the next section.
+Next, We define cluster name from the `config.yaml` file, and the k8s version as 1.27. We install most of the EKS available addons. Explaning each of them would provide content for an entire blog post, we'll briefly go through them on the [EKS Cluster Addons](#eks-cluster-addons) section - it's optional, feel free to skip it.
 
 We then pass the VPC ID of the VPC we created earlier, and its private subnets IDs. This can't be changed after cluster creation. Also, since I want to access the cluster API from the internet, I set `cluster_endpoint_public_access` to `true`. I use security groups to restrict the access so it's not exposed to the great public, just me - or more precisely my home network.
 
@@ -167,11 +167,18 @@ With all this in place, we're ready to create our cluster.
 
 My terraform plan output is (partially) shown below. The warning is a [known issue within the module](https://github.com/terraform-aws-modules/terraform-aws-eks/issues/2635), due to some updates introduced by the AWS provider in its version v5.0.1
 
-[![Terraform plan output](terraform-eks-plan.png)](terraform-eks-plan.png)
+[![Terraform plan output](terraform-plan.png)](terraform-plan.png)
 
-After reviewing it and making sure everything is as expected, we can apply it.
+After reviewing it and making sure everything is as expected, we can apply it (partial output below). Creating all the resources takes around 15min. Once finished you can jump to the [next section](#accessing-the-cluster).
+
+[![Terraform apply output](terraform-apply.png)](terraform-apply.png)
 
 
+## Accessing the cluster
+
+```shell-session
+$ aws eks update-kubeconfig --name eks-labs --alias eks-labs
+```
 
 ## EKS Cluster Addons
 
@@ -181,11 +188,3 @@ Starting with CoreDNS, the [k8s official docs](https://kubernetes.io/docs/tasks/
 > You can use CoreDNS instead of kube-dns in your cluster by replacing kube-dns in an existing deployment, or by using tools like kubeadm that will deploy and upgrade the cluster for you.
 
 EKS does the work of installing and managing CoreDNS for us, but we need to explicitly install it in order to use it as our cluster DNS.
-
-
-
-## Accessing the cluster
-
-```shell-session
-$ aws eks update-kubeconfig --name eks-labs --alias eks-labs
-```
