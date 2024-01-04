@@ -176,9 +176,34 @@ After reviewing it and making sure everything is as expected, we can apply it (p
 
 ## Accessing the cluster
 
+We can use the same credentials we used to authenticate terraform for creating the cluster to authenticate ourselves to the cluster. We do this by running the command below.
+you might need to specify the region either via `--region` or the `AWS_DEFAULT_REGION` environment variable.
+
 ```shell-session
 $ aws eks update-kubeconfig --name eks-labs --alias eks-labs
 ```
+
+This command will update our `~/.kube/config` file with the cluster information, and create a new context named `eks-labs` (the alias we gave to our cluster). We can then use this context to interact with the cluster.
+We can now test our access to the cluster by running kubectl commands like `kubectl get nodes` or `kubectl get pods -A`. Their outputs should look something like the output below.
+
+```shell-session
+$ kubectl get nodes
+NAME                                           STATUS   ROLES    AGE   VERSION
+ip-10-0-1-100.eu-central-1.compute.internal    Ready    <none>   10m   v1.21.2-eks-55daa9d
+ip-10-0-2-100.eu-central-1.compute.internal    Ready    <none>   10m   v1.21.2-eks-55daa9d
+$ kubectl get pods -A
+NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE
+kube-system   aws-node-2q8qk             1/1     Running   0          10m
+kube-system   aws-node-4q2q4             1/1     Running   0          10m
+...
+```
+
+## Cleaning up
+
+Once finished with our experiments, and to avoid a surprise billing from AWS, we can destroy our cluster and the associated resources by running `terraform destroy`. 
+
+[![Terraform destroy output](terraform-destroy.png)](terraform-destroy.png)
+
 
 ## EKS Cluster Addons
 
