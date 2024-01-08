@@ -9,14 +9,14 @@ I’ve decided to experiment with different EKS scenarios and configurations. Bu
 
 For that I'm using [Terraform](https://www.terraform.io/) and the [AWS EKS Terraform module](https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest). The first is a very well known solution for maintaining infrastructure as code (IaC). The later is the best community maintained module - that I know of - for it and which covers most (if not all) the different EKS use cases.
 
-I have to mention that this setup costs money, so if you're following it up, **I highly recommend that you destroy your terraform resources once finished, so you're not caught out of surprise with a considerable AWS bill**. I've even gone as far as [detroying my personal AWS account resources on a schedule](/blog/wiping-your-aws-account-with-aws-nuke-and-gitlab-ci/) - be careful if doing something similar.
+The resources created here costs money, so if you're following it up, **I highly recommend that you destroy your terraform resources once finished, so you're not caught out of surprise with a considerable AWS bill**. I've even gone as far as [detroying my personal AWS account resources on a schedule](/blog/wiping-your-aws-account-with-aws-nuke-and-gitlab-ci/) - be careful if doing something similar.
 
 
 ## The variables
 
-The setup relies on a YAML file for configuring what would be otherwise done via variables and a tfvars file. I've been convinced of the benefits of this approach by a [very nice blog post](https://xebia.com/blog/terraform-with-yaml-part-1/). To summarize, it allows greater flexibility on managing the inputs of your terraform workspace.
+The setup relies on a YAML file for configuring what would be otherwise done via variables and/or a tfvars file. I've been convinced of the benefits of this approach by the post [Terraform with YAML: Part 1](https://xebia.com/blog/terraform-with-yaml-part-1/) from Chris ter Beke. It's simple, effective, and use terraform built-in constructs. It allows greater flexibility on managing the inputs of your terraform workspace.
 
-Our inputs are shown on the snippet below.
+In our case, these inputs are shown on the snippet below, where we define the AWS region where we want to create our cluster and its reosurces, the cluster name, availability zones and VPC related parameters.
 
 ```yaml
 # config.yaml
@@ -42,7 +42,7 @@ vpc:
     - 10.0.103.0/24
 ```
 
-And we later refer to the values on this file through
+We can later read those config values through the code below, and access them like `local.config.region` or `local.config.vpc.cidr` on our terraform code. 
 
 ```terraform
 # variables.tf
@@ -55,7 +55,7 @@ locals {
 
 With our configs in place we can start the code to create the cluster itself. 
 
-First, we declare our required providers and the provider block, shown on the snippet below. We're using the official AWS provider with a version between  `>=5.29` and `<6`, and we inform to the provider that our resources will be created in whatever `region` is specified on our `config.yaml`. On top of that, all resources we create are tagged accordingly to the workspace we use on our runs.
+First, we declare our required providers and the `provider` block, shown on the snippet below. We're using the official AWS provider with a version between `>=5.29` and `<6` (See [Version Constraint Syntax](https://developer.hashicorp.com/terraform/language/expressions/version-constraints#version-constraint-syntax)). The resources are created on the `local.config.region` region as discussed on the [previous section](#the-variables). On top of that, all resources we create are tagged accordingly to the workspace we use on our runs, for easier identification and cross reference.
 
 ```terraform
 terraform {
@@ -78,7 +78,7 @@ provider "aws" {
 }
 ```
 
-Second, we define the VPC (Virtual Private Network) onto which our resources will be created. We use a well known community module for this, you can read more about it [here](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest). 
+We then define the [VPC (Virtual Private Network)](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html) onto which our resources will be created. Here we use the well known [terraform-aws-vpc](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest) community module. 
 
 ```terraform
 module "vpc" {
@@ -95,6 +95,7 @@ module "vpc" {
 
   single_nat_gateway   = true
   enable_dns_hostnames = true
+  enable_dns_support   = true
 
   public_subnet_tags = {
     "kubernetes.io/role/elb" = 1
@@ -106,12 +107,12 @@ module "vpc" {
 }
 ```
 
-The network is named after our cluster, its CIDR and most of its settings are passed from the `config.yaml` file, discussed earlier.
-We allow DNS name resolution on the VPC and [reuse the same NAT gateway on all its subnets](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest#single-nat-gateway).
+The network is named after our cluster, its CIDR and most of its settings are passed from the `config.yaml` file, [discussed earlier](#the-variables).
+We allow [DNS hostnames and support](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns.html#vpc-dns-support) on the VPC and [reuse the same NAT gateway on all its subnets](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest#single-nat-gateway). The first has little impact to what we discuss on this post, the later helps us reduce the cost of the overall setup.
 
-The `kubernetes.io/role/elb` and `kubernetes.io/role/internal-elb` tags allows these subnets to be auto discovered by the [AWS Load Balancer Controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.1/deploy/subnet_discovery/), which we'll discuss in a later post about ingress controllers.
+The `kubernetes.io/role/elb` and `kubernetes.io/role/internal-elb` tags allows these subnets to be auto discovered by the [AWS Load Balancer Controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.1/deploy/subnet_discovery/), which we'll discuss in a later post.
 
-With the VPC in place we proceed to instantiate the module responsible to create the cluster and supporting resources, shown below.
+With the VPC in place we proceed declare the cluster and its supporting resources, shown on the code below.
 
 ```terraform
 module "eks" {
@@ -155,9 +156,10 @@ module "eks" {
 }
 ```
 
-Next, We define cluster name from the `config.yaml` file, and the k8s version as 1.27. We install most of the EKS available addons. Explaning each of them would provide content for an entire blog post, we'll briefly go through them on the [EKS Cluster Addons](#eks-cluster-addons) section - it's optional, feel free to skip it.
+The cluster name is defined as specifyed on the `config.yaml` file, and the k8s version as 1.27. We also install some EKS available addons. Explaning each of them is out of the scope of this post, it's enough to say for our purposes that we need them for our cluster to correctly function - you can read more about them on [Amazon EKS add-ons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html)
+.
 
-We then pass the VPC ID of the VPC we created earlier, and its private subnets IDs. This can't be changed after cluster creation. Also, since I want to access the cluster API from the internet, I set `cluster_endpoint_public_access` to `true`. I use security groups to restrict the access so it's not exposed to the great public, just me - or more precisely my home network.
+We then pass the VPC ID of the VPC we created earlier, and its private subnets IDs. This can't be changed after cluster creation. Also, since I want to access the cluster API from the internet, I set `cluster_endpoint_public_access` to `true`. I use a security group to restrict its access so it's not exposed to the great public, just me - or more precisely my home network.
 
 Then comes the worker nodes themselves. Here we'll only use EKS managed node groups for simplicity. We rely on AWS Linux `t3.small` SPOT instances, with a minimum of one and a maximum of three nodes. This will give us room to tests things out without spending too much money.
 
@@ -203,13 +205,3 @@ kube-system   aws-node-4q2q4             1/1     Running   0          10m
 Once finished with our experiments, and to avoid a surprise billing from AWS, we can destroy our cluster and the associated resources by running `terraform destroy`. 
 
 [![Terraform destroy output](terraform-destroy.png)](terraform-destroy.png)
-
-
-## EKS Cluster Addons
-
-Starting with CoreDNS, the [k8s official docs](https://kubernetes.io/docs/tasks/administer-cluster/coredns/#about-coredns) tell us that
-
-> CoreDNS is a flexible, extensible DNS server that can serve as the Kubernetes cluster DNS. Like Kubernetes, the CoreDNS project is hosted by the CNCF.
-> You can use CoreDNS instead of kube-dns in your cluster by replacing kube-dns in an existing deployment, or by using tools like kubeadm that will deploy and upgrade the cluster for you.
-
-EKS does the work of installing and managing CoreDNS for us, but we need to explicitly install it in order to use it as our cluster DNS.
