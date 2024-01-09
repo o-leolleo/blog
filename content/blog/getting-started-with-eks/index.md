@@ -197,7 +197,7 @@ Server Version: v1.27.8-eks-8cb36c9
 WARNING: version difference between client (1.29) and server (1.27) exceeds the supported minor version skew of +/-1
 ```
 
-We can now also run a couple more commands just in casse, like `kubectl get nodes` and `kubectl get pods --all-namespaces` which will list, respectively, the nodes and pods of our cluster. My output is shown below.
+We can now also run a couple more commands just in case, like `kubectl get nodes` and `kubectl get pods --all-namespaces` which will list, respectively, the nodes and pods of our cluster. My output is shown below.
 
 ```shell-session
 $ kubectl get nodes
