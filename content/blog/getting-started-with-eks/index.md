@@ -112,7 +112,7 @@ We allow [DNS hostnames and support](https://docs.aws.amazon.com/vpc/latest/user
 
 The `kubernetes.io/role/elb` and `kubernetes.io/role/internal-elb` tags allows these subnets to be auto discovered by the [AWS Load Balancer Controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.1/deploy/subnet_discovery/), which we'll discuss in a later post.
 
-With the VPC in place we proceed declare the cluster and its supporting resources, shown on the code below.
+With the VPC in place we proceed yp declare the cluster and its supporting resources, snippet below.
 
 ```terraform
 module "eks" {
@@ -161,9 +161,9 @@ The cluster name is defined as specifyed on the `config.yaml` file, and the k8s 
 
 We then pass the VPC ID of the VPC we created earlier, and its private subnets IDs. This can't be changed after cluster creation. Also, since I want to access the cluster API from the internet, I set `cluster_endpoint_public_access` to `true`. I use a security group to restrict its access so it's not exposed to the great public, just me - or more precisely my home network.
 
-Then comes the worker nodes themselves. Here we'll only use EKS managed node groups for simplicity. We rely on AWS Linux `t3.small` SPOT instances, with a minimum of one and a maximum of three nodes. This will give us room to tests things out without spending too much money.
+For the nodes we use EKS managed node groups for simplicity, each of them being a AWS Linux `t3.small` SPOT instance. We allow the associated autoscaling group to grow from one up to three nodes. This will give us room to tests things out without spending too much money.
 
-With all this in place, we're ready to create our cluster.
+With all the definitions in place, time to create the cluster.
 
 ## Terraform plan and apply
 
@@ -171,33 +171,45 @@ My terraform plan output is (partially) shown below. The warning is a [known iss
 
 [![Terraform plan output](terraform-plan.png)](terraform-plan.png)
 
-After reviewing it and making sure everything is as expected, we can apply it (partial output below). Creating all the resources takes around 15min. Once finished you can jump to the [next section](#accessing-the-cluster).
+After reviewing it and making sure everything looks as expected, we can apply it (partial output below). Creating all the resources takes around 15min.
 
 [![Terraform apply output](terraform-apply.png)](terraform-apply.png)
 
+Running `terraform output list | wc -l` will show us that we have 70 resources in our state, this differs from the above outputs because it includes the data sources internally used by the modules we're using. Filtering those out by running `terraform output list | grep -v '\.data\.' | wc -l` will show us the 56 resources we were expecting. We can now test our access to the cluster and experiment with it.
 
 ## Accessing the cluster
 
 We can use the same credentials we used to authenticate terraform for creating the cluster to authenticate ourselves to the cluster. We do this by running the command below.
-you might need to specify the region either via `--region` or the `AWS_DEFAULT_REGION` environment variable.
+you might need to specify the region either via `--region` or the `AWS_DEFAULT_REGION` environment variable (See [Configure the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html)).
 
 ```shell-session
 $ aws eks update-kubeconfig --name eks-labs --alias eks-labs
 ```
 
-This command will update our `~/.kube/config` file with the cluster information, and create a new context named `eks-labs` (the alias we gave to our cluster). We can then use this context to interact with the cluster.
-We can now test our access to the cluster by running kubectl commands like `kubectl get nodes` or `kubectl get pods -A`. Their outputs should look something like the output below.
+This command will update our [`~/.kube/config`](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) file with the cluster information, and create a new [context](https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/) named `eks-labs` (the alias we gave to our cluster). The above command also sets the created context as the current one, so we can start using it right away.
+
+We can test our access to the cluster by running the `kubectl version` command. Its output should look something like the output below. Client version is the version of the `kubectl` binary we're using, and the server version is the version of the k8s API server we're connecting to. The later means kubectl can connect to the cluster and authenticate itself. We can also notice I'm running a version of the kubectl binary out of the supported minor version skew. I've been successfully using this version for a while now, but if you run into any issues, you might want to downgrade it to one version above the server version.
+
+```shell-session
+Client Version: v1.29.0
+Kustomize Version: v5.0.4-0.20230601165947-6ce0bf390ce3
+Server Version: v1.27.8-eks-8cb36c9
+WARNING: version difference between client (1.29) and server (1.27) exceeds the supported minor version skew of +/-1
+```
+
+We can now also run a couple more commands just in casse, like `kubectl get nodes` and `kubectl get pods --all-namespaces` which will list, respectively, the nodes and pods of our cluster. My output is shown below.
 
 ```shell-session
 $ kubectl get nodes
 NAME                                           STATUS   ROLES    AGE   VERSION
-ip-10-0-1-100.eu-central-1.compute.internal    Ready    <none>   10m   v1.21.2-eks-55daa9d
-ip-10-0-2-100.eu-central-1.compute.internal    Ready    <none>   10m   v1.21.2-eks-55daa9d
-$ kubectl get pods -A
+ip-10-0-3-239.eu-central-1.compute.internal   Ready    <none>   5m7s   v1.27.7-eks-e71965b
+
+$ kubectl get pods --all-namespaces # or kubectl get pods -A
 NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE
-kube-system   aws-node-2q8qk             1/1     Running   0          10m
-kube-system   aws-node-4q2q4             1/1     Running   0          10m
-...
+kube-system   aws-node-t2759             2/2     Running   0          4m33s
+kube-system   coredns-7d85bf6859-bdncm   1/1     Running   0          4m33s
+kube-system   coredns-7d85bf6859-mm97b   1/1     Running   0          4m33s
+kube-system   kube-proxy-2jc6p           1/1     Running   0          4m34s
 ```
 
 ## Cleaning up
