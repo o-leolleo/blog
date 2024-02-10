@@ -18,9 +18,12 @@
 
   {{- range .Site.Menus.main.ByWeight -}}
   {{- $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) -}}
-  {{- $activeClass := "border-b-4 border-indigo-500" -}}
-  <a class="mr-6 hidden md:inline font-semibold hover:text-indigo-700 dark:hover:text-indigo-400 {{ if $active }}{{ $activeClass }}{{ end }}"
-    href="{{ .URL }}" title="{{ .Title }}">
+  {{- $activeClass := cond $active "border-b-4 border-indigo-500" "" -}}
+  <a 
+    class="mr-6 hidden md:inline font-semibold hover:text-indigo-700 dark:hover:text-indigo-400 {{ $activeClass }}"
+    href="{{ .URL }}" 
+    title="{{ .Title }}"
+  >
     {{- .Name -}}
   </a>
   {{ end }}

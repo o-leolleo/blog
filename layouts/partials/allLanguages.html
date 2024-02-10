@@ -1,24 +1,26 @@
 <div id="i18n-btn" class="relative inline-block text-left">
-    {{ $buttonTextStyle := cond .IsTranslated "hover:text-indigo-700 dark:hover:text-indigo-400" "text-gray-300 dark:text-gray-600 cursor-not-allowed"}}
-    {{ $iconTextStyle := cond .IsTranslated "text-gray-400" "text-gray-200 dark:text-gray-700" }}
-    {{ $buttonTitle := cond .IsTranslated "Change language" "No translations available" }}
-    <div>
-        <button 
-            id="menu-button"
-            title="{{ $buttonTitle }}"
-            type="button" 
-            class="inline-flex w-full justify-center gap-x-1.5 rounded-md font-semibold {{ $buttonTextStyle }}" 
-            aria-expanded="true" 
-            aria-haspopup="true"
-        >
-            {{ $.Site.Language.LanguageName }}
-            <svg class="-mr-1 h-5 w-5 {{ $iconTextStyle }}" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-            </svg>
-        </button>
-    </div>
+  {{ $buttonTextStyle := cond .IsTranslated "hover:text-indigo-700 dark:hover:text-indigo-400" "text-gray-300 dark:text-gray-600 cursor-not-allowed"}}
+  {{ $iconTextStyle := cond .IsTranslated "text-gray-400" "text-gray-200 dark:text-gray-700" }}
+  {{ $buttonTitle := cond .IsTranslated "Change language" "No translations available" }}
+  <div>
+    <button
+      id="menu-button"
+      title="{{ $buttonTitle }}"
+      type="button"
+      class="inline-flex w-full justify-center gap-x-1.5 rounded-md font-semibold {{ $buttonTextStyle }}"
+      aria-expanded="true"
+      aria-haspopup="true"
+    >
+      {{ $.Site.Language.LanguageName }}
+      <svg class="-mr-1 h-5 w-5 {{ $iconTextStyle }}" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path fill-rule="evenodd"
+          d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+          clip-rule="evenodd" />
+      </svg>
+    </button>
+  </div>
 
-    <!--
+  <!--
         Dropdown menu, show/hide based on menu state.
 
         Entering: "transition ease-out duration-100"
@@ -28,13 +30,21 @@
         From: "transform opacity-100 scale-100"
         To: "transform opacity-0 scale-95"
     -->
-    {{ if .IsTranslated }}
-    <div id="i18n-menu" class="hidden absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md shadow-lg ring-1 ring-inset ring-gray-300 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
-        <div class="py-1" role="none">
-            {{ range .Translations }}
-            <a href="{{ .RelPermalink }}" class="text-right block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="{{ .Language.LanguageCode }}">{{ .Language.LanguageName }}</a>
-            {{ end }}
-        </div>
+  {{ if .IsTranslated }}
+  <div
+    id="i18n-menu"
+    class="hidden absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md shadow-lg ring-1 ring-inset ring-gray-300 focus:outline-none"
+    role="menu"
+    aria-orientation="vertical"
+    aria-labelledby="menu-button"
+    tabindex="-1"
+  >
+    <div class="py-1" role="none">
+      {{ range .Translations }}
+      <a href="{{ .RelPermalink }}" class="text-right block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
+        id="{{ .Language.LanguageCode }}">{{ .Language.LanguageName }}</a>
+      {{ end }}
     </div>
-    {{ end }}
+  </div>
+  {{ end }}
 </div>
