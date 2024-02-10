@@ -6,7 +6,7 @@ command: cd ~
 
 # Olá 👋
 
-Eu sou Leo, esse é meu blog e meu próprio espaço na web. Logo eu estarei escrevendo sobre tecnologia e alguns outros tópicos interessantes.
+Eu sou Leo, e este é o meu blog, meu espaço pessoal na web. Em breve, estarei escrevendo sobre tecnologia e alguns outros tópicos interessantes.
 
 Espero que você goste da leitura!
 
