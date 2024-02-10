@@ -1,7 +1,5 @@
 <div id="i18n-btn" class="relative inline-block text-left">
     <div>
-        {{/*  <button type="button" class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">  */}}
-
         <button type="button" class="inline-flex w-full justify-center gap-x-1.5 rounded-md font-semibold hover:text-indigo-700 dark:hover:text-indigo-400" id="menu-button" aria-expanded="true" aria-haspopup="true">
         {{ $.Site.Language.LanguageName }}
         <svg class="-mr-1 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -20,13 +18,13 @@
         From: "transform opacity-100 scale-100"
         To: "transform opacity-0 scale-95"
     -->
+    {{ if .IsTranslated }}
     <div id="i18n-menu" class="hidden absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md shadow-lg ring-1 ring-inset ring-gray-300 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
         <div class="py-1" role="none">
-            {{ range $.Site.Home.AllTranslations }}
-
-            <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
+            {{ range .Translations }}
             <a href="{{ .RelPermalink }}" class="text-right block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="{{ .Language.LanguageCode }}">{{ .Language.LanguageName }}</a>
             {{ end }}
         </div>
     </div>
+    {{ end }}
 </div>
