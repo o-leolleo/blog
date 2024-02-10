@@ -25,10 +25,15 @@
   </a>
   {{ end }}
 
+  <div class="mr-6">
+    {{ partial "allLanguages.html" .}}
+  </div>
+
   <button id="dark-mode-btn">
     {{ partial "icons/moon.html" . }}
     {{ partial "icons/sun.html" . }}
   </button>
+
 </nav>
 
 <div class="flex flex-row items-center">

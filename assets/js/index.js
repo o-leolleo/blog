@@ -62,4 +62,18 @@ function handleScroll() {
   }
 }
 
+function toggleI18nMenu(e) {
+  const i18nMenu = document.getElementById('i18n-menu');
+
+  if (e.type === 'focusout' && i18nMenu.contains(e.relatedTarget)) {
+    return;
+  }
+
+  i18nMenu.classList.toggle('hidden');
+}
+
+const i18nButton = document.getElementById('i18n-btn');
+i18nButton.addEventListener('click', toggleI18nMenu);
+i18nButton.addEventListener('focusout', toggleI18nMenu);
+
 window.addEventListener('DOMContentLoaded', main);
