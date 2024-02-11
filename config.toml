@@ -1,5 +1,4 @@
 baseURL = '/'
-languageCode = 'en'
 defaultContentLanguage = 'en'
 title = 'Leonardo Prado'
 sectionPagesMenu = "main"
@@ -30,19 +29,11 @@ summaryLength = 40
     noClasses = false
 
 [languages]
-  [languages.pt-br]
-    disabled = false
-    languageCode = 'pt-BR'
-    languageDirection = 'ltr'
-    languageName = 'Português'
-    title = 'Leonardo Prado'
-    weight = 1
   [languages.en]
-    disabled = false
-    languageCode = 'en-US'
-    languageDirection = 'ltr'
+    languageCode = 'en'
     languageName = 'English'
-    title = 'Leonardo Prado'
+    weight = 1
+  [languages.pt]
+    languageCode = 'pt'
+    languageName = 'Português'
     weight = 2
-    # [languages.en.params]
-      # subtitle = 'Reference, Tutorials, and Explanations'
