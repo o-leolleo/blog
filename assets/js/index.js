@@ -73,7 +73,10 @@ function toggleI18nMenu(e) {
 }
 
 const i18nButton = document.getElementById('i18n-btn');
-i18nButton.addEventListener('click', toggleI18nMenu);
-i18nButton.addEventListener('focusout', toggleI18nMenu);
+
+if (i18nButton) {
+  i18nButton.addEventListener('click', toggleI18nMenu);
+  i18nButton.addEventListener('focusout', toggleI18nMenu);
+}
 
 window.addEventListener('DOMContentLoaded', main);
