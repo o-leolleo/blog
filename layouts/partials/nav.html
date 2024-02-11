@@ -14,28 +14,28 @@
     <span class="terminal-cursor">&#9610;</span>
   </div>
 
-  {{- $currentPage := . -}}
+  {{ $currentPage := . }}
 
-  {{- range .Site.Menus.main.ByWeight -}}
-  {{- $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) -}}
-  {{- $activeClass := cond $active "border-b-4 border-indigo-500" "" -}}
+  {{ range .Site.Menus.main.ByWeight }}
+  {{ $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) }}
+  {{ $activeClass := cond $active "border-b-4 border-indigo-500" "" }}
   <a
     class="mr-6 hidden md:inline font-semibold hover:text-indigo-700 dark:hover:text-indigo-400 {{ $activeClass }}"
     href="{{ .URL }}"
     title="{{ .Title }}"
   >
-    {{- .Name -}}
+    {{ .Name }}
   </a>
   {{ end }}
 
-  <div class="mr-6">
-    {{ partial "allLanguages.html" .}}
-  </div>
+  {{ partial "allLanguages.html" .}}
 
-  <button id="dark-mode-btn">
-    {{ partial "icons/moon.html" . }}
-    {{ partial "icons/sun.html" . }}
-  </button>
+  <div class="inline-block">
+    <button id="dark-mode-btn" class="ml-6">
+      {{ partial "icons/moon.html" . }}
+      {{ partial "icons/sun.html" . }}
+    </button>
+  </div>
 
 </nav>
 
