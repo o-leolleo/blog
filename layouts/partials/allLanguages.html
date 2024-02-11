@@ -28,7 +28,6 @@
         From: "transform opacity-100 scale-100"
         To: "transform opacity-0 scale-95"
     -->
-  {{ if .IsTranslated }}
   <div
     id="i18n-menu"
     class="hidden absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md shadow-lg ring-1 ring-inset ring-gray-300 focus:outline-none"
@@ -39,11 +38,18 @@
   >
     <div class="py-1" role="none">
       {{ range .Translations }}
-      <a href="{{ .RelPermalink }}" class="text-right block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
-        id="{{ .Language.LanguageCode }}">{{ .Language.LanguageName }}</a>
+      <a
+        id="{{ .Language.LanguageCode }}"
+        hreflang="{{ .Language.LanguageCode }}"
+        href="{{ .RelPermalink }}"
+        class="text-right block px-4 py-2 text-sm"
+        role="menuitem"
+        tabindex="-1"
+      >
+        {{ .Language.LanguageName }}
+      </a>
       {{ end }}
     </div>
   </div>
-  {{ end }}
 </div>
 {{ end }}
