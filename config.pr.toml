@@ -1,5 +1,5 @@
 baseURL = '/'
-languageCode = 'en'
+defaultContentLanguage = 'en'
 title = 'Leonardo Prado'
 sectionPagesMenu = "main"
 disableKinds = ['taxonomy', 'term']
