@@ -32,17 +32,6 @@ summaryLength = 40
     languageCode = 'en'
     languageName = 'English'
     weight = 1
-    [languages.en.menus]
-      [[languages.en.menus.main]]
-        identifier = 'blog'
-        name = 'Blog'
-        title = 'Blog'
-        pageref = '/blog'
-      [[languages.en.menus.main]]
-        identifier = 'about'
-        name = 'Sobre'
-        title = 'Sobre'
-        pageref = '/about'
   [languages.pt]
     languageCode = 'pt'
     languageName = 'Português'
