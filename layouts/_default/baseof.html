@@ -8,6 +8,12 @@
 
   <link rel="icon" type="image/x-icon" href="{{ .Site.BaseURL }}favicon.ico">
 
+  {{ if .IsTranslated }}
+    {{ range .Translations }}
+    <link rel="alternate" hreflang="{{ .Language.LanguageCode }}" href="{{ .Permalink }}" title="{{ .Language.LanguageName }}" />
+    {{ end }}
+  {{ end }}
+
   {{ $styles := resources.Get "css/index.css" | resources.PostCSS }}
 
   {{ if .Site.IsServer }}
