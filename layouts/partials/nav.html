@@ -21,7 +21,7 @@
   {{ $activeClass := cond $active "border-b-4 border-indigo-500" "" }}
   <a
     class="mr-6 hidden md:inline font-semibold hover:text-indigo-700 dark:hover:text-indigo-400 {{ $activeClass }}"
-    href="{{ .URL | absLangURL }}"
+    href="{{ .URL }}"
     title="{{ .Title }}"
   >
     {{ .Name }}
@@ -44,7 +44,7 @@
   {{ $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) }}
   {{ $activeClass := cond $active "border-b-4 border-indigo-500" "" }}
   <a class="mr-6 inline md:hidden font-semibold hover:text-indigo-700 dark:hover:text-indigo-400 {{ $activeClass }}"
-    href="{{ .URL | absLangURL }}" title="{{ .Title }}">
+    href="{{ .URL }}" title="{{ .Title }}">
     {{ .Name }}
   </a>
   {{ end }}
