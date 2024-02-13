@@ -1,5 +1,5 @@
 ---
-title: "Wiping your AWS account with AWS Nuke and Gitlab CI"
+title: "Limpando sua conta AWS com o AWS Nuke e o Gitlab CI"
 date: 2023-07-10T21:54:55+01:00
 draft: false
 language: en
