@@ -11,7 +11,7 @@ Apagar, limpar sua conta AWS, parece uma ação muito perigosa e destrutiva, e d
 
 ## Por que?
 
-Bem, existem alguns casos de uso válidos para esse tipo de ferramenta. **Esperançosamente, nenhum deles em ambientes ao vivo, de produção ou voltados para o usuário.**. Por exemplo:
+Bem, existem alguns casos de uso válidos para esse tipo de ferramenta. **Esperançosamente, nenhum deles em ambientes ao vivo, de produção ou voltados para o usuário**. Por exemplo:
 - Você possui uma conta de nuvem pessoal ou de desenvolvimento, e não deseja receber uma fatura cara da AWS quando apenas deseja testar alguma coisa.
 - Você executa testes para Infraestrutura como Código (IaC), o que exige que você crie recursos e os destrua, muitas vezes deixando recursos pendentes para trás.
 - Você tem uma equipe em que cada membro possui sua própria conta AWS, na qual eles podem fazer -- virtualmente -- qualquer coisa. No entanto, assim como no primeiro caso de uso, você não deseja uma fatura cara quando as pessoas estão apenas desenvolvendo e testando coisas!
