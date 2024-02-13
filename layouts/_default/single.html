@@ -5,6 +5,7 @@
 
   <h1 class="text-4xl font-bold mt-8 mb-4">{{ .Title }}</h1>
   <p>{{ .Date.Format .Site.Params.DateFormat }} - {{ partial "minread.html" . }}</p>
+  {{ partial "translatedBy.html" . }}
 </header>
 
 <aside class="max-w-prose mb-8 mx-auto">

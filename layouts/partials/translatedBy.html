@@ -1,0 +1,3 @@
+{{ if .Params.TranslatedBy }}
+<span class="text-xs mt-1">{{ i18n "translatedBy" }} <a class="anchor" target="_blank" href="https://github.com/{{ .Params.TranslatedBy }}">@{{ .Params.TranslatedBy }}</a></span>
+{{ end }}

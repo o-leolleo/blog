@@ -4,6 +4,7 @@ slug: limpando-sua-conta-aws-com-aws-nuke-e-gitlab-ci
 date: 2023-07-10T21:54:55+01:00
 draft: false
 language: en
+translatedBy: amanda-sato
 ---
 
 Apagar, limpar sua conta AWS, parece uma ação muito perigosa e destrutiva, e de fato é. Especialmente quando alguém diz que isso pode ser feito automaticamente e em um cronograma. Problemas surgem mesmo se você não mexer na sua infraestrutura, então por que destruí-la de tempos em tempos e de propósito?
