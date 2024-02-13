@@ -106,16 +106,17 @@ Eu substituo `{{AWS_ACCESS_KEY_ID}}` pela chave de acesso usada pela pipeline de
 
 ## Executando aws-nuke
 
-With the `nuke-config.yml` file in place, we are able to run the commands shown on the snippet below. Whilst here I pass the access key ID and secret explicitly, there are other [options](https://github.com/rebuy-de/aws-nuke#aws-credentials).
+Com o arquivo `nuke-config.yml` configurado, podemos executar os comandos mostrados no trecho abaixo. Enquanto aqui eu passo explicitamente a chave de acesso (access key) e o segredo (secret), existem outras [opções](https://github.com/rebuy-de/aws-nuke#aws-credentials).
 
 ```bash
-# dry run
+# dry run // teste passo a passo
 aws-nuke \
   --access-key-id "<my-access-key-id>" \
   --secret-access-key "<my-secret-access-key>" \
   --config nuke-config.yml
 
-# perform the destroy actions, but first ask for confirmation
+# Execute as ações de destruição, mas peça confirmação primeiro.
+
 aws-nuke \
   --access-key-id "<my-access-key-id>" \
   --secret-access-key "<my-secret-access-key>" \
@@ -123,7 +124,7 @@ aws-nuke \
   --config \
   nuke-config.yml
 
-# perform the destroy actions without first asking for confirmation
+# Execute as ações de destruição sem pedir confirmação prévia.
 aws-nuke \
   --access-key-id "<my-access-key-id>" \
   --secret-access-key "<my-secret-access-key>" \
@@ -133,30 +134,30 @@ aws-nuke \
   nuke-config.yml
 ```
 
-The final step is to wrap these things up and make them run on a schedule, in our case a [Gitlab CI schedule pipeline](https://docs.gitlab.com/ee/ci/pipelines/schedules.html).
+O último passo é organizar essas tarefas e programá-las para serem executadas em um cronograma, no nosso caso, utilizando uma [pipeline agendada do GitLab CI](https://docs.gitlab.com/ee/ci/pipelines/schedules.html).
 
-## The scheduled pipeline
+## A pipeline agendada
 
-First we need a `gitlab-ci.yml` file. It's detailed below, with comments to explain what each block does.
+Primmeiro, nós precisamos de um arquivo `gitlab-ci.yml`. Está detalhada abaixo, com comentários para explicar o que cada bloco faz.
 
 ```yaml
-# Declares the pipeline stages
+# Declara as etapas da pipeline.
 stages:
   - dry-run
   - nuke
 
-# Declares the default image used on the pipeline jobs
-# also overrides the image's entrypoint,
-# so as not to conflict with GitLab default behavior
+# Declara a imagem padrão utilizada nos trabalhos da pipeline,
+# também substitui o ponto de entrada (entrypoint) da imagem,
+# para evitar conflitos com o comportamento padrão do GitLab.
 image:
   name: quay.io/rebuy/aws-nuke:v2.17.0
   entrypoint: [""]
 
-# Here we define a job template which will run aws-nuke
-# in either dry-run or real run depending on the NO_DRY_RUN envvar value.
-# Pay attention to the replacement performed at the beginning, it replaces
-# the {{AWS_ACCESS_KEY_ID}} by the value of the access key used by the pipeline
-# to destroy the resources.
+# Aqui definimos um modelo de trabalho que executará o aws-nuke
+# em modo simulado (dry-run) ou execução real, dependendo do valor da variável de ambiente NO_DRY_RUN.
+# Preste atenção na substituição realizada no início, ela substitui
+# o {{AWS_ACCESS_KEY_ID}} pelo valor da chave de acesso usada pela pipeline
+# para destruir os recursos.
 .nuke-run:
   script:
     - sed -i "s/{{AWS_ACCESS_KEY_ID}}/${AWS_ACCESS_KEY_ID}/g" nuke-config.yml
@@ -168,16 +169,16 @@ image:
         ${NO_DRY_RUN:+--no-dry-run} \
         --config nuke-config.yml
 
-# The dry-run job
-# it always runs - useful for ensuring MRs and commits are correct -
-# and is always "interruptible" (see https://docs.gitlab.com/ee/ci/yaml/#interruptible)
+# O trabalho de simulação (dry-run)
+# sempre é executado - útil para garantir que MRs e commits estejam corretos -
+# e é sempre "interruptível" (interruptible) (veja https://docs.gitlab.com/ee/ci/yaml/#interruptible).
 dry-run:
   stage: dry-run
   extends: .nuke-run
   interruptible: true
 
-# Runs the aws nuke command
-# Only runs on schedules that run against the default branch
+#Executa o comando aws nuke
+#Somente é executado em agendamentos que rodam na branch padrão.
 nuke:
   stage: nuke
   extends: .nuke-run
@@ -189,16 +190,17 @@ nuke:
         && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
-With the pipeline in place the last bit needed is to add the schedule itself. This can be done from the GitLab Project's UI on Build -> Pipeline schedules -> New schedule. The schedule accepts crontab notation, which you can validate on https://crontab.guru/. Once finished you should end up with something like on the image below.
+Com a pipeline configurada, a última parte necessária é adicionar o próprio agendamento. Isso pode ser feito a partir da interface do usuário do projeto no GitLab, em Build -> Pipeline schedules -> New schedule. O agendamento aceita a notação cron, que você pode validar em https://crontab.guru/. Uma vez concluído, você deve obter algo semelhante à imagem abaixo.
 
 [![AWS Nuke schedule pipeline](/images/aws-nuke-gl-schedule.png)](/images/aws-nuke-gl-schedule.png)
 
-Pressing the play button will trigger the pipeline just like the schedule will, so you can test everything is working properly.
+Pressionar o botão de play (play button) acionará a pipeline da mesma forma que o agendamento fará, então você pode testar se tudo está funcionando corretamente.
 
-## Conclusion
+## Conclusão
 
-That's all, now your account will be wiped out as specified on the `nuke-config.yml` file and based on the schedule you configure. Again, keep in mind that **this is a very dangerous solution, so I can't emphasize enough how much careful you should be when setting it up, pay extra attention and care to confirm you know what you're doing**. The result is that now you have an account where you can do pretty much any labs and tests without the fear of a big AWS bill.
 
-💡 This said, be aware that there might be resources not deleted by aws-nuke as shown on their [issues](https://github.com/rebuy-de/aws-nuke/issues).
+Isso é tudo, agora sua conta será apagada conforme especificado no arquivo `nuke-config.yml` e com base no cronograma que você configurar. Novamente, tenha em mente que **Esta é uma solução muito perigosa, então não posso enfatizar o suficiente o quão cuidadoso você deve ser ao configurá-la. Preste atenção extra e cuide para confirmar que você sabe o que está fazendo**. O resultado é que agora você tem uma conta na qual pode realizar praticamente qualquer laboratório e teste, sem o medo de uma grande fatura da AWS.
 
-Hope you enjoyed the reading 😁.
+💡 Dito isso, esteja ciente de que pode haver recursos não deletados pelo aws-nuke, conforme mostrado em suas documentações. [problemas](https://github.com/rebuy-de/aws-nuke/issues).
+
+Espero que você tenha apreciado a leitura 😁.
