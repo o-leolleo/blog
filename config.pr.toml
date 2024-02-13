@@ -36,6 +36,9 @@ summaryLength = 40
     languageCode = 'pt'
     languageName = 'Português'
     weight = 2
+    [languages.pt.permalinks]
+      [languages.pt.permalinks.section]
+        about = 'sobre'
     [languages.pt.menus]
       [[languages.pt.menus.main]]
         identifier = 'blog'

@@ -1,5 +1,6 @@
 ---
-title: "Sobre"
+title: Sobre
+slug: sobre
 date: 2023-03-11T15:43:00-00:00
 command: whoami
 ---
