@@ -2,6 +2,7 @@
 {{ $shouldCenter := cond (gt (len .Pages) 0) "text-center" "" }}
 <article class="{{ $shouldCenter }} prose  dark:prose-invert mx-auto">
   {{ .Content }}
+  {{ partial "translatedBy.html" . }}
 </article>
 
 {{ if len .Pages }}
