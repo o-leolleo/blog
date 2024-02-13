@@ -1,5 +1,6 @@
 ---
 title: "Limpando sua conta AWS com o AWS Nuke e o Gitlab CI"
+slug: limpando-sua-conta-aws-com-aws-nuke-e-gitlab-ci
 date: 2023-07-10T21:54:55+01:00
 draft: false
 language: en
@@ -17,7 +18,7 @@ Bem, existem alguns casos de uso válidos para esse tipo de ferramenta. **Espera
 - Você tem uma equipe em que cada membro possui sua própria conta AWS, na qual eles podem fazer -- virtualmente -- qualquer coisa. No entanto, assim como no primeiro caso de uso, você não deseja uma fatura cara quando as pessoas estão apenas desenvolvendo e testando coisas!
 
 
-Em tais cenários, essas contas hospedam apenas recursos que não têm a intenção de serem utilizados pelo público. Seja esse público composto por usuários de aplicativos, desenvolvedores ou qualquer pessoa além da pessoa que criou esses recursos e potencialmente seus colegas aos quais ela está apresentando as funcionalidades. Além disso, esses recursos são mais adequados para serem temporários, pois têm uma vida útil muito curta: você cria os recursos, confirma se eles funcionam conforme o esperado e, em seguida, os destrói -- os quais você frequentemente/às vezes esquece. 
+Em tais cenários, essas contas hospedam apenas recursos que não têm a intenção de serem utilizados pelo público. Seja esse público composto por usuários de aplicativos, desenvolvedores ou qualquer pessoa além da pessoa que criou esses recursos e potencialmente seus colegas aos quais ela está apresentando as funcionalidades. Além disso, esses recursos são mais adequados para serem temporários, pois têm uma vida útil muito curta: você cria os recursos, confirma se eles funcionam conforme o esperado e, em seguida, os destrói -- os quais você frequentemente/às vezes esquece.
 
 Esses casos de uso são abordados pelo [aws-nuke](https://github.com/rebuy-de/aws-nuke). Ele destrói todos os seus recursos AWS nas contas especificadas 💣. _Descobri isso ao procurar por algo semelhante depois de esquecer um cluster EKS rodando por uma semana na minha conta pessoal da AWS_ 😅. Isso não me custou mais do que $50.00, pelo que me lembro, mas é útil economizar dinheiro sempre que possível e evitar custos desnecessários, especialmente porque da próxima vez eu posso não ter tanta sorte.
 
