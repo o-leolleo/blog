@@ -3,7 +3,7 @@ title: "Limpando sua conta AWS com o AWS Nuke e o Gitlab CI"
 slug: limpando-sua-conta-aws-com-aws-nuke-e-gitlab-ci
 date: 2023-07-10T21:54:55+01:00
 draft: false
-language: en
+language: pt
 translatedBy: amanda-sato
 ---
 
