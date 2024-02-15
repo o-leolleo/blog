@@ -17,7 +17,7 @@ A vida e a carreira mudaram bastante desde a minha última [presença](https://m
 
 Além de sua popularidade e velocidade, o Hugo utiliza Go e seus modelos de templates. Tenho experiência prática com o Helm, que também utiliza essa mesma stack. Portanto, escolher o Hugo me permitiria intercambiar habilidades entre essas ferramentas. Ao utilizá-lo, eu aprimoraria minhas habilidades no Helm e vice-versa.
 
-Algumas pessoas poderiam listar os modelos de Go como a razão para não escolher o Hugo, curiosamente, foi isso que me atraiu para ele. No entanto, tenho que concordar que, à primeira vista, não é tão intuitivo quanto outros motores de templates, como [jinja2](https://jinja.palletsprojects.com/en/3.1.x/templates/). Para ter um vislumbre de como é, o trecho abaixo mostra o código Hugo para a página deste post no blog [página](/blog).
+Algumas pessoas poderiam listar os modelos de Go como a razão para não escolher o Hugo, curiosamente, foi isso que me atraiu para ele. No entanto, tenho que concordar que, à primeira vista, não é tão intuitivo quanto outros motores de templates, como [jinja2](https://jinja.palletsprojects.com/en/3.1.x/templates/). Para ter um vislumbre de como é, o trecho abaixo mostra o código Hugo para a [página](/blog) deste post no blog.
 
 ```html
 {{ define "main" }}
@@ -64,8 +64,8 @@ As alegações mostraram-se verdadeiras, e você pode verificar abaixo um trecho
 @tailwind utilities;
 
 @layer components {
-  /* Isso apenas fornece um alias para as classes comuns 
-     do Tailwind usadas juntas. */
+  /* Isso apenas fornece um alias para um conjunto de classes 
+     do Tailwind comumente usadas juntas. */
   .anchor {
     @apply
       font-medium
@@ -97,7 +97,7 @@ As alegações mostraram-se verdadeiras, e você pode verificar abaixo um trecho
 
 ## Cloudflare Pages
 
-Eu precisava de uma maneira fácil de obter o máximo do hospedagem estática integrada. Algumas opções estavam disponíveis, como [GitHub pages](https://pages.github.com/), [Netlify](https://www.netlify.com/) e outros. Como eu hospedo a configuração do meu domínio no Cloudflare, a solução deles pareceu interessante, pois as coisas poderiam ser mantidas em um único lugar. Ter um [cli](https://developers.cloudflare.com/workers/wrangler/) para automatizar o fluxo de trabalho por conta própria, também parecia uma boa ideia, pois, dessa forma, eu poderia adicionar quaisquer passos personalizados que desejasse, por exemplo:
+Eu precisava de uma maneira fácil de obter o máximo da hospedagem estática integrada. Algumas opções estavam disponíveis, como [GitHub pages](https://pages.github.com/), [Netlify](https://www.netlify.com/) e outros. Como eu hospedo a configuração do meu domínio no Cloudflare, a solução deles pareceu interessante, pois as coisas poderiam ser mantidas em um único lugar. Ter um [cli](https://developers.cloudflare.com/workers/wrangler/) para automatizar o fluxo de trabalho por conta própria, também parecia uma boa ideia, pois, dessa forma, eu poderia adicionar quaisquer passos personalizados que desejasse, por exemplo:
 
 - [limpar o cache DNS após implantações.](https://github.com/o-leolleo/blog/blob/main/.github/workflows/cicd.yml#L85)
 - [ter suporte para ambientes de recursos com limpeza automática em pull requests.](https://github.com/o-leolleo/blog/blob/main/.github/workflows/clean-up.yml)
