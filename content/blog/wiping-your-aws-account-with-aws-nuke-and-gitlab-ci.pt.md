@@ -118,7 +118,6 @@ aws-nuke \
   --config nuke-config.yml
 
 # Execute as ações de destruição, mas peça confirmação primeiro.
-
 aws-nuke \
   --access-key-id "<my-access-key-id>" \
   --secret-access-key "<my-secret-access-key>" \
@@ -140,7 +139,7 @@ O último passo é organizar essas tarefas e programá-las para serem executadas
 
 ## A pipeline agendada
 
-Primmeiro, nós precisamos de um arquivo `gitlab-ci.yml`. Está detalhada abaixo, com comentários para explicar o que cada bloco faz.
+Primeiro, nós precisamos de um arquivo `gitlab-ci.yml`. Está detalhada abaixo, com comentários para explicar o que cada bloco faz.
 
 ```yaml
 # Declara as etapas da pipeline.
