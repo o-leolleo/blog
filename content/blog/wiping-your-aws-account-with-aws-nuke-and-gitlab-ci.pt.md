@@ -202,6 +202,6 @@ Pressionar o botão de play (play button) acionará a pipeline da mesma forma qu
 
 Isso é tudo, agora sua conta será apagada conforme especificado no arquivo `nuke-config.yml` e com base no cronograma que você configurar. Novamente, tenha em mente que **Esta é uma solução muito perigosa, então não posso enfatizar o suficiente o quão cuidadoso você deve ser ao configurá-la. Preste atenção extra e cuide para confirmar que você sabe o que está fazendo**. O resultado é que agora você tem uma conta na qual pode realizar praticamente qualquer laboratório e teste, sem o medo de uma grande fatura da AWS.
 
-💡 Dito isso, esteja ciente de que pode haver recursos não deletados pelo aws-nuke, conforme mostrado em suas documentações. [problemas](https://github.com/rebuy-de/aws-nuke/issues).
+💡 Dito isso, esteja ciente de que pode haver recursos não deletados pelo aws-nuke, conforme mostrado em sua [documentação](https://github.com/rebuy-de/aws-nuke/issues).
 
 Espero que você tenha apreciado a leitura 😁.
