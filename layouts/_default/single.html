@@ -1,14 +1,15 @@
 {{ define "main" }}
 
 <header class="max-w-prose mx-auto pb-10">
-  <a class="anchor" href="{{ (index .Ancestors 0).Permalink }}">&#x21BC; Back to list</a>
+  <a class="anchor" href="{{ (index .Ancestors 0).Permalink }}">&#x21BC; {{ i18n "backToList" }}</a>
 
   <h1 class="text-4xl font-bold mt-8 mb-4">{{ .Title }}</h1>
   <p>{{ .Date.Format .Site.Params.DateFormat }} - {{ partial "minread.html" . }}</p>
+  {{ partial "translatedBy.html" . }}
 </header>
 
 <aside class="max-w-prose mb-8 mx-auto">
-  <h6 class="mb-4 text-sm">In this article</h6>
+  <h6 class="mb-4 text-sm">{{ i18n "inThisArticle" }}</h6>
   <div class="text-sm">
     {{ .TableOfContents }}
   </div>
@@ -47,9 +48,9 @@
 
 {{ define "footer-extras" }}
 <button
-id="scroll-to-top"
-class="transition-all duration-500 opacity-0 translate-y-6 fixed right-4 bottom-4 w-12 h-12 rounded-full drop-shadow-md bg-indigo-500 text-white text-3xl text-bold"
-title="Scroll to top"
+  id="scroll-to-top"
+  class="transition-all duration-500 opacity-0 translate-y-6 fixed right-4 bottom-4 w-12 h-12 rounded-full drop-shadow-md bg-indigo-500 text-white text-3xl text-bold"
+  title="Scroll to top"
 >
 &#8682;
 </button>

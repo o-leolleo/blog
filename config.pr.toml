@@ -1,5 +1,5 @@
 baseURL = '/'
-languageCode = 'en-us'
+defaultContentLanguage = 'en'
 title = 'Leonardo Prado'
 sectionPagesMenu = "main"
 disableKinds = ['taxonomy', 'term']
@@ -8,20 +8,45 @@ summaryLength = 40
 [params]
   dateFormat = 'Jan 02, 2006'
   iconSize = '40px'
+
 [menu]
-[[menu.main]]
-  identifier = 'blog'
-  name = 'Blog'
-  title = 'Blog'
-  pageref = '/blog'
-  weight = -110
-[[menu.main]]
-  identifier = 'about'
-  name = 'About'
-  title = 'About'
-  pageref = '/about'
-  weight = -100
+  [[menu.main]]
+    identifier = 'blog'
+    name = 'Blog'
+    title = 'Blog'
+    pageref = '/blog'
+    weight = -110
+  [[menu.main]]
+    identifier = 'about'
+    name = 'About'
+    title = 'About'
+    pageref = '/about'
+    weight = -100
 
 [markup]
   [markup.highlight]
     noClasses = false
+
+[languages]
+  [languages.en]
+    languageCode = 'en'
+    languageName = 'English'
+    weight = 1
+  [languages.pt]
+    languageCode = 'pt'
+    languageName = 'Português'
+    weight = 2
+    [languages.pt.permalinks]
+      [languages.pt.permalinks.section]
+        about = 'sobre'
+    [languages.pt.menus]
+      [[languages.pt.menus.main]]
+        identifier = 'blog'
+        name = 'Blog'
+        title = 'Blog'
+        pageref = '/blog'
+      [[languages.pt.menus.main]]
+        identifier = 'about'
+        name = 'Sobre'
+        title = 'Sobre'
+        pageref = '/about'

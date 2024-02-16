@@ -3,10 +3,11 @@
 
 <article class="{{ $shouldCenter }} prose  dark:prose-invert mx-auto">
   {{ .Content }}
+  {{ partial "translatedBy.html" . }}
 </article >
 
 <section class="text-center mt-8">
-  <p>You can also find me on</p>
+  <p>{{ i18n "findMeOn" }}</p>
   {{- .Scratch.Set "class" "flex mt-2 flex-row w-full justify-center" -}}
   {{ partial "social.html" . }}
 </section>

@@ -9,6 +9,10 @@
   <div class="flex flex-col">
     <div class="prose dark:prose-invert text-center md:text-left">
       {{ .Content }}
+
+      <div class="-mt-4">
+        {{ partial "translatedBy.html" . }}
+      </div>
     </div>
 
     {{ partial "social.html" . }}

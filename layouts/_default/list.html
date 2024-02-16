@@ -2,11 +2,12 @@
 {{ $shouldCenter := cond (gt (len .Pages) 0) "text-center" "" }}
 <article class="{{ $shouldCenter }} prose  dark:prose-invert mx-auto">
   {{ .Content }}
+  {{ partial "translatedBy.html" . }}
 </article>
 
 {{ if len .Pages }}
 <article class="prose dark:prose-invert mx-auto mt-10 mb-6">
-  <h2 class="text-center">All articles</h2>
+  <h2 class="text-center">{{ i18n "allArticles" }}</h2>
 
   <ul class="pl-0 list-outside">
     {{ range .Pages.ByLastmod.Reverse }}
@@ -15,7 +16,7 @@
       <p class="text-sm">{{ .Date.Format .Site.Params.DateFormat }} - {{ partial "minread.html" . }}</p>
       <p>{{ .Summary }}</p>
       <div class="not-prose">
-        <a class="anchor" href="{{ .Permalink }}">Read more &#x21C0;</a>
+        <a class="anchor" href="{{ .Permalink }}">{{ i18n "readMore" }} &#x21C0;</a>
       </div>
     </li>
     {{ end }}
