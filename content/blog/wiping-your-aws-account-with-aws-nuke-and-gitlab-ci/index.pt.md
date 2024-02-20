@@ -193,7 +193,7 @@ nuke:
 
 Com a pipeline configurada, a última parte necessária é adicionar o próprio agendamento. Isso pode ser feito a partir da interface do usuário do projeto no GitLab, em Build -> Pipeline schedules -> New schedule. O agendamento aceita a notação cron, que você pode validar em https://crontab.guru/. Uma vez concluído, você deve obter algo semelhante à imagem abaixo.
 
-[![AWS Nuke schedule pipeline](/images/aws-nuke-gl-schedule.png)](/images/aws-nuke-gl-schedule.png)
+[![AWS Nuke schedule pipeline](aws-nuke-gl-schedule.png)](aws-nuke-gl-schedule.png)
 
 Pressionar o botão de play (play button) acionará a pipeline da mesma forma que o agendamento fará, então você pode testar se tudo está funcionando corretamente.
 
