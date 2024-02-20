@@ -190,7 +190,7 @@ nuke:
 
 With the pipeline in place the last bit needed is to add the schedule itself. This can be done from the GitLab Project's UI on Build -> Pipeline schedules -> New schedule. The schedule accepts crontab notation, which you can validate on https://crontab.guru/. Once finished you should end up with something like on the image below.
 
-[![AWS Nuke schedule pipeline](/images/aws-nuke-gl-schedule.png)](/images/aws-nuke-gl-schedule.png)
+[![AWS Nuke schedule pipeline](aws-nuke-gl-schedule.png)](aws-nuke-gl-schedule.png)
 
 Pressing the play button will trigger the pipeline just like the schedule will, so you can test everything is working properly.
 
