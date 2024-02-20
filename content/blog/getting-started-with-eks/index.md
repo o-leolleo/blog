@@ -5,6 +5,13 @@ draft: true
 language: en
 ---
 
+<!-- TO DO
+- Update VPC creation not to depend on the full list of CIDRs
+- Add SG restrictions on the cluster public access
+- Add hook for next post on how to use the recent EKS simplification on access management controls
+- Add conclusion
+ -->
+
 I’ve decided to experiment with different EKS scenarios and configurations. But also thought that giving an introductory blog post on how to bootrstrap your own EKS cluster might help someone out there trying to do the same thing.
 
 For that I'm using [Terraform](https://www.terraform.io/) and the [AWS EKS Terraform module](https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest). The first is a very well known solution for maintaining infrastructure as code (IaC). The later is the best community maintained module - that I know of - for it and which covers most (if not all) the different EKS use cases.
@@ -26,23 +33,23 @@ vpc:
   # Private IP range (see https://en.wikipedia.org/wiki/Private_network)
   cidr: 10.0.0.0/16
   # We'll create one private and public subnet per availability zone
-  azs: 
+  azs:
     - eu-central-1a
     - eu-central-1b
     - eu-central-1c
   # Each private subnet's IP range
-  private_subnets: 
+  private_subnets:
     - 10.0.1.0/24
     - 10.0.2.0/24
     - 10.0.3.0/24
   # Each public subnet's IP range
-  public_subnets: 
+  public_subnets:
     - 10.0.101.0/24
     - 10.0.102.0/24
     - 10.0.103.0/24
 ```
 
-We can later read those config values through the code below, and access them like `local.config.region` or `local.config.vpc.cidr` on our terraform code. 
+We can later read those config values through the code below, and access them like `local.config.region` or `local.config.vpc.cidr` on our terraform code.
 
 ```terraform
 # variables.tf
@@ -53,7 +60,7 @@ locals {
 
 ## The code
 
-With our configs in place we can start the code to create the cluster itself. 
+With our configs in place we can start the code to create the cluster itself.
 
 First, we declare our required providers and the `provider` block, shown on the snippet below. We're using the official AWS provider with a version between `>=5.29` and `<6` (See [Version Constraint Syntax](https://developer.hashicorp.com/terraform/language/expressions/version-constraints#version-constraint-syntax)). The resources are created on the `local.config.region` region as discussed on the [previous section](#the-variables). On top of that, all resources we create are tagged accordingly to the workspace we use on our runs, for easier identification and cross reference.
 
@@ -78,7 +85,7 @@ provider "aws" {
 }
 ```
 
-We then define the [VPC (Virtual Private Network)](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html) onto which our resources will be created. Here we use the well known [terraform-aws-vpc](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest) community module. 
+We then define the [VPC (Virtual Private Network)](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html) onto which our resources will be created. Here we use the well known [terraform-aws-vpc](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest) community module.
 
 ```terraform
 module "vpc" {
@@ -112,7 +119,7 @@ We allow [DNS hostnames and support](https://docs.aws.amazon.com/vpc/latest/user
 
 The `kubernetes.io/role/elb` and `kubernetes.io/role/internal-elb` tags allows these subnets to be auto discovered by the [AWS Load Balancer Controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.1/deploy/subnet_discovery/), which we'll discuss in a later post.
 
-With the VPC in place we proceed yp declare the cluster and its supporting resources, snippet below.
+With the VPC in place we proceed to declare the cluster and its supporting resources, snippet below.
 
 ```terraform
 module "eks" {
@@ -214,6 +221,6 @@ kube-system   kube-proxy-2jc6p           1/1     Running   0          4m34s
 
 ## Cleaning up
 
-Once finished with our experiments, and to avoid a surprise billing from AWS, we can destroy our cluster and the associated resources by running `terraform destroy`. 
+Once finished with our experiments, and to avoid a surprise billing from AWS, we can destroy our cluster and the associated resources by running `terraform destroy`.
 
 [![Terraform destroy output](terraform-destroy.png)](terraform-destroy.png)
