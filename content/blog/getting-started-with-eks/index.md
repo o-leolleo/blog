@@ -21,7 +21,7 @@ The resources created here costs money, so if you're following it up, **I highly
 
 ## The variables
 
-The setup relies on a YAML file for configuring what would be otherwise done via variables and/or a tfvars file. I've been convinced of the benefits of this approach by the post [Terraform with YAML: Part 1](https://xebia.com/blog/terraform-with-yaml-part-1/) from Chris ter Beke. It's simple, effective, and use terraform built-in constructs. It allows greater flexibility on managing the inputs of your terraform workspace.
+The setup relies on a YAML file for configuring what would be otherwise done via variables and/or a tfvars file. I've been convinced of the benefits of this approach by the post [Terraform with YAML: Part 1](https://xebia.com/blog/terraform-with-yaml-part-1/) from Chris ter Beke. It's simple, effective, and uses terraform built-in constructs. It allows greater flexibility on managing the inputs of your terraform workspace.
 
 In our case, these inputs are shown on the snippet below, where we define the AWS region where we want to create our cluster and its reosurces, the cluster name, availability zones and VPC related parameters.
 
@@ -168,7 +168,7 @@ The cluster name is defined as specifyed on the `config.yaml` file, and the k8s 
 
 We then pass the VPC ID of the VPC we created earlier, and its private subnets IDs. This can't be changed after cluster creation. Also, since I want to access the cluster API from the internet, I set `cluster_endpoint_public_access` to `true`. I use a security group to restrict its access so it's not exposed to the great public, just me - or more precisely my home network.
 
-For the nodes we use EKS managed node groups for simplicity, each of them being a AWS Linux `t3.small` SPOT instance. We allow the associated autoscaling group to grow from one up to three nodes. This will give us room to tests things out without spending too much money.
+For the nodes we use EKS managed node groups for simplicity, each of them being a AWS Linux `t3.small` SPOT instance. We allow the associated autoscaling group to grow from one up to three nodes. This will give us room to test things out without spending too much money.
 
 With all the definitions in place, time to create the cluster.
 
@@ -195,7 +195,7 @@ $ aws eks update-kubeconfig --name eks-labs --alias eks-labs
 
 This command will update our [`~/.kube/config`](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) file with the cluster information, and create a new [context](https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/) named `eks-labs` (the alias we gave to our cluster). The above command also sets the created context as the current one, so we can start using it right away.
 
-We can test our access to the cluster by running the `kubectl version` command. Its output should look something like the output below. Client version is the version of the `kubectl` binary we're using, and the server version is the version of the k8s API server we're connecting to. The later means kubectl can connect to the cluster and authenticate itself. We can also notice I'm running a version of the kubectl binary out of the supported minor version skew. I've been successfully using this version for a while now, but if you run into any issues, you might want to downgrade it to one version above the server version.
+We can test our access to the cluster by running the `kubectl version` command. Its output should look something like the output below. Client version is the version of the `kubectl` binary we're using, and the server version is the version of the k8s API server we're connecting to. The later means kubectl can connect to the cluster and authenticate itself. We can also notice I'm running a version of the kubectl binary out of the supported minor version skew. I've been successfully using this version for a while now, but if you run into any issues, you might need to downgrade it to one version above or below, or the same as the server version.
 
 ```shell-session
 Client Version: v1.29.0
@@ -224,3 +224,7 @@ kube-system   kube-proxy-2jc6p           1/1     Running   0          4m34s
 Once finished with our experiments, and to avoid a surprise billing from AWS, we can destroy our cluster and the associated resources by running `terraform destroy`.
 
 [![Terraform destroy output](terraform-destroy.png)](terraform-destroy.png)
+
+## Conclusion
+
+We've successfully created a functional EKS cluster, connected to it and ran some simple commands. The whole setup is managed as code, making it reproducible and easy to maintain. It still lacks a few things, like common addons like ingress controllers, monitoring and logging solutions, as well as a proper IAM setup. The idea is to cover those on future posts. So stay tuned!
