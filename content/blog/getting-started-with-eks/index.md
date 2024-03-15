@@ -29,6 +29,7 @@ In our case, these inputs are shown on the snippet below, where we define the AW
 # config.yaml
 region: eu-central-1 # Frankfurt
 cluster_name: eks-labs
+cluster_version: '1.29'
 vpc:
   # Private IP range (see https://en.wikipedia.org/wiki/Private_network)
   cidr: 10.0.0.0/16
@@ -112,7 +113,7 @@ module "eks" {
   version = "~> 19.20"
 
   cluster_name    = local.config.cluster_name
-  cluster_version = "1.29"
+  cluster_version = local.config.cluster_version
 
   cluster_addons = {
     coredns = {
