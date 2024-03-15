@@ -209,14 +209,14 @@ We can now also run a couple more commands just in case, like `kubectl get nodes
 ```shell-session
 $ kubectl get nodes
 NAME                                           STATUS   ROLES    AGE   VERSION
-ip-10-0-3-239.eu-central-1.compute.internal   Ready    <none>   5m7s   v1.27.7-eks-e71965b
+ip-10-0-35-110.eu-central-1.compute.internal   Ready    <none>   107s   v1.29.0-eks-5e0fdde
 
 $ kubectl get pods --all-namespaces # or kubectl get pods -A
 NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE
-kube-system   aws-node-t2759             2/2     Running   0          4m33s
-kube-system   coredns-7d85bf6859-bdncm   1/1     Running   0          4m33s
-kube-system   coredns-7d85bf6859-mm97b   1/1     Running   0          4m33s
-kube-system   kube-proxy-2jc6p           1/1     Running   0          4m34s
+kube-system   aws-node-xrnfv            2/2     Running   0          75s
+kube-system   coredns-6566b9c9f-2bnbr   1/1     Running   0          75s
+kube-system   coredns-6566b9c9f-kwp6r   1/1     Running   0          75s
+kube-system   kube-proxy-9gcmv          1/1     Running   0          75s
 ```
 
 ## Cleaning up
