@@ -32,21 +32,6 @@ cluster_name: eks-labs
 vpc:
   # Private IP range (see https://en.wikipedia.org/wiki/Private_network)
   cidr: 10.0.0.0/16
-  # We'll create one private and public subnet per availability zone
-  azs:
-    - eu-central-1a
-    - eu-central-1b
-    - eu-central-1c
-  # Each private subnet's IP range
-  private_subnets:
-    - 10.0.1.0/24
-    - 10.0.2.0/24
-    - 10.0.3.0/24
-  # Each public subnet's IP range
-  public_subnets:
-    - 10.0.101.0/24
-    - 10.0.102.0/24
-    - 10.0.103.0/24
 ```
 
 We can later read those config values through the code below, and access them like `local.config.region` or `local.config.vpc.cidr` on our terraform code.
@@ -94,15 +79,15 @@ module "vpc" {
   name = local.config.cluster_name
   cidr = local.config.vpc.cidr
 
-  azs             = local.config.vpc.azs
-  private_subnets = local.config.vpc.private_subnets
-  public_subnets  = local.config.vpc.public_subnets
+  azs = data.aws_availability_zones.this.names
+
+  private_subnets = [for k, v in data.aws_availability_zones.this.names : cidrsubnet(local.config.vpc.cidr, 4, k)]
+  public_subnets  = [for k, v in data.aws_availability_zones.this.names : cidrsubnet(local.config.vpc.cidr, 8, k + 48)]
 
   enable_nat_gateway = true
 
   single_nat_gateway   = true
   enable_dns_hostnames = true
-  enable_dns_support   = true
 
   public_subnet_tags = {
     "kubernetes.io/role/elb" = 1
@@ -127,7 +112,7 @@ module "eks" {
   version = "~> 19.20"
 
   cluster_name    = local.config.cluster_name
-  cluster_version = "1.27"
+  cluster_version = "1.29"
 
   cluster_addons = {
     coredns = {
@@ -141,9 +126,14 @@ module "eks" {
     }
   }
 
-  vpc_id                         = module.vpc.vpc_id
-  subnet_ids                     = module.vpc.private_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
+
   cluster_endpoint_public_access = true
+
+  cluster_endpoint_public_access_cidrs = [
+    "${data.external.current_ip.result.ip}/32",
+  ]
 
   eks_managed_node_group_defaults = {
     ami_type = "AL2_x86_64"
@@ -160,6 +150,15 @@ module "eks" {
       capacity_type = "SPOT"
     }
   }
+}
+
+# See https://tom-henderson.github.io/2021/04/20/terraform-current-ip.html
+data "external" "current_ip" {
+  program = ["bash", "-c", "curl -s 'https://api.ipify.org?format=json'"]
+}
+
+data "aws_availability_zones" "this" {
+  state = "available"
 }
 ```
 
