@@ -5,13 +5,6 @@ draft: true
 language: en
 ---
 
-<!-- TO DO
-- Update VPC creation not to depend on the full list of CIDRs
-- Add SG restrictions on the cluster public access
-- Add hook for next post on how to use the recent EKS simplification on access management controls
-- Add conclusion
- -->
-
 I’ve decided to experiment with different EKS scenarios and configurations. But also thought that giving an introductory blog post on how to bootrstrap your own EKS cluster might help someone out there trying to do the same thing.
 
 For that I'm using [Terraform](https://www.terraform.io/) and the [AWS EKS Terraform module](https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest). The first is a very well known solution for maintaining infrastructure as code (IaC). The later is the best community maintained module - that I know of - for it and which covers most (if not all) the different EKS use cases.
