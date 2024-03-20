@@ -1,20 +1,20 @@
-name: AI Code Reviewer
+name: Code Review GPT
 
 on:
   pull_request:
-    types:
-      - opened
-      - synchronize
-permissions: write-all
+    branches: [main]
+
 jobs:
-  review:
+  run_code_review:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-
-      - name: AI Code Reviewer
-        uses: o-leolleo/ai-codereviewer@main
+      - uses: actions/checkout@v3
         with:
-          GITHUB_TOKEN: ${{ github.token }} # The GITHUB_TOKEN is there by default so you just need to keep it like it is and not necessarily need to add it as secret as it will throw an error. [More Details](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret)
+          fetch-depth: 0
+
+      - name: Code Review GPT
+        uses: mattzcarey/code-review-gpt@v0.1.4-alpha
+        with:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          MODEL: 'gpt-3.5-turbo'
+          GITHUB_TOKEN: ${{ github.token }}
