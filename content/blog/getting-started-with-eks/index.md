@@ -1,7 +1,6 @@
 ---
 title: "Getting Started With EKS"
-date: 2023-12-19T22:51:09+01:00
-draft: true
+date: 2024-03-20T18:01:09+01:00
 language: en
 ---
 
