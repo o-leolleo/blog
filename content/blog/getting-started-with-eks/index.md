@@ -93,8 +93,9 @@ module "vpc" {
 }
 ```
 
-The network is named after our cluster, its CIDR and most of its settings are passed from the `config.yaml` file, [discussed earlier](#the-variables).
-We allow [DNS hostnames and support](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns.html#vpc-dns-support) on the VPC and [reuse the same NAT gateway on all its subnets](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest#single-nat-gateway). The first has little impact to what we discuss on this post, the later helps us reduce the cost of the overall setup.
+The network is named after our cluster, its CIDR and most of its settings are passed from the `config.yaml` file, [discussed earlier](#the-variables). I won't dig into how to calculate the subnets CIDRs and its details, but I found this clever trick on one of the [terraform-aws-eks module examples](https://github.com/terraform-aws-modules/terraform-aws-eks/blob/v20.8.3/examples/karpenter/main.tf#L289).
+
+We also allow [DNS hostnames and support](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns.html#vpc-dns-support) on the VPC and [reuse the same NAT gateway on all its subnets](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest#single-nat-gateway). The first has little impact to what we discuss on this post, the later helps us reduce the cost of the overall setup.
 
 The `kubernetes.io/role/elb` and `kubernetes.io/role/internal-elb` tags allows these subnets to be auto discovered by the [AWS Load Balancer Controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.1/deploy/subnet_discovery/), which we'll discuss in a later post.
 
@@ -156,12 +157,13 @@ data "aws_availability_zones" "this" {
 }
 ```
 
-The cluster name is defined as specifyed on the `config.yaml` file, and the k8s version as 1.27. We also install some EKS available addons. Explaning each of them is out of the scope of this post, it's enough to say for our purposes that we need them for our cluster to correctly function - you can read more about them on [Amazon EKS add-ons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html)
-.
+The cluster name is defined as specifyed on the `config.yaml` file, and the k8s version as 1.27. We also install some EKS available addons. Explaning each of them is out of the scope of this post, it's enough to say for our purposes that we need them for our cluster to correctly function - you can read more about them on [Amazon EKS add-ons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html).
 
-We then pass the VPC ID of the VPC we created earlier, and its private subnets IDs. This can't be changed after cluster creation. Also, since I want to access the cluster API from the internet, I set `cluster_endpoint_public_access` to `true`. I use a security group to restrict its access so it's not exposed to the great public, just me - or more precisely my home network.
+We then pass the VPC ID of the VPC we created earlier, and its private subnets IDs. This can't be changed after cluster creation. Also, since I want to access the cluster API from the internet, I set `cluster_endpoint_public_access` to `true`. I restrict this public access to the IP address of my home network.
 
-For the nodes we use EKS managed node groups for simplicity, each of them being a AWS Linux `t3.small` SPOT instance. We allow the associated autoscaling group to grow from one up to three nodes. This will give us room to test things out without spending too much money.
+For the nodes we use EKS managed node groups for simplicity, each of them being an AWS Linux `t3.small` SPOT instance. We allow the associated autoscaling group to grow from one up to three nodes. This will give us room to test things out without spending too much money.
+
+_Having a node group, won't automatically scale up the node count based on load, for that we'd need to use the [cluster autoscaler](https://github.com/kubernetes/autoscaler) or [karpenter](https://karpenter.sh/)_.
 
 With all the definitions in place, time to create the cluster.
 
@@ -188,7 +190,7 @@ $ aws eks update-kubeconfig --name eks-labs --alias eks-labs
 
 This command will update our [`~/.kube/config`](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) file with the cluster information, and create a new [context](https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/) named `eks-labs` (the alias we gave to our cluster). The above command also sets the created context as the current one, so we can start using it right away.
 
-We can test our access to the cluster by running the `kubectl version` command. Its output should look something like the output below. Client version is the version of the `kubectl` binary we're using, and the server version is the version of the k8s API server we're connecting to. The later means kubectl can connect to the cluster and authenticate itself. We can also notice I'm running a version of the kubectl binary out of the supported minor version skew. I've been successfully using this version for a while now, but if you run into any issues, you might need to downgrade it to one version above or below, or the same as the server version.
+We can test our access to the cluster by running the `kubectl version` command. Its output should look something like the output below. Client version is the version of the `kubectl` binary we're using, and the server version is the version of the k8s API server we're connecting to. The later means kubectl can connect to the cluster and authenticate itself. We can also notice I'm running a version of the kubectl binary out of the supported minor version skew. I've been successfully using this version for a while now, but if you run into any issues, you might need to update it to one version above or below, or the same as the server version.
 
 ```shell-session
 Client Version: v1.29.0
