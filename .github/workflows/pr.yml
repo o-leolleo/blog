@@ -51,7 +51,7 @@ jobs:
       - build
     steps:
       - name: Downloads artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifactt@v4
         with:
           name: build
           path: public
