@@ -18,7 +18,7 @@ jobs:
       REF_SLUG: pr-${{ github.event.number }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
