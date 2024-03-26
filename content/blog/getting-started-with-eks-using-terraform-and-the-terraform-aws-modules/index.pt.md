@@ -9,7 +9,7 @@ Eu decidi experimentar com diferentes cenários e configurações do EKS, mas ta
 
 Para isso, estou usando o [Terraform](https://www.terraform.io/) e o [módulo Terraform para AWS EKS](https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest). O primeiro é uma solução muito conhecida para manter infraestrutura como código (IaC). O último é o melhor módulo mantido pela comunidade - que eu conheço - para isso e que cobre a maioria (se não todos) os diferentes casos de uso do EKS.
 
-Os recursos criados neste _post_ custam dinheiro, então, se você o estiver seguindo, **recomendo fortemente que destrua seus recursos do Terraform assim que terminar, para não ser pego de surpresa por uma conta considerável da AWS**. Eu até fui tão longe a ponto de [destruir os recursos da minha conta pessoal da AWS em um cronograma](/blog/wiping-your-aws-account-with-aws-nuke-and-gitlab-ci/) - tenha cuidado se estiver fazendo algo semelhante.
+Os recursos criados neste _post_ custam dinheiro, então, se você o estiver seguindo, **recomendo fortemente que destrua seus recursos do Terraform assim que terminar, para não ser pego de surpresa por uma conta considerável da AWS**. Eu até fui tão longe a ponto de [destruir os recursos da minha conta pessoal da AWS em um cronograma](/pt/blog/limpando-sua-conta-aws-com-aws-nuke-e-gitlab-ci/) - tenha cuidado se estiver fazendo algo semelhante.
 
 ## As variáveis
 
@@ -27,7 +27,7 @@ vpc:
   cidr: 10.0.0.0/16
 ```
 
-Nós podemos posteriormente ler esses valores através do código abaixo e acessá-los como `local.config.region` ou `local.config.vpc.cidr` no nosso código Terraform.
+Nós podemos dessa forma ler esses valores através do código abaixo e acessá-los como `local.config.region` ou `local.config.vpc.cidr`, no nosso código Terraform.
 
 ```terraform
 # variables.tf
@@ -92,7 +92,7 @@ module "vpc" {
 }
 ```
 
-A rede é nomeada de acordo com o nosso _cluster_, seu CIDR e a maioria de suas configurações vêm do arquivo `config.yaml`, [discutido anteriormente](#as-variáveis). Não vou entrar em detalhes sobre como calcular os CIDRs das sub-redes e seus detalhes, mas encontrei um truque inteligente em um dos [exemplos do módulo terraform-aws-eks](https://github.com/terraform-aws-modules/terraform-aws-eks/blob/v20.8.3/examples/karpenter/main.tf#L289).
+A rede é nomeada de acordo com o nosso _cluster_, seu CIDR e a maioria de suas configurações vêm do arquivo `config.yaml`, [discutido anteriormente](#as-variáveis). Não vou me aprofundar sobre como calcular os CIDRs das sub-redes e seus detalhes, mas encontrei um truque inteligente em um dos [exemplos do módulo terraform-aws-eks](https://github.com/terraform-aws-modules/terraform-aws-eks/blob/v20.8.3/examples/karpenter/main.tf#L289).
 
 Também permitimos o [suporte e hostnames DNS](https://docs.aws.amazon.com/pt_br/vpc/latest/userguide/vpc-dns.html#vpc-dns-support) no VPC e [reutilizamos o mesmo gateway NAT em todas as suas sub-redes](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest#single-nat-gateway). O primeiro tem pouco impacto no que discutimos neste _post_, o último nos ajuda a reduzir o custo geral do nosso _setup_.
 
@@ -158,15 +158,15 @@ data "aws_availability_zones" "this" {
 
 A maioria dos parâmetros principais que precisamos são definidos conforme especificado no arquivo `config.yaml`. Também instalamos alguns _add-ons_ (Complementos, na tradução da documentação oficial) disponíveis no EKS. Explicar cada um deles está fora do escopo deste _post_, é suficiente para os nossos propósitos dizer que precisamos deles para que nosso cluster funcione corretamente - você pode ler mais sobre eles em [Complementos do Amazon EKS](https://docs.aws.amazon.com/pt_br/eks/latest/userguide/eks-add-ons.html).
 
-Nós então passamos o ID da VPC que criamos anteriormente, e os IDs de suas sub-redes privadas. Isso não pode ser alterado após a criação do cluster. Além disso, como quero acessar a API do cluster através internet, defino `cluster_endpoint_public_access` como `true`. Eu restringo esse acesso público ao endereço IP da minha rede doméstica.
+Nós então passamos o ID da VPC que criamos anteriormente, e os IDs de suas sub-redes privadas. Isso não pode ser alterado após a criação do cluster. Além disso, como quero acessar a API do cluster através da internet, defino `cluster_endpoint_public_access` como `true`. Eu restrinjo esse acesso público ao endereço IP da minha rede doméstica.
 
-Para os nós, usamos _node groups_ gerenciados pelo EKS por simplicidade, cada um deles sendo uma instância SPOT AWS Linux `t3.small`. Permitimos que o _autoscaling group_ associado cresça de um a três nós. Isso nos dará espaço para testar as coisas sem gastar muito dinheiro.
+Para os nós, usamos _node groups_ gerenciados pelo EKS por simplicidade, cada um deles sendo uma instância SPOT do AWS Linux, tamanho `t3.small`. Permitimos que o _autoscaling group_ associado cresça de um a três nós. Isso nos dará espaço para testar as coisas sem gastar muito dinheiro.
 
-_Ter um **node group** não dimensionará automaticamente o número de nós do grupo com base na carga, precisaríamos usar o [cluster autoscaler](https://github.com/kubernetes/autoscaler) ou o [karpenter](https://karpenter.sh/)_.
+_Ter um **node group** não dimensionará automaticamente o número de nós do grupo com base na carga, precisaríamos usar o [cluster autoscaler](https://github.com/kubernetes/autoscaler) ou o [karpenter](https://karpenter.sh/) para isso_.
 
 Com todas as definições no lugar, é hora de criar o cluster.
 
-## Terraform _plan_ e _apply_
+## Terraform plan e apply
 
 A saída do meu `terraform plan` é mostrada abaixo. O aviso é um [problema conhecido do módulo utilizado](https://github.com/terraform-aws-modules/terraform-aws-eks/issues/2635), devido a atualizações introduzidas pela versão v5.0.1 do _provider_ AWS.
 
