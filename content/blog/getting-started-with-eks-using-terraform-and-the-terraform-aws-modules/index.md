@@ -192,10 +192,10 @@ This command will update our [`~/.kube/config`](https://kubernetes.io/docs/conce
 We can test our access to the cluster by running the `kubectl version` command. Its output should look something like the output below. Client version is the version of the `kubectl` binary we're using, and the server version is the version of the k8s API server we're connecting to. The later means kubectl can connect to the cluster and authenticate itself. We can also notice I'm running a version of the kubectl binary out of the supported minor version skew. I've been successfully using this version for a while now, but if you run into any issues, you might need to update it to one version above or below, or the same as the server version.
 
 ```shell-session
+$ kubectl version
 Client Version: v1.29.0
 Kustomize Version: v5.0.4-0.20230601165947-6ce0bf390ce3
-Server Version: v1.27.8-eks-8cb36c9
-WARNING: version difference between client (1.29) and server (1.27) exceeds the supported minor version skew of +/-1
+Server Version: v1.29.1-eks-b9c9ed7
 ```
 
 We can now also run a couple more commands just in case, like `kubectl get nodes` and `kubectl get pods --all-namespaces` which will list, respectively, the nodes and pods of our cluster. My output is shown below.
