@@ -1,5 +1,6 @@
 ---
 title: "Começando com o EKS utilizando Terraform e os módulos Terraform para a AWS"
+slug: comecando-com-o-eks-utilizando-terraform-e-os-modulos-terraform-para-a-aws
 date: 2024-03-20T18:01:09+01:00
 draft: false
 language: pt
