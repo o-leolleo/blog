@@ -5,15 +5,15 @@ draft: false
 language: pt
 ---
 
-Eu decidi experimentar com diferentes cenários e configurações do EKS, mas também pensei que fornecer um post introdutório sobre como inicializar seu próprio cluster EKS poderia ajudar alguém por aí tentando fazer a mesma coisa.
+Eu decidi experimentar com diferentes cenários e configurações do EKS, mas também pensei que fornecer um _post_ introdutório sobre como inicializar seu próprio cluster EKS poderia ajudar alguém por aí tentando fazer a mesma coisa.
 
 Para isso, estou usando o [Terraform](https://www.terraform.io/) e o [módulo Terraform para AWS EKS](https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest). O primeiro é uma solução muito conhecida para manter infraestrutura como código (IaC). O último é o melhor módulo mantido pela comunidade - que eu conheço - para isso e que cobre a maioria (se não todos) os diferentes casos de uso do EKS.
 
-Os recursos criados neste post custam dinheiro, então, se você o estiver seguindo, **recomendo fortemente que destrua seus recursos do Terraform assim que terminar, para não ser pego de surpresa por uma conta considerável da AWS**. Eu até fui tão longe a ponto de [destruir os recursos da minha conta pessoal da AWS em um cronograma](/blog/wiping-your-aws-account-with-aws-nuke-and-gitlab-ci/) - tenha cuidado se estiver fazendo algo semelhante.
+Os recursos criados neste _post_ custam dinheiro, então, se você o estiver seguindo, **recomendo fortemente que destrua seus recursos do Terraform assim que terminar, para não ser pego de surpresa por uma conta considerável da AWS**. Eu até fui tão longe a ponto de [destruir os recursos da minha conta pessoal da AWS em um cronograma](/blog/wiping-your-aws-account-with-aws-nuke-and-gitlab-ci/) - tenha cuidado se estiver fazendo algo semelhante.
 
 ## As variáveis
 
-O _setup_ depende de um arquivo YAML para configurar o que, de outra forma, seria feito por meio de variáveis e/ou um arquivo tfvars. Fui convencido dos benefícios dessa abordagem pelo post [Terraform with YAML: Part 1](https://xebia.com/blog/terraform-with-yaml-part-1/) de Chris ter Beke. É simples, eficaz e usa construções internas do Terraform. Ele permite uma maior flexibilidade na gestão das entradas do seu [_workspace_](https://developer.hashicorp.com/terraform/language/state/workspaces) Terraform.
+O _setup_ depende de um arquivo YAML para configurar o que, de outra forma, seria feito por meio de variáveis e/ou um arquivo tfvars. Fui convencido dos benefícios dessa abordagem pelo _post_ [Terraform with YAML: Part 1](https://xebia.com/blog/terraform-with-yaml-part-1/) de Chris ter Beke. É simples, eficaz e usa construções internas do Terraform. Ele permite uma maior flexibilidade na gestão das entradas do seu [_workspace_](https://developer.hashicorp.com/terraform/language/state/workspaces) Terraform.
 
 No nosso caso, essas entradas são mostradas no _snippet_ abaixo, onde definimos a região da AWS onde queremos criar nosso cluster e seus recursos, o nome do cluster, a versão, as zonas de disponibilidade e os parâmetros relacionados ao VPC.
 
@@ -94,7 +94,7 @@ module "vpc" {
 
 A rede é nomeada de acordo com o nosso _cluster_, seu CIDR e a maioria de suas configurações vêm do arquivo `config.yaml`, [discutido anteriormente](#as-variáveis). Não vou entrar em detalhes sobre como calcular os CIDRs das sub-redes e seus detalhes, mas encontrei um truque inteligente em um dos [exemplos do módulo terraform-aws-eks](https://github.com/terraform-aws-modules/terraform-aws-eks/blob/v20.8.3/examples/karpenter/main.tf#L289).
 
-Também permitimos o [suporte e hostnames DNS](https://docs.aws.amazon.com/pt_br/vpc/latest/userguide/vpc-dns.html#vpc-dns-support) no VPC e [reutilizamos o mesmo gateway NAT em todas as suas sub-redes](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest#single-nat-gateway). O primeiro tem pouco impacto no que discutimos neste post, o último nos ajuda a reduzir o custo geral do nosso _setup_.
+Também permitimos o [suporte e hostnames DNS](https://docs.aws.amazon.com/pt_br/vpc/latest/userguide/vpc-dns.html#vpc-dns-support) no VPC e [reutilizamos o mesmo gateway NAT em todas as suas sub-redes](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest#single-nat-gateway). O primeiro tem pouco impacto no que discutimos neste _post_, o último nos ajuda a reduzir o custo geral do nosso _setup_.
 
 As _tags_ `kubernetes.io/role/elb` e `kubernetes.io/role/internal-elb` permitem que essas sub-redes sejam descobertas automaticamente pelo [AWS Load Balancer Controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.1/deploy/subnet_discovery/), o que discutiremos em um _post_ futuro.
 
