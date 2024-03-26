@@ -189,7 +189,7 @@ $ aws eks update-kubeconfig --name eks-labs --alias eks-labs
 
 This command will update our [`~/.kube/config`](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) file with the cluster information, and create a new [context](https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/) named `eks-labs` (the alias we gave to our cluster). The above command also sets the created context as the current one, so we can start using it right away.
 
-We can test our access to the cluster by running the `kubectl version` command. Its output should look something like the output below. Client version is the version of the `kubectl` binary we're using, and the server version is the version of the k8s API server we're connecting to. The later means kubectl can connect to the cluster and authenticate itself. We can also notice I'm running a version of the kubectl binary out of the supported minor version skew. I've been successfully using this version for a while now, but if you run into any issues, you might need to update it to one version above or below, or the same as the server version.
+We can test our access to the cluster by running the `kubectl version` command. Its output should look something like the output below. Client version is the version of the `kubectl` binary we're using, and the server version is the version of the k8s API server we're connecting to. The later means kubectl can connect to the cluster and authenticate itself.
 
 ```shell-session
 $ kubectl version
