@@ -55,7 +55,7 @@ jobs:
         uses: cloudflare/wrangler-action@2.0.0
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          command: pages publish --branch main --project-name blog ./public
+          command: pages deploy --branch main --project-name blog ./public
 
       - name: Purge cloudflare cache
         run: |
