@@ -4,16 +4,16 @@ date: 2024-03-20T18:01:09+01:00
 language: en
 ---
 
-I’ve decided to experiment with different EKS scenarios and configurations. But also thought that giving an introductory blog post on how to bootrstrap your own EKS cluster might help someone out there trying to do the same thing.
+I've decided to experiment with different EKS scenarios and configurations, but also thought that providing an introductory blog post on how to bootrstrap your own EKS cluster might help someone out there trying to do the same thing.
 
-For that I'm using [Terraform](https://www.terraform.io/) and the [AWS EKS Terraform module](https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest). The first is a very well known solution for maintaining infrastructure as code (IaC). The later is the best community maintained module - that I know of - for it and which covers most (if not all) the different EKS use cases.
+For that, I'm using [Terraform](https://www.terraform.io/) and the [AWS EKS Terraform module](https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest). The former is a very well known solution for maintaining infrastructure as code (IaC). The later is the best community maintained module - that I know of - for it and which covers most (if not all) the different EKS use cases.
 
-The resources created here costs money, so if you're following it up, **I highly recommend that you destroy your terraform resources once finished, so you're not caught out of surprise with a considerable AWS bill**. I've even gone as far as [detroying my personal AWS account resources on a schedule](/blog/wiping-your-aws-account-with-aws-nuke-and-gitlab-ci/) - be careful if doing something similar.
+The resources created here costs money, so if you're following along, **I highly recommend that you destroy your terraform resources once finished, so you're not caught off guard by a considerable AWS bill**. I've even gone as far as [destroying my personal AWS account resources on a schedule](/blog/wiping-your-aws-account-with-aws-nuke-and-gitlab-ci/) - be careful if doing something similar.
 
 
 ## The variables
 
-The setup relies on a YAML file for configuring what would be otherwise done via variables and/or a tfvars file. I've been convinced of the benefits of this approach by the post [Terraform with YAML: Part 1](https://xebia.com/blog/terraform-with-yaml-part-1/) from Chris ter Beke. It's simple, effective, and uses terraform built-in constructs. It allows greater flexibility on managing the inputs of your terraform workspace.
+The setup relies on a YAML file for configuring what would otherwise be done via variables and/or a tfvars file. I've been convinced of the benefits of this approach by the post [Terraform with YAML: Part 1](https://xebia.com/blog/terraform-with-yaml-part-1/) from Chris ter Beke. It's simple, effective, and uses terraform built-in constructs. It allows greater flexibility in managing the inputs of your terraform workspace.
 
 In our case, these inputs are shown on the snippet below, where we define the AWS region where we want to create our cluster and its reosurces, the cluster name, version, availability zones and VPC related parameters.
 
@@ -38,9 +38,9 @@ locals {
 
 ## The code
 
-With our configs in place we can start the code to create the cluster itself.
+With our configs in place, we can start the code to create the cluster itself.
 
-First, we declare our required providers and the `provider` block, shown on the snippet below. We're using the official AWS provider with a version between `>=5.29` and `<6` (See [Version Constraint Syntax](https://developer.hashicorp.com/terraform/language/expressions/version-constraints#version-constraint-syntax)). The resources are created on the `local.config.region` region as discussed on the [previous section](#the-variables). On top of that, all resources we create are tagged accordingly to the workspace we use on our runs, for easier identification and cross reference.
+First, we declare our required providers and the `provider` block, shown on the snippet below. We're using the official AWS provider with a version between `>=5.29` and `<6` (See [Version Constraint Syntax](https://developer.hashicorp.com/terraform/language/expressions/version-constraints#version-constraint-syntax)). The resources are created on the `local.config.region` region as discussed in the [previous section](#the-variables). On top of that, all resources we create are tagged accordingly to the workspace we use on our runs, for easier identification and cross reference.
 
 ```terraform
 terraform {
@@ -92,7 +92,7 @@ module "vpc" {
 }
 ```
 
-The network is named after our cluster, its CIDR and most of its settings are passed from the `config.yaml` file, [discussed earlier](#the-variables). I won't dig into how to calculate the subnets CIDRs and its details, but I found this clever trick on one of the [terraform-aws-eks module examples](https://github.com/terraform-aws-modules/terraform-aws-eks/blob/v20.8.3/examples/karpenter/main.tf#L289).
+The network is named after our cluster, its CIDR and most of its settings are passed from the `config.yaml` file, [discussed earlier](#the-variables). I won't delve into how to calculate the subnets CIDRs and its details, but I found this clever trick on one of the [terraform-aws-eks module examples](https://github.com/terraform-aws-modules/terraform-aws-eks/blob/v20.8.3/examples/karpenter/main.tf#L289).
 
 We also allow [DNS hostnames and support](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns.html#vpc-dns-support) on the VPC and [reuse the same NAT gateway on all its subnets](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest#single-nat-gateway). The first has little impact to what we discuss on this post, the later helps us reduce the cost of the overall setup.
 
