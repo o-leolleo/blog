@@ -94,7 +94,7 @@ module "vpc" {
 
 The network is named after our cluster, its CIDR and most of its settings are passed from the `config.yaml` file, [discussed earlier](#the-variables). I won't delve into how to calculate the subnets CIDRs and its details, but I found this clever trick on one of the [terraform-aws-eks module examples](https://github.com/terraform-aws-modules/terraform-aws-eks/blob/v20.8.3/examples/karpenter/main.tf#L289).
 
-We also allow [DNS hostnames and support](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns.html#vpc-dns-support) on the VPC and [reuse the same NAT gateway on all its subnets](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest#single-nat-gateway). The first has little impact to what we discuss on this post, the later helps us reduce the cost of the overall setup.
+We also allow [DNS hostnames and support](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns.html#vpc-dns-support) on the VPC and [reuse the same NAT gateway on all its subnets](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest#single-nat-gateway). The former has little impact to what we discuss on this post, the later helps us reduce the cost of the overall setup.
 
 The `kubernetes.io/role/elb` and `kubernetes.io/role/internal-elb` tags allows these subnets to be auto discovered by the [AWS Load Balancer Controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.1/deploy/subnet_discovery/), which we'll discuss in a later post.
 
@@ -162,13 +162,13 @@ We then pass the VPC ID of the VPC we created earlier, and its private subnets I
 
 For the nodes we use EKS managed node groups for simplicity, each of them being an AWS Linux `t3.small` SPOT instance. We allow the associated autoscaling group to grow from one up to three nodes. This will give us room to test things out without spending too much money.
 
-_Having a node group, won't automatically scale up the node count based on load, for that we'd need to use the [cluster autoscaler](https://github.com/kubernetes/autoscaler) or [karpenter](https://karpenter.sh/)_.
+_Having a node group, won't automatically scale up the node count based on load, we'd need to use the [cluster autoscaler](https://github.com/kubernetes/autoscaler) or [karpenter](https://karpenter.sh/)_.
 
 With all the definitions in place, time to create the cluster.
 
 ## Terraform plan and apply
 
-My terraform plan output is (partially) shown below. The warning is a [known issue within the module](https://github.com/terraform-aws-modules/terraform-aws-eks/issues/2635), due to some updates introduced by the AWS provider in its version v5.0.1
+My terraform plan output is (partially) shown below. The warning is a [known issue within the module](https://github.com/terraform-aws-modules/terraform-aws-eks/issues/2635), resulting from updates introduced by the AWS provider in its version v5.0.1
 
 [![Terraform plan output](terraform-plan.png)](terraform-plan.png)
 
@@ -215,10 +215,10 @@ kube-system   kube-proxy-9gcmv          1/1     Running   0          75s
 
 ## Cleaning up
 
-Once finished with our experiments, and to avoid a surprise billing from AWS, we can destroy our cluster and the associated resources by running `terraform destroy`.
+Once finished with our experiments, and to avoid unexpected charges from AWS, we can destroy our cluster and the associated resources by running `terraform destroy`.
 
 [![Terraform destroy output](terraform-destroy.png)](terraform-destroy.png)
 
 ## Conclusion
 
-We've successfully created a functional EKS cluster, connected to it and ran some simple commands. The whole setup is managed as code, making it reproducible and easy to maintain. It still lacks a few things, like common addons like ingress controllers, monitoring and logging solutions, as well as a proper IAM setup. The idea is to cover those on future posts. So stay tuned!
+We've successfully created a functional EKS cluster, connected to it and ran some simple commands. The entire setup is managed as code, making it reproducible and easy to maintain. It still lacks a few things, such as common addons like ingress controllers, monitoring and logging solutions, as well as a proper IAM setup. The idea is to cover those on future posts. So stay tuned!
