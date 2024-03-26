@@ -1,5 +1,5 @@
 ---
-title: "Getting Started With EKS"
+title: "Getting Started With EKS using Terraform and the Terraform AWS modules"
 date: 2024-03-20T18:01:09+01:00
 language: en
 ---
@@ -15,7 +15,7 @@ The resources created here costs money, so if you're following it up, **I highly
 
 The setup relies on a YAML file for configuring what would be otherwise done via variables and/or a tfvars file. I've been convinced of the benefits of this approach by the post [Terraform with YAML: Part 1](https://xebia.com/blog/terraform-with-yaml-part-1/) from Chris ter Beke. It's simple, effective, and uses terraform built-in constructs. It allows greater flexibility on managing the inputs of your terraform workspace.
 
-In our case, these inputs are shown on the snippet below, where we define the AWS region where we want to create our cluster and its reosurces, the cluster name, availability zones and VPC related parameters.
+In our case, these inputs are shown on the snippet below, where we define the AWS region where we want to create our cluster and its reosurces, the cluster name, version, availability zones and VPC related parameters.
 
 ```yaml
 # config.yaml
@@ -156,7 +156,7 @@ data "aws_availability_zones" "this" {
 }
 ```
 
-The cluster name is defined as specifyed on the `config.yaml` file, and the k8s version as 1.27. We also install some EKS available addons. Explaning each of them is out of the scope of this post, it's enough to say for our purposes that we need them for our cluster to correctly function - you can read more about them on [Amazon EKS add-ons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html).
+Most of the main parameters we need are defined as specifyed on the `config.yaml` file. We also install some EKS available addons. Explaining each of them is out of the scope of this post, it's enough to say for our purposes that we need them for our cluster to correctly function - you can read more about them on [Amazon EKS add-ons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html).
 
 We then pass the VPC ID of the VPC we created earlier, and its private subnets IDs. This can't be changed after cluster creation. Also, since I want to access the cluster API from the internet, I set `cluster_endpoint_public_access` to `true`. I restrict this public access to the IP address of my home network.
 
