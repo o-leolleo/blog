@@ -8,6 +8,10 @@
 
   <link rel="icon" type="image/x-icon" href="{{ .Site.BaseURL }}favicon.ico">
 
+  {{ with .OutputFormats.Get "rss" -}}
+    {{ printf `<link rel=%q type=%q href=%q title=%q>` .Rel .MediaType.Type .Permalink site.Title | safeHTML }}
+  {{ end }}
+
   {{ if .IsTranslated }}
     {{ range .Translations }}
     <link rel="alternate" hreflang="{{ .Language.LanguageCode }}" href="{{ .Permalink }}" title="{{ .Language.LanguageName }}" />
