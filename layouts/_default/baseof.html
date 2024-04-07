@@ -8,7 +8,7 @@
 
   <link rel="icon" type="image/x-icon" href="{{ .Site.BaseURL }}favicon.ico">
 
-  {{ with .OutputFormats.Get "rss" -}}
+  {{ with .Site.Home.OutputFormats.Get "rss" -}}
     {{ printf `<link rel=%q type=%q href=%q title=%q>` .Rel .MediaType.Type .Permalink site.Title | safeHTML }}
   {{ end }}
 

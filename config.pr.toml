@@ -5,6 +5,12 @@ sectionPagesMenu = "main"
 disableKinds = ['taxonomy', 'term']
 summaryLength = 40
 
+[outputs]
+  home = ['html', 'rss']
+  section = ['html']
+  taxonomy = ['html']
+  term = ['html']
+
 [params]
   dateFormat = 'Jan 02, 2006'
   iconSize = '40px'
