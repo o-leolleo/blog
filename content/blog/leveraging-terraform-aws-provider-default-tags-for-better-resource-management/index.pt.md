@@ -1,11 +1,11 @@
 ---
-title: "Leveraging Terraform AWS provider default tags for better resource management"
+title: "Utilizando as tags padrão do provider AWS do Terraform para melhorar a administração dos seus recursos"
 date: 2024-04-06T16:38:23+02:00
 draft: false
-language: en
+language: pt
 ---
 
-Tagging resources in AWS is a best practice to manage and organize your resources. Its official docs are extensive on how [one can achieve a good tagging strategy](https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html). In a scenario where you're automating your infrastructure provisioning with Terraform, you can go a step further and easily manage your tags with the [AWS provider's default tags feature](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider). This helps you achieve a consistent tagging strategy across your resources, improving your resource management and visibility.
+Marcar (utilizando a tradução da documentação oficial para _tagging_) os seus recursos na AWS é uma prática recomendada para administrar e organizar os seus recursos. A documentação oficial é extensa sobre como [alcançar uma boa estratégia de marcação](https://docs.aws.amazon.com/pt_br/whitepapers/latest/tagging-best-practices/tagging-best-practices.html). Em um cenário onde você está automatizando o provisionamento da sua infraestrutura com o Terraform, você pode ir um passo além e gerenciar facilmente as suas tags com o [recurso de tags padrão do provider AWS](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider). Isso ajuda você a alcançar uma estratégia de marcação consistente em todos os seus recursos, melhorando a sua administração e visibilidade dos recursos.
 
 ## The default_tags block
 
