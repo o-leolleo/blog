@@ -9,7 +9,7 @@ Tagging resources in AWS is a best practice to manage and organize your resource
 
 ## The default_tags block
 
-The snippet below illustrates the concept. The tags `Environment = "Dev"` and `Owner = "John Doe"` are be automatically applied to all resources created by the AWS provider for your current Terraform workspace, whilst you're still able to add specific tags per resource via their `tags` property.
+The snippet below illustrates the concept. The tags `Environment = "Dev"` and `Owner = "John Doe"` are automatically applied to all resources created by the AWS provider for your current Terraform workspace, whilst you're still able to add specific tags per resource via their `tags` property.
 
 ```terraform
 terraform {
@@ -47,7 +47,7 @@ resource "aws_s3_bucket" "defaults_and_overrides" {
 
 ```
 
-By running `terraform plan` we get the output below. Notice how the default tags are applied to both buckets and overridden and extended in the second one.
+By running `terraform plan` we get the output below. Notice how the default tags are applied to both buckets and overridden and extended in the second one (first in the picture).
 
 [![Terraform plan output](terraform-plan.png)](terraform-plan.png)
 
@@ -55,8 +55,6 @@ After applying the plan, the below is how it looks like for both buckets tags on
 
 [![AWS Management Console default tags](aws-console-tags-defaults.png)](aws-console-tags-defaults.png)
 [![AWS Management Console overriden and extra tags](aws-console-tags-overriden-extra.png)](aws-console-tags-overriden-extra.png)
-
-It's worth mentioning that the default tags are also applied to any resources created by [modules linked to the same provider](https://developer.hashicorp.com/terraform/language/modules/develop/providers).
 
 ## Creating a terraform workspace back reference tag
 
@@ -68,4 +66,6 @@ This has the added benefit of making you able to filter resources by workspace i
 
 ## Conclusion
 
-He're we've seen a simple yet powerful way to label your AWS resources with Terraform, making it easier to manage and track them. This is just one of many benefits one gets by leveraging infrastructure as code in general.
+In this short post we've seen a simple yet powerful way to label your AWS resources with Terraform, making it easier to manage and track them. This is just one of many benefits one gets by leveraging infrastructure as code in general.
+
+I hope you found this post useful and that it helps you in your journey. If you have any questions or suggestions, feel free to reach out in the comments below. Happy coding! 🚀
