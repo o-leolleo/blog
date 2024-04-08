@@ -1,5 +1,5 @@
 ---
-title: "Leveraging Terraform AWS Provider Default Tags for Better Resource Management"
+title: "Leveraging Terraform AWS provider default tags for better resource management"
 date: 2024-04-06T16:38:23+02:00
 draft: false
 language: en
