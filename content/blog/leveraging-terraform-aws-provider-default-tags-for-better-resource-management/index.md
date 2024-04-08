@@ -56,6 +56,8 @@ After applying the plan, the below is how it looks like for both buckets tags on
 [![AWS Management Console default tags](aws-console-tags-defaults.png)](aws-console-tags-defaults.png)
 [![AWS Management Console overriden and extra tags](aws-console-tags-overriden-extra.png)](aws-console-tags-overriden-extra.png)
 
+It's worth mentioning that the default tags are also applied to any resources created by [modules linked to the same provider](https://developer.hashicorp.com/terraform/language/modules/develop/providers).
+
 ## Creating a terraform workspace back reference tag
 
 A useful way to use the above is to attach a `TerraformWorkspace` tag to all your terraform AWS resources. This gives you the ability to quickly back reference any resource you see on your AWS account(s) back to the code/workspace that defines it, plus it helps in idenfifying which ones were created manually or by other means.
