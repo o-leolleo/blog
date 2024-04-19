@@ -5,11 +5,11 @@ draft: false
 language: pt
 ---
 
-Marcar (utilizando a tradução da documentação oficial para _tagging_) os seus recursos na AWS é uma prática recomendada para administrar e organizar os seus recursos. A documentação oficial é extensa sobre como [alcançar uma boa estratégia de marcação](https://docs.aws.amazon.com/pt_br/whitepapers/latest/tagging-best-practices/tagging-best-practices.html). Em um cenário onde você está automatizando o provisionamento da sua infraestrutura com o Terraform, você pode ir um passo além e gerenciar facilmente as suas tags com o [recurso de tags padrão do provider AWS](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider). Isso ajuda você a alcançar uma estratégia de marcação consistente em todos os seus recursos, melhorando a sua administração e visibilidade dos recursos.
+Rotular (a tradução da documentação oficial utiliza o termo marcar, para _tagging_) os seus recursos na AWS é uma prática recomendada para administrar e organizar os seus recursos. A documentação oficial é extensa sobre como [alcançar uma boa estratégia de marcação](https://docs.aws.amazon.com/pt_br/whitepapers/latest/tagging-best-practices/tagging-best-practices.html). Em um cenário onde você está automatizando o provisionamento da sua infraestrutura com o Terraform, você pode ir um passo além e gerenciar facilmente as suas _tags_ com o [recurso de _tags_ padrão do provider AWS](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider). Isso ajuda você a alcançar uma estratégia de marcação consistente em todos os seus recursos, melhorando a sua administração e visibilidade dos recursos.
 
-## The default_tags block
+## O bloco default_tags
 
-The snippet below illustrates the concept. The tags `Environment = "Dev"` and `Owner = "John Doe"` are automatically applied to all resources created by the AWS provider for your current Terraform workspace, whilst you're still able to add specific tags per resource via their `tags` property.
+O trecho de código abaixo ilustra o conceito, onde as _tags_ `Environment = "Dev"` e `Owner = "John Doe"` são automaticamente aplicadas a todos os recursos criados pelo _provider_ AWS para o seu _workspace_ Terraform, ao mesmo tempo em que é possível adicionar _tags_ específicas por recurso através da propriedade `tags`.
 
 ```terraform
 terraform {
@@ -27,45 +27,45 @@ provider "aws" {
   default_tags {
     tags = {
       Environment = "Dev"
-      Owner       = "John Doe"
+      Owner       = "Fulano"
     }
   }
 }
 
-resource "aws_s3_bucket" "defaults_only" {
-  bucket = "leolleo-dev-default-tags-only-bucket"
+resource "aws_s3_bucket" "somente_tags_padrao" {
+  bucket = "leolleo-dev-bucket-com-somente-tags-padrao"
 }
 
-resource "aws_s3_bucket" "defaults_and_overrides" {
-  bucket = "leolleo-dev-default-tags-and-overrides-bucket"
+resource "aws_s3_bucket" "tags_padrao_e_sobrescritas" {
+  bucket = "leolleo-dev-default-tags-padrao-e-sobrescritas"
 
   tags = {
-    Owner   = "Jane Doe"
-    Purpose = "Temporary storage"
+    Owner   = "Sicrano"
+    Purpose = "Armazenamento temporário"
   }
 }
 
 ```
 
-By running `terraform plan` we get the output below. Notice how the default tags are applied to both buckets and overridden and extended in the second one (first in the picture).
+Executando `terraform plan` obtemos a saída abaixo. Note como as _tags_ padrão são aplicadas a ambos os _buckets_ e sobrescritas e estendidas no segundo (primeiro na imagem).
 
-[![Terraform plan output](terraform-plan.png)](terraform-plan.png)
+[![Saída do plano do Terraform](terraform-plan.pt.png)](terraform-plan.pt.png)
 
-After applying the plan, the below is how it looks like for both buckets tags on the AWS console.
+Após aplicar o plano, as imagens abaixo mostram como ficam as _tags_ de ambos os _buckets_ no console da AWS.
 
-[![AWS Management Console default tags](aws-console-tags-defaults.png)](aws-console-tags-defaults.png)
-[![AWS Management Console overriden and extra tags](aws-console-tags-overriden-extra.png)](aws-console-tags-overriden-extra.png)
+[![Console de gerenciamento da AWS com as tags padrão](aws-console-tags-defaults.png)](aws-console-tags-defaults.png)
+[![Console de gerenciamento da AWS com as tags sobrescritas e extras](aws-console-tags-overriden-extra.png)](aws-console-tags-overriden-extra.png)
 
-## Creating a terraform workspace back reference tag
+## Criando uma tag de referência ao workspace do terraform
 
-A useful way to use the above is to attach a `TerraformWorkspace` tag to all your terraform AWS resources. This gives you the ability to quickly back reference any resource you see on your AWS account(s) back to the code/workspace that defines it, plus it helps in idenfifying which ones were created manually or by other means.
+Uma maneira útil de utilizar o que foi mostrado acima é anexar uma tag `TerraformWorkspace` a todos os seus recursos AWS do terraform. Isso lhe dá a capacidade de referenciar rapidamente qualquer recurso que você veja na sua(s) conta(s) AWS de volta ao código/_workspace_ que o define, além de ajudar a identificar quais deles foram criados manualmente ou por outros meios.
 
-The workspace value is made available to your code through the [`terraform.workspace` named value](https://developer.hashicorp.com/terraform/language/expressions/references#terraform-workspace), which makes it possible to use it as `TerraformWorkspace = terraform.workspace` on the `default_tags` block.
+O nome do _workspace_ é disponibilizado ao seu código através do [valor nomeado `terraform.workspace`](https://developer.hashicorp.com/terraform/language/expressions/references#terraform-workspace), o que torna possível utilizá-lo como `TerraformWorkspace = terraform.workspace` no bloco `default_tags`.
 
-This has the added benefit of making you able to filter resources by workspace in the AWS Management Console, CLI, or SDKs, and to use it as a [cost allocation tag](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html), making you able to track your AWS costs by workspace.
+Isso tem o benefício adicional de torná-lo capaz de filtrar o seus recursos na AWS por _workspace_, seja no _Management Console_, CLI ou SDKs; e de utilizá-lo como uma [tag de alocação de custos](https://docs.aws.amazon.com/pt_br/awsaccountbilling/latest/aboutv2/custom-tags.html), permitindo que você rastreie os seus custos AWS por _workspace_.
 
-## Conclusion
+## Conclusão
 
-In this short post we've seen a simple yet powerful way to label your AWS resources with Terraform, making it easier to manage and track them. This is just one of many benefits one gets by leveraging infrastructure as code in general.
+Neste pequeno post vimos uma maneira simples, porém poderosa, de rotular os seus recursos AWS com o Terraform, facilitando a sua administração e rastreamento. Este é apenas um dos muitos benefícios que se obtém da utilização da infraestrutura como código de um modo geral.
 
-I hope you found this post useful and that it helps you in your journey. If you have any questions or suggestions, feel free to reach out in the comments below. Happy coding! 🚀
+Espero que tenha achado este post útil e que ele lhe ajude na sua jornada. Se tiver alguma dúvida ou sugestão, sinta-se à vontade para entrar em contato nos comentários abaixo. Boa codificação! 🚀
