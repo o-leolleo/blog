@@ -5,7 +5,7 @@ draft: false
 language: pt
 ---
 
-Rotular (a tradução da documentação oficial utiliza o termo marcar, para _tagging_) os seus recursos na AWS é uma prática recomendada para administrar e organizar os seus recursos. A documentação oficial é extensa sobre como [alcançar uma boa estratégia de marcação](https://docs.aws.amazon.com/pt_br/whitepapers/latest/tagging-best-practices/tagging-best-practices.html). Em um cenário onde você está automatizando o provisionamento da sua infraestrutura com o Terraform, você pode ir um passo além e gerenciar facilmente as suas _tags_ com o [recurso de _tags_ padrão do provider AWS](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider). Isso ajuda você a alcançar uma estratégia de marcação consistente em todos os seus recursos, melhorando a sua administração e visibilidade dos recursos.
+Rotular (a tradução da documentação oficial utiliza o termo marcar, para _tagging_) os seus recursos na AWS é uma prática recomendada para administrar e organizar os seus recursos. A documentação oficial é extensa sobre como [alcançar uma boa estratégia de marcação](https://docs.aws.amazon.com/pt_br/whitepapers/latest/tagging-best-practices/tagging-best-practices.html). Em um cenário onde você está automatizando o provisionamento da sua infraestrutura com o Terraform, é possível ir um passo além e gerenciar facilmente as suas _tags_ com o [recurso de _tags_ padrão do provider AWS](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider). Isso o ajuda a alcançar uma estratégia de marcação consistente em todos os seus recursos, melhorando a sua administração e visibilidade dos recursos.
 
 ## O bloco default_tags
 
@@ -58,7 +58,7 @@ Após aplicar o plano, as imagens abaixo mostram como ficam as _tags_ de ambos o
 
 ## Criando uma tag de referência ao workspace do terraform
 
-Uma maneira útil de utilizar o que foi mostrado acima é anexar uma tag `TerraformWorkspace` a todos os seus recursos AWS do terraform. Isso lhe dá a capacidade de referenciar rapidamente qualquer recurso que você veja na sua(s) conta(s) AWS de volta ao código/_workspace_ que o define, além de ajudar a identificar quais deles foram criados manualmente ou por outros meios.
+Uma maneira útil de utilizar o que foi mostrado acima é anexar uma tag `TerraformWorkspace` a todos os seus recursos AWS do Terraform. Isso lhe dá a capacidade de referenciar rapidamente qualquer recurso que você veja na sua(s) conta(s) AWS de volta ao código/_workspace_ que o define, além de ajudar a identificar quais deles foram criados manualmente ou por outros meios.
 
 O nome do _workspace_ é disponibilizado ao seu código através do [valor nomeado `terraform.workspace`](https://developer.hashicorp.com/terraform/language/expressions/references#terraform-workspace), o que torna possível utilizá-lo como `TerraformWorkspace = terraform.workspace` no bloco `default_tags`.
 
