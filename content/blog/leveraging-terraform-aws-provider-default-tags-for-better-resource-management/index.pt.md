@@ -53,8 +53,8 @@ Executando `terraform plan` obtemos a saída abaixo. Note como as _tags_ padrão
 
 Após aplicar o plano, as imagens abaixo mostram como ficam as _tags_ de ambos os _buckets_ no console da AWS.
 
-[![Console de gerenciamento da AWS com as tags padrão](aws-console-tags-defaults.png)](aws-console-tags-defaults.png)
-[![Console de gerenciamento da AWS com as tags sobrescritas e extras](aws-console-tags-overriden-extra.png)](aws-console-tags-overriden-extra.png)
+[![Console de gerenciamento da AWS com as tags padrão](aws-console-tags-defaults.pt.png)](aws-console-tags-defaults.pt.png)
+[![Console de gerenciamento da AWS com as tags sobrescritas e extras](aws-console-tags-overriden-extra.pt.png)](aws-console-tags-overriden-extra.pt.png)
 
 ## Criando uma tag de referência ao workspace do terraform
 
