@@ -9,6 +9,7 @@ spec:
     app: elasticsearch
   ports:
     - protocol: TCP
+      nodePort: 30000
       port: 9200
       targetPort: 9200
 ---

@@ -27,13 +27,13 @@ resource "helm_release" "fluent_bit" {
   create_namespace = true
 
   values = [
-    file("./fluent-bit.values.yaml")
+    file("./manifests/fluent-bit.values.yaml")
   ]
 }
 
 resource "kubernetes_manifest" "elasticsearch" {
   for_each = {
-    for m in provider::kubernetes::manifest_decode_multi(file("elasticsearch.yaml")):
+    for m in provider::kubernetes::manifest_decode_multi(file("manifests/elasticsearch.yaml")):
     "${m.apiVersion}/${m.kind}/${try(m.spec.type, ".")}/${m.metadata.name}" => m
   }
 
@@ -42,7 +42,7 @@ resource "kubernetes_manifest" "elasticsearch" {
 
 resource "kubernetes_manifest" "kibana" {
   for_each = {
-    for m in provider::kubernetes::manifest_decode_multi(file("kibana.yaml")):
+    for m in provider::kubernetes::manifest_decode_multi(file("manifests/kibana.yaml")):
     "${m.apiVersion}/${m.kind}/${try(m.spec.type, ".")}/${m.metadata.name}" => m
   }
 
