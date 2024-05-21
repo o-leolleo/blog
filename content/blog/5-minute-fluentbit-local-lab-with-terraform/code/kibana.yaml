@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+  namespace: logging
+spec:
+  type: LoadBalancer
+  selector:
+    app: kibana
+  ports:
+    - protocol: TCP
+      port: 5601
+      targetPort: 5601
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+  namespace: logging
+spec:
+  selector:
+    app: kibana
+  ports:
+  - port: 5601
+    targetPort: 5601
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana
+  namespace: logging
+spec:
+  selector:
+    matchLabels:
+      app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+        - name: kibana
+          image: kibana:8.13.4
+          env:
+            - name: XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY
+              value: d1a66dfd-c4d3-4a0a-8290-2abcb83ab3aa
+          resources:
+            limits:
+              memory: "2Gi"
+              cpu: "1"
+          ports:
+            - containerPort: 5601

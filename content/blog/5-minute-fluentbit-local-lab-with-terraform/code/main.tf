@@ -40,3 +40,13 @@ resource "kubernetes_manifest" "elasticsearch" {
   manifest = each.value
 }
 
+resource "kubernetes_manifest" "kibana" {
+  for_each = {
+    for m in provider::kubernetes::manifest_decode_multi(file("kibana.yaml")):
+    "${m.apiVersion}/${m.kind}/${try(m.spec.type, ".")}/${m.metadata.name}" => m
+  }
+
+  manifest = each.value
+}
+
+
