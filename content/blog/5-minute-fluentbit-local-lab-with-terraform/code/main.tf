@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     kubernetes = {
-      source = "hashicorp/kubernetes"
+      source  = "hashicorp/kubernetes"
       version = "~> 2.30"
     }
   }
@@ -27,26 +27,25 @@ resource "helm_release" "fluent_bit" {
   create_namespace = true
 
   values = [
-    file("./manifests/fluent-bit.values.yaml")
+    file("./values-files/fluent-bit.values.yaml")
   ]
 }
 
-resource "kubernetes_manifest" "elasticsearch" {
-  for_each = {
-    for m in provider::kubernetes::manifest_decode_multi(file("manifests/elasticsearch.yaml")):
-    "${m.apiVersion}/${m.kind}/${try(m.spec.type, ".")}/${m.metadata.name}" => m
-  }
+resource "kubernetes_manifest" "all" {
+  for_each = local.manifests
 
   manifest = each.value
 }
 
-resource "kubernetes_manifest" "kibana" {
-  for_each = {
-    for m in provider::kubernetes::manifest_decode_multi(file("manifests/kibana.yaml")):
-    "${m.apiVersion}/${m.kind}/${try(m.spec.type, ".")}/${m.metadata.name}" => m
+locals {
+  manifests = {
+    for m in local._manifests :
+    "${m.apiVersion}/${m.kind}/${m.metadata.name}/${substr(sha256(provider::kubernetes::manifest_encode(m)), 0, 6)}" => m
   }
 
-  manifest = each.value
+  _manifests = flatten([
+    for file in fileset("./manifests", "**.yaml") :
+    provider::kubernetes::manifest_decode_multi(file("./manifests/${file}"))
+  ])
 }
-
 
