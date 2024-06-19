@@ -47,8 +47,8 @@ and the below after confirmation:
 
 [![Terraform apply output](terraform-apply.png)](terraform-apply.png)
 
-With the above in place you can navigate to the [Kibana](http://localhost:5601) installation. Click on the sandwitch menu on the left corner and navigate to **Discover**. Click on **Create data view** and inform **Name** and **index-pattern** as `kube-*`. Click on **Save data view to Kibana** and you should see something similar to the below:
+With the above in place you can navigate to the [Kibana](http://localhost:5601) installation. Click on the sandwich menu on the left corner and navigate to **Discover**. Click on **Create data view** and inform **Name** and **index-pattern** as `kube-*`. Click on **Save data view to Kibana** and you should see something similar to the below:
 
 [![Kibana logs](kibana-logs.png)](kibana-logs.png)
 
-These are all logs collecated by fluentbit from the kubernetes cluster.
+These are all logs collected by fluentbit from the kubernetes cluster. Elasticsearch and Kibana are not the main topic of this post, so we'll them for visualizing the fluentbit delivered logs only, without further discussion.
