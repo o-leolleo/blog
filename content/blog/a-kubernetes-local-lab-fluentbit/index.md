@@ -52,3 +52,9 @@ With the above in place you can navigate to the [Kibana](http://localhost:5601) 
 [![Kibana logs](kibana-logs.png)](kibana-logs.png)
 
 These are all logs collected by fluentbit from the kubernetes cluster. Elasticsearch and Kibana are not the main topic of this post, so we'll them for visualizing the fluentbit delivered logs only, without further discussion.
+
+We can also debug fluentbit by tailing its logs via:
+
+```bash
+kubectl logs -n logging -l app=fluent-bit -f
+```
