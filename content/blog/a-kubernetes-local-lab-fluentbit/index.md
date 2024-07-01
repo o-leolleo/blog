@@ -47,14 +47,112 @@ and the below after confirmation:
 
 [![Terraform apply output](terraform-apply.png)](terraform-apply.png)
 
-With the above in place you can navigate to the [Kibana](http://localhost:5601) installation. Click on the sandwich menu on the left corner and navigate to **Discover**. Click on **Create data view** and inform **Name** and **index-pattern** as `kube-*`. Click on **Save data view to Kibana** and you should see something similar to the below:
+With the above in place you can navigate to the Kibana installation at [http://localhost:5601](http://localhost:5601). Click on the sandwich menu on the left corner and navigate to **Discover**. Click on **Create data view** and inform **Name** and **index-pattern** as `kube-*`. Click on **Save data view to Kibana** and you should see something similar to the below:
 
 [![Kibana logs](kibana-logs.png)](kibana-logs.png)
 
-These are all logs collected by fluentbit from the kubernetes cluster, feel free to give it a try and experiment with a bit! Elasticsearch and Kibana are not the main topic of this post, we'll use them for visualizing the fluentbit delivered logs only, without further discussion.
+These are all the logs collected by fluentbit from the kubernetes cluster, feel free to give it a try and experiment with a bit! Elasticsearch and Kibana are not the main topic of this post, we'll use them for visualizing the fluentbit delivered logs only, without further discussion.
 
-We can also debug fluentbit by tailing its logs via:
+We can also debug fluentbit by tailing its logs via (they're now also available in Kibana!):
 
 ```bash
 kubectl logs -n logging -l app=fluent-bit -f
+```
+
+## The code
+
+
+We'll discuss the code in parts, starting with the `main.tf` file. The full code is available at the [repository](https://github.com/o-leolleo/a-kubernetes-local-lab) mentioned on the last section.
+
+### main.tf
+
+We start by defining our required providers and instantiating them.
+
+```terraform
+terraform {
+  required_providers {
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.30" #1
+    }
+  }
+}
+
+provider "helm" {
+  kubernetes {
+    config_path    = "~/.kube/config" #2
+    config_context = "docker-desktop" #3
+  }
+}
+
+provider "kubernetes" {
+  config_path    = "~/.kube/config"
+  config_context = "docker-desktop"
+}
+```
+
+1. Required version for the kubernetes provider (`version >= 2.30 and version < 3`), see more at [Version Constraints](https://developer.hashicorp.com/terraform/language/expressions/version-constraints)
+2. Path to our kubeconfig file
+3. Context to use (preferably a local one)
+
+We then proceed to declare the fluentbit helm installation via the Terraform [`helm_release`](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) resource.
+
+```terraform
+resource "helm_release" "fluent_bit" {
+  name             = "fluent-bit" #1
+  repository       = "https://fluent.github.io/helm-charts"
+  chart            = "fluent-bit"
+  namespace        = "logging"
+  create_namespace = true
+
+  values = [
+    file("./values-files/fluent-bit.values.yaml") #2
+  ]
+}
+```
+
+1. Name of the helm release as it appears in the cluster
+2. values file to be used for the helm release - we'll soon discuss it
+
+The above is the same as running the below.
+
+```bash
+helm repo add fluent https://fluent.github.io/helm-charts
+
+helm install \
+  fluent-bit \
+  fluent/fluent-bit \
+  --namespace logging \
+  --values ./values-files/fluent-bit.values.yaml
+  --create-namespace
+```
+
+here `fluent-bit` is the name of the helm release and `fluent/fluent-bit` is the chart to be installed, the rest is as per the Terraform resource.
+
+<!-- TODO: Why `fluent/fluent-bit` but on terraform we specify `fluent-bit` only? -->
+
+The rest of `main.tf` is dedicated to create minimalist deployments for Elasticsearch and Kibana.
+
+```terraform
+resource "kubernetes_manifest" "all" {
+  for_each = local.manifests
+
+  manifest = each.value
+
+  depends_on = [
+    helm_release.fluent_bit
+  ]
+}
+
+locals {
+  manifests = {
+    for m in local._manifests :
+    "${m.apiVersion}/${m.kind}/${m.metadata.name}" => m
+  }
+
+  _manifests = flatten([
+    for file in fileset("./manifests", "**.yaml") :
+    provider::kubernetes::manifest_decode_multi(file("./manifests/${file}"))
+  ])
+}
 ```
