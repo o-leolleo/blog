@@ -95,6 +95,8 @@ provider "kubernetes" {
 2. Path to our kubeconfig file
 3. Context to use (preferably a local one)
 
+Here targeting a remote cluster would be just a matter of changing the `config_context`, assuming the remote cluster is already configured in your kubeconfig file and accessible.
+
 We then proceed to declare the fluentbit helm installation via the Terraform [`helm_release`](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) resource.
 
 ```terraform
