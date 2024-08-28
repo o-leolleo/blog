@@ -36,12 +36,14 @@ function setDarkTheme() {
   document.documentElement.classList.remove('light');
   document.documentElement.classList.add('dark');
   localStorage.theme = 'dark';
+  document.dispatchEvent(new Event('dark-theme-set'));
 }
 
 function setLightTheme() {
   document.documentElement.classList.remove('dark');
   document.documentElement.classList.add('light');
   localStorage.theme = 'light';
+  document.dispatchEvent(new Event('light-theme-set'));
 }
 
 function scrollToTop() {
