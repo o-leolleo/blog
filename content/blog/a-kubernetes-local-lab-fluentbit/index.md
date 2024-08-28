@@ -192,4 +192,89 @@ In the next section we get into the fluentbit values file details.
 I won't dig much into the Elasticsearch and Kibana deployments,
 they're pretty standard and can be found at the [o-leolleo/a-kubernetes-local-lab//fluentbit/manifests](https://github.com/o-leolleo/a-kubernetes-local-lab/tree/main/fluentbit/manifests) repository folder.
 
-### The fluentbit values file
+## Fluentbit
+
+### The configuration (values) file
+
+The fluentbit configuration file will serve as a basis for the later discussions and exploration.
+Since we're using helm to deploy fluentbit, we'll be using a values file to pass our configuration. You can check the full list of avaliable values [here](https://github.com/fluent/helm-charts/blob/main/charts/fluent-bit/values.yaml).
+
+```mermaid
+flowchart LR
+
+  classDef dashed stroke-dasharray: 5 5;
+
+  Input --> Parser:::dashed
+  Parser --> Filter
+  Filter --> Buffer:::dashed
+  Buffer --> Router((Router))
+  Router --> Output1[Output 1]
+  Router --> Output2[Output 2]
+  Router --> Output3[Output 3]
+```
+
+
+```yaml
+config:
+  service: |
+    [SERVICE]
+        Daemon Off
+        Flush {{ .Values.flush }}
+        Log_Level {{ .Values.logLevel }}
+        Parsers_File /fluent-bit/etc/parsers.conf
+        Parsers_File /fluent-bit/etc/conf/custom_parsers.conf
+        HTTP_Server On
+        HTTP_Listen 0.0.0.0
+        HTTP_Port {{ .Values.metricsPort }}
+        Health_Check On
+
+  ## https://docs.fluentbit.io/manual/pipeline/inputs
+  inputs: |
+    [INPUT]
+        Name tail
+        Path /var/log/containers/*.log
+        multiline.parser docker, cri
+        Tag kube.*
+        Mem_Buf_Limit 5MB
+        Skip_Long_Lines On
+
+    [INPUT]
+        Name systemd
+        Tag host.*
+        Systemd_Filter _SYSTEMD_UNIT=kubelet.service
+        Read_From_Tail On
+
+  ## https://docs.fluentbit.io/manual/pipeline/filters
+  filters: |
+    [FILTER]
+        Name kubernetes
+        Match kube.*
+        Merge_Log On
+        Keep_Log Off
+        K8S-Logging.Parser On
+        K8S-Logging.Exclude On
+
+  ## https://docs.fluentbit.io/manual/pipeline/outputs
+  outputs: |
+    [OUTPUT]
+        Name es
+        Match kube.*
+        Host elasticsearch
+        Suppress_Type_Name On
+        Logstash_Prefix kube
+        Logstash_Format On
+        Trace_Error On
+        Retry_Limit False
+        Replace_Dots On
+
+    [OUTPUT]
+        Name es
+        Match host.*
+        Host elasticsearch
+        Suppress_Type_Name On
+        Logstash_Format On
+        Logstash_Prefix node
+        Trace_Error On
+        Retry_Limit False
+        Replace_Dots On
+```
