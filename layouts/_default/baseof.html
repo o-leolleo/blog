@@ -73,13 +73,12 @@
     {{ end }}
   </footer>
 
-  {{ $js := resources.Get "js/index.js" | js.Build | resources.Minify | fingerprint }}
-  <script src="{{ $js.Permalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 
-  {{ if .Store.Get "hasMermaid" }}
-  {{ $mermaid := resources.Get "js/mermaid.js" | resources.Minify | fingerprint }}
-  <script type="module" src="{{ $mermaid.Permalink }}" defer></script>
-  {{ end }}
+  {{ $shims := dict "mermaid" "js/shims/mermaid.js" }}
+  {{ $params := dict "hasMermaid" (.Store.Get "hasMermaid") }}
+  {{ $js := resources.Get "js/index.js" | js.Build (dict "shims" $shims "params" $params) | resources.Minify | fingerprint }}
+  <script src="{{ $js.Permalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
 </body>
 
 </html>

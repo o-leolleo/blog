@@ -1,5 +1,5 @@
 // Adapted from https://github.com/mermaid-js/mermaid/issues/1945#issuecomment-2077336760 (Thanks man <3)
-import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
+import mermaid from 'mermaid';
 
 const elementCode = '.mermaid';
 
@@ -29,7 +29,7 @@ function loadMermaid(theme) {
   mermaid.run({ theme, nodes: document.querySelectorAll(elementCode) });
 }
 
-function main() {
+export function setupMermaid() {
   saveOriginalData();
 
   if (!localStorage.theme || localStorage.theme === 'dark') {
@@ -48,5 +48,3 @@ function main() {
     loadMermaid('default');
   });
 }
-
-window.addEventListener('DOMContentLoaded', main);

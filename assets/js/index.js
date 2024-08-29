@@ -1,3 +1,6 @@
+import * as params from '@params';
+import { setupMermaid } from 'js/mermaid';
+
 const darkModeButton = document.getElementById('dark-mode-btn');
 const scrollToTopButton = document.getElementById('scroll-to-top');
 const rootElement = document.documentElement;
@@ -12,6 +15,10 @@ function main() {
 
   if (isLightTheme()) {
     setLightTheme();
+  }
+
+  if (params.hasMermaid) {
+    setupMermaid();
   }
 }
 
