@@ -77,10 +77,8 @@
   <script src="{{ $js.Permalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
 
   {{ if .Store.Get "hasMermaid" }}
-  <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({ startOnLoad: true, theme: 'dark' });
-  </script>
+  {{ $mermaid := resources.Get "js/mermaid.js" | resources.Minify | fingerprint }}
+  <script type="module" src="{{ $mermaid.Permalink }}" defer></script>
   {{ end }}
 </body>
 
