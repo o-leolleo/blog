@@ -24,21 +24,28 @@ function resetProcessed() {
   });
 }
 
+function loadMermaid(theme) {
+  mermaid.initialize({ theme, startOnLoad: false });
+  mermaid.run({ theme, nodes: document.querySelectorAll(elementCode) });
+}
+
 function main() {
   saveOriginalData();
-  mermaid.initialize({ theme: 'dark', startOnLoad: false });
-  mermaid.run({ theme: 'dark', nodes: document.querySelectorAll(elementCode) });
+
+  if (!localStorage.theme || localStorage.theme === 'dark') {
+    loadMermaid('dark');
+  } else {
+    loadMermaid('default');
+  }
 
   document.addEventListener('dark-theme-set', () => {
     resetProcessed();
-    mermaid.initialize({ theme: 'dark', startOnLoad: false });
-    mermaid.run({ theme: 'dark', nodes: document.querySelectorAll(elementCode) });
+    loadMermaid('dark');
   });
 
   document.addEventListener('light-theme-set', () => {
     resetProcessed();
-    mermaid.initialize({ theme: 'default', startOnLoad: false });
-    mermaid.run({ theme: 'default', nodes: document.querySelectorAll(elementCode) });
+    loadMermaid('default');
   });
 }
 
