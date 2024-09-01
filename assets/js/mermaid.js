@@ -5,7 +5,6 @@ const elementCode = '.mermaid';
 
 function saveOriginalData(){
   const elements = document.querySelectorAll(elementCode);
-  const count = elements.length;
 
   elements.forEach(element => {
     element.setAttribute('data-original-code', element.innerHTML)
@@ -14,7 +13,6 @@ function saveOriginalData(){
 
 function resetProcessed() {
   const elements = document.querySelectorAll(elementCode);
-  const count = elements.length;
 
   elements.forEach(element => {
     if (element.getAttribute('data-original-code') != null){
@@ -29,7 +27,10 @@ function loadMermaid(theme) {
   mermaid.run({ theme, nodes: document.querySelectorAll(elementCode) });
 }
 
-export function setupMermaid() {
+export default function setup({
+  darkThemeSetEvent,
+  lightThemeSetEvent,
+}) {
   saveOriginalData();
 
   if (!localStorage.theme || localStorage.theme === 'dark') {
@@ -38,12 +39,12 @@ export function setupMermaid() {
     loadMermaid('default');
   }
 
-  document.addEventListener('dark-theme-set', () => {
+  document.addEventListener(darkThemeSetEvent, () => {
     resetProcessed();
     loadMermaid('dark');
   });
 
-  document.addEventListener('light-theme-set', () => {
+  document.addEventListener(lightThemeSetEvent, () => {
     resetProcessed();
     loadMermaid('default');
   });
