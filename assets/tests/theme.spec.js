@@ -3,7 +3,7 @@ import setupTheme, { DARK_THEME_SET, LIGHT_THEME_SET } from '../js/theme';
 describe('theme', () => {
   beforeEach(() => {
     document.documentElement.classList.add('dark');
-    document.body.innerHTML = `<button id="theme-button" class="dark">Toggle Theme</button>`;
+    document.body.innerHTML = `<button id="theme-button">Toggle Theme</button>`;
   });
 
   it('Uses dark theme by default', () => {
