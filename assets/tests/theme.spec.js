@@ -35,6 +35,7 @@ describe('theme', () => {
     document.addEventListener(event, () => {
       expect(document.documentElement.classList.contains(theme)).toBe(true);
       expect(document.documentElement.classList.contains(from)).toBe(false);
+      expect(document.body.classList.contains('transition-colors', 'duration-1000')).toBe(true);
       expect(localStorage.theme).toBe(theme);
 
       done();
