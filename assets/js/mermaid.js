@@ -1,5 +1,5 @@
 // Adapted from https://github.com/mermaid-js/mermaid/issues/1945#issuecomment-2077336760 (Thanks man <3)
-import mermaid from 'mermaid';
+import mermaid from './shims/mermaid';
 
 const elementCode = '.mermaid';
 
