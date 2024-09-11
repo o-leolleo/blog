@@ -1,6 +1,10 @@
 import { jest } from '@jest/globals';
 import setupScroll from '../js/scroll.js';
 
+function assertButtonIs({ hidden }) {
+  expect(document.getElementById('scroll-button').classList.contains('opacity-0')).toBe(hidden);
+}
+
 describe('scroll', () => {
   beforeEach(() => {
     document.body.innerHTML = `<button id="scroll-button">Scroll To Top</button>`;
@@ -25,7 +29,7 @@ describe('scroll', () => {
     document.documentElement.scrollTop = 21;
     document.dispatchEvent(new Event('scroll'));
 
-    expect(document.getElementById('scroll-button').classList.contains('opacity-0')).toBe(false);
+    assertButtonIs({ hidden: false });
   })
 
   it('Hides button when scrolled less than or 20%', () => {
@@ -39,6 +43,6 @@ describe('scroll', () => {
     document.documentElement.scrollTop = 20;
     document.dispatchEvent(new Event('scroll'));
 
-    expect(document.getElementById('scroll-button').classList.contains('opacity-0')).toBe(true);
+    assertButtonIs({ hidden: true });
   })
 });

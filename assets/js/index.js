@@ -16,6 +16,4 @@ export const createMain = ({ hasMermaid }) => function main() {
   setupI18n({ buttonId: 'i18n-btn', menuId: 'i18n-menu' });
 }
 
-if (require.main === module) {
-  window.addEventListener('DOMContentLoaded', createMain(params));
-}
+window.addEventListener('DOMContentLoaded', createMain(params));
