@@ -35,10 +35,7 @@ describe('mermaid', () => {
         localStorage.theme = storedTheme;
       }
 
-      setupMermaid({
-        darkThemeSetEvent: 'dark-theme-set',
-        lightThemeSetEvent: 'light-theme-set',
-      });
+      setupMermaid();
 
       assertMermaidReloadedWith({ theme: expectedTheme });
     }
@@ -58,10 +55,7 @@ describe('mermaid', () => {
         localStorage.theme = storedTheme;
       }
 
-      setupMermaid({
-        darkThemeSetEvent: 'dark-theme-set',
-        lightThemeSetEvent: 'light-theme-set',
-      });
+      setupMermaid();
 
       document.dispatchEvent(new Event(`${changeTo}-theme-set`));
 

@@ -1,5 +1,6 @@
 // Adapted from https://github.com/mermaid-js/mermaid/issues/1945#issuecomment-2077336760 (Thanks man <3)
 import mermaid from './shims/mermaid';
+import { DARK_THEME_SET, LIGHT_THEME_SET } from './theme';
 
 const elementCode = '.mermaid';
 
@@ -28,9 +29,9 @@ function loadMermaid(theme) {
 }
 
 export default function setup({
-  darkThemeSetEvent,
-  lightThemeSetEvent,
-}) {
+  darkThemeSetEvent = DARK_THEME_SET,
+  lightThemeSetEvent = LIGHT_THEME_SET,
+} = {}) {
   saveOriginalData();
 
   if (!localStorage.theme || localStorage.theme === 'dark') {
