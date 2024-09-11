@@ -28,18 +28,21 @@ describe('mermaid', () => {
     { expectedTheme: 'dark' },
     { storedTheme: 'light', expectedTheme: 'default' },
     { storedTheme: 'dark', expectedTheme: 'dark' },
-  ])('Load mermaid theme $mermaidTheme when storedTheme is $storedTheme ', ({ storedTheme, expectedTheme }) => {
-    if (storedTheme) {
-      localStorage.theme = storedTheme;
+  ])(
+    'Load mermaid theme $mermaidTheme when storedTheme is $storedTheme ',
+    ({ storedTheme, expectedTheme }) => {
+      if (storedTheme) {
+        localStorage.theme = storedTheme;
+      }
+
+      setupMermaid({
+        darkThemeSetEvent: 'dark-theme-set',
+        lightThemeSetEvent: 'light-theme-set',
+      });
+
+      assertMermaidReloadedWith({ theme: expectedTheme });
     }
-
-    setupMermaid({
-      darkThemeSetEvent: 'dark-theme-set',
-      lightThemeSetEvent: 'light-theme-set',
-    });
-
-    assertMermaidReloadedWith({ theme: expectedTheme });
-  });
+  );
 
   it.each([
     { changeTo: 'light', expectedTheme: 'default' },
@@ -48,18 +51,21 @@ describe('mermaid', () => {
     { storedTheme: 'light', changeTo: 'light', expectedTheme: 'default' },
     { storedTheme: 'dark', changeTo: 'light', expectedTheme: 'default' },
     { storedTheme: 'dark', changeTo: 'dark', expectedTheme: 'dark' },
-  ])('Changes to $expectedTheme if changed to $changeTo theme from $storedTheme via event', ({ storedTheme, changeTo, expectedTheme }) => {
-    if (storedTheme) {
-      localStorage.theme = storedTheme;
+  ])(
+    'Changes to $expectedTheme if changed to $changeTo theme from $storedTheme via event',
+    ({ storedTheme, changeTo, expectedTheme }) => {
+      if (storedTheme) {
+        localStorage.theme = storedTheme;
+      }
+
+      setupMermaid({
+        darkThemeSetEvent: 'dark-theme-set',
+        lightThemeSetEvent: 'light-theme-set',
+      });
+
+      document.dispatchEvent(new Event(`${changeTo}-theme-set`));
+
+      assertMermaidReloadedWith({ theme: expectedTheme });
     }
-
-    setupMermaid({
-      darkThemeSetEvent: 'dark-theme-set',
-      lightThemeSetEvent: 'light-theme-set',
-    });
-
-    document.dispatchEvent(new Event(`${changeTo}-theme-set`));
-
-    assertMermaidReloadedWith({ theme: expectedTheme });
-  });
+  );
 });
