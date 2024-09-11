@@ -36,7 +36,6 @@ describe('mermaid', () => {
       }
 
       setupMermaid();
-
       assertMermaidReloadedWith({ theme: expectedTheme });
     }
   );
@@ -56,9 +55,7 @@ describe('mermaid', () => {
       }
 
       setupMermaid();
-
       document.dispatchEvent(new Event(`${changeTo}-theme-set`));
-
       assertMermaidReloadedWith({ theme: expectedTheme });
     }
   );
