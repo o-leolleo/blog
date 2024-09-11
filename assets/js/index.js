@@ -1,14 +1,14 @@
 import * as params from '@params';
 
-import setupMermaid from 'js/mermaid';
-import setupScroll from 'js/scroll';
-import setupI18n from 'js/i18n';
-import setupTheme from 'js/theme';
+import setupMermaid from './mermaid';
+import setupScroll from './scroll';
+import setupI18n from './i18n';
+import setupTheme from './theme';
 
-function main() {
+export const createMain = ({ hasMermaid }) => function main() {
   setupScroll({ buttonId: 'scroll-to-top' });
 
-  if (params.hasMermaid) {
+  if (hasMermaid) {
     setupMermaid();
   }
 
@@ -16,4 +16,6 @@ function main() {
   setupI18n({ buttonId: 'i18n-btn', menuId: 'i18n-menu' });
 }
 
-window.addEventListener('DOMContentLoaded', main);
+if (require.main === module) {
+  window.addEventListener('DOMContentLoaded', createMain(params));
+}
