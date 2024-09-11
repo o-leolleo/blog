@@ -75,9 +75,8 @@
 
   <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 
-  {{ $shims := dict "mermaid" "js/shims/mermaid.js" }}
   {{ $params := dict "hasMermaid" (.Store.Get "hasMermaid") }}
-  {{ $js := resources.Get "js/index.js" | js.Build (dict "shims" $shims "params" $params) | resources.Minify | fingerprint }}
+  {{ $js := resources.Get "js/index.js" | js.Build (dict "params" $params) | resources.Minify | fingerprint }}
   <script src="{{ $js.Permalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
 </body>
 

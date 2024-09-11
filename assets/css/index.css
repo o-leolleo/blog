@@ -10,6 +10,10 @@
   #TableOfContents a {
     @apply anchor
   }
+
+  #TableOfContents li:not(nav > ul > li) {
+    @apply ml-5
+  }
 }
 
 .terminal-cursor {
