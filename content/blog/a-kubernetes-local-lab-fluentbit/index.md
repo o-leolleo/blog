@@ -54,7 +54,7 @@ Once finished you should be able navigate to the Kibana installation at [http://
 
 [![Kibana logs](kibana-logs.png)](kibana-logs.png)
 
-These are all the logs collected by fluentbit from the kubernetes cluster, feel free to give it a try and experiment with a bit!
+These are all the logs collected by fluentbit from the kubernetes cluster, feel free to give it a try and experiment with it a bit!
 
 We can also debug fluentbit by tailing its logs via:
 
@@ -135,7 +135,7 @@ here `fluent-bit` is the name of the helm release and `fluent/fluent-bit` is the
 
 <!-- TODO: Why `fluent/fluent-bit` but on terraform we specify `fluent-bit` only? -->
 
-The rest of `main.tf` is dedicated to creating minimalist deployments for Elasticsearch and Kibana.
+The rest of `main.tf` is dedicated to the creation of minimalist deployments for Elasticsearch and Kibana.
 
 ```terraform
 resource "kubernetes_manifest" "all" {
@@ -192,12 +192,10 @@ In the next section we get into the fluentbit values file details.
 I won't dig much into the Elasticsearch and Kibana deployments,
 they're pretty standard and can be found at the [o-leolleo/a-kubernetes-local-lab//fluentbit/manifests](https://github.com/o-leolleo/a-kubernetes-local-lab/tree/main/fluentbit/manifests) repository folder.
 
-## Fluentbit
+### The fluentbit configuration (values) file
 
-### The configuration (values) file
-
-The fluentbit configuration file will serve as a basis for the later discussions and exploration.
-Since we're using helm to deploy fluentbit, we'll be using a values file to pass our configuration. You can check the full list of avaliable values [here](https://github.com/fluent/helm-charts/blob/main/charts/fluent-bit/values.yaml).
+In the configuration, we specify, besides other things, the flow of a given log message across the fluentbit pipeline. Which is detailed on the diagram below. We achieve this by specifying configuration blocks corresponding to each of the stages of the pipeline, shown as boxes on the image.
+_We'll skip from our discussion the stages of this pipeline inside dashed boxes_.
 
 ```mermaid
 flowchart LR
@@ -213,9 +211,18 @@ flowchart LR
   Router --> Output3[Output 3]
 ```
 
+On the image:
+- Input corresponds to our log sources: log files, systemd, etc.
+- Filter is where we manipulate the log messages, removing or addding fields, skipping log entries, etc.
+- Output specifies our processed logs destinations, for example Elasticsearch, Kafka, etc.
+
+Since we're using helm to deploy fluentbit, we'll be using a values file to pass our configuration. You can check the full list of avaliable values [here](https://github.com/fluent/helm-charts/blob/main/charts/fluent-bit/values.yaml). Behind the scenes, each property of `config` is transformed into a section of the fluentbit configuration file.
+
+The values file is detailed below.
 
 ```yaml
 config:
+  # 1
   service: |
     [SERVICE]
         Daemon Off
@@ -228,7 +235,7 @@ config:
         HTTP_Port {{ .Values.metricsPort }}
         Health_Check On
 
-  ## https://docs.fluentbit.io/manual/pipeline/inputs
+  #2
   inputs: |
     [INPUT]
         Name tail
@@ -244,7 +251,7 @@ config:
         Systemd_Filter _SYSTEMD_UNIT=kubelet.service
         Read_From_Tail On
 
-  ## https://docs.fluentbit.io/manual/pipeline/filters
+  #3
   filters: |
     [FILTER]
         Name kubernetes
@@ -254,7 +261,7 @@ config:
         K8S-Logging.Parser On
         K8S-Logging.Exclude On
 
-  ## https://docs.fluentbit.io/manual/pipeline/outputs
+  #4
   outputs: |
     [OUTPUT]
         Name es
@@ -278,3 +285,9 @@ config:
         Retry_Limit False
         Replace_Dots On
 ```
+
+Let's break it down:
+1. The `service` section is where we define the global configuration of fluentbit, such as the log level, flush interval, etc. This section is not a part of the data flow diagram above.
+2. As `inputs` we specify both containerd logs from the kubernetes containers and the host systemd logs.
+3. Here we only use the kubernetes fluentbit built-in filter to parse the kubernetes logs.
+4. Both `outputs` send the logs to the same elasticsearch instance, but we output them to different Elasticsearch indexes, informed via the `Logstash_Prefix` property. Notice how we _route_ the logs based on the `Match` property, this is effecitevly the router stage on the diagram above, and we route the logs based on the tags we've informed on our `inputs`.
