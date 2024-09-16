@@ -287,7 +287,17 @@ config:
 ```
 
 Let's break it down:
-1. The `service` section is where we define the global configuration of fluentbit, such as the log level, flush interval, etc. This section is not a part of the data flow diagram above.
+1. The `service` section is where we define the global configuration of fluentbit, such as the log level, flush interval, etc. This section is not a part of the data flow diagram above. The `{{ .Values.flush }}` here and the like are handled by the helm templating engine, and are replaced by the values informed on the `values.yaml` file, which have defaults defined by the helm chart. Notice that fluentbit also listens on a port for metrics, used by prometheus to scrape monitoring data.
 2. As `inputs` we specify both containerd logs from the kubernetes containers and the host systemd logs.
 3. Here we only use the kubernetes fluentbit built-in filter to parse the kubernetes logs.
 4. Both `outputs` send the logs to the same elasticsearch instance, but we output them to different Elasticsearch indexes, informed via the `Logstash_Prefix` property. Notice how we _route_ the logs based on the `Match` property, this is effecitevly the router stage on the diagram above, and we route the logs based on the tags we've informed on our `inputs`.
+
+The relationship of the tail log filter and kubernetes logs is very well discussed on the [fluentbit documentation](https://docs.fluentbit.io/manual/pipeline/filters/kubernetes). I won't dig much into it here, but it's worth a read if you're interested.
+
+Summarizing, the `.*` on `Tag kube.*` gets replaced by the absolute path of the monitored file, with slashes replaced by dots. Also, quoting the documentation:
+
+> When Kubernetes Filter runs, it will try to match all records that starts with kube. (note the ending dot), so records from the file mentioned above will hit the matching rule and the filter will try to enrich the records
+
+This is also how we match the logs on the outputs section and also explains how the `hosts.*` tagged logs are being handled, it's a similar mechanism taking place.
+
+## An example use case: splitting the logs by namespace
