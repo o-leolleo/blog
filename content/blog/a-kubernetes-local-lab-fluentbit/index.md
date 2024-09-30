@@ -354,9 +354,12 @@ outputs:
       Replace_Dots On
 ```
 
-Here we only added the `Logstash_Prefix_Key` property (1) and changed the `Logstash_Prefix` to `workloads` (2). Our logs will then be indexed as `$log_type-YYYY.MM.DD` if `$log_type` is not null, and `workloads-YYYY.MM.DD` otherwise.
+Here we only added the `Logstash_Prefix_Key` [^4] property (1) and changed the `Logstash_Prefix` to `workloads` (2). Our logs will then be indexed as `$log_type-YYYY.MM.DD` if `$log_type` is not null, and `workloads-YYYY.MM.DD` otherwise.
 
-The fact that `Logstash_Prefix_Key` accepts a [record acessor](https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/record-accessor) makes it very flexible, and avoids the need to create multiple outputs for each log type.
-In case you ever wanted to split logs by namespace, you could use `Logstash_Prefix_Key $kubernetes['namespace_name']` for example.
+[^4]: The fact that `Logstash_Prefix_Key` accepts a [record acessor](https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/record-accessor) makes it very flexible, and avoids the need to create multiple outputs for each log type. In case you ever wanted to split logs by namespace, you could use `Logstash_Prefix_Key $kubernetes['namespace_name']` for example.
+
+With this set, after applying the changes through a `terraform apply`, we get the result shown on the image below, where we can see each log type specific index.
+
+[![Logs split by type](logs-split-by-type.png)](logs-split-by-type.png)
 
 # Conclusion
