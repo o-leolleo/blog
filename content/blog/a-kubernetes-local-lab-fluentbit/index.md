@@ -300,4 +300,63 @@ Summarizing, the `.*` on `Tag kube.*` gets replaced by the absolute path of the 
 
 This is also how we match the logs on the outputs section and also explains how the `hosts.*` tagged logs are being handled, it's a similar mechanism taking place.
 
-## An example use case: splitting the logs by namespace
+## An example use case: splitting logs by type
+
+Now let's suppose that, for some reason, you wanted to save different logs to different indexes based on an arbitrary log category or type. For example, you might want to log `kube-system` and `logging` namespace logs to `system-*` indexes, istio logs to `istio-*` indexes and all the rest to `workloads-*` indexes. Or maybe you want a different set of categories. We could work out a solution for this by slightly modifying our fluentbit configuration (You can see the full config [here](https://github.com/o-leolleo/a-kubernetes-local-lab/blob/main/fluentbit/values-files/fluent-bit-split-by-type.values.yaml)).
+
+We can add two more filters on top of the `kubernetes` one:
+
+```yaml
+filters:
+  # ...
+  [FILTER]
+      Name modify #1
+      Match kube.* #2
+
+      Condition Key_value_matches $kubernetes['namespace_name'] ^(kube-system|logging)$ #3
+
+      Add log_type system #4
+
+
+  [FILTER]
+      Name modify
+      Match kube.*
+
+      Condition Key_value_matches $kubernetes['namespace_name'] ^istio-.*$ #5
+
+      Add log_type ingress #6
+```
+
+Here it's what we're doing:
+
+1. We instantiate the [`modify` filter](https://docs.fluentbit.io/manual/pipeline/filters/modify)
+2. For every log record matching the `kube.*` tag (or all kubernetes logs)
+3. If the `namespace_name` field matches `kube-system` or `logging`
+4. Add a new field `log_type` with the value `system`
+5. Else if the `namespace_name` field matches `istio-*`
+6. Add a new field `log_type` with the value `ingress`
+
+With the above in place, we can slightly modify our `kube.*` elasticsearch output to:
+
+```yaml
+outputs:
+  # ...
+  [OUTPUT]
+      Name es
+      Match kube.*
+      Host elasticsearch
+      Suppress_Type_Name On
+      Logstash_Prefix_Key $log_type #1
+      Logstash_Prefix workloads #2
+      Logstash_Format On
+      Trace_Error On
+      Retry_Limit False
+      Replace_Dots On
+```
+
+Here we only added the `Logstash_Prefix_Key` property (1) and changed the `Logstash_Prefix` to `workloads` (2). Our logs will then be indexed as `$log_type-YYYY.MM.DD` if `$log_type` is not null, and `workloads-YYYY.MM.DD` otherwise.
+
+The fact that `Logstash_Prefix_Key` accepts a [record acessor](https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/record-accessor) makes it very flexible, and avoids the need to create multiple outputs for each log type.
+In case you ever wanted to split logs by namespace, you could use `Logstash_Prefix_Key $kubernetes['namespace_name']` for example.
+
+# Conclusion
