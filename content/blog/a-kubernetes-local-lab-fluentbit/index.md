@@ -64,7 +64,7 @@ kubectl logs -n logging -l app=fluent-bit -f
 
 ## The code
 
-The code is discussed in parts, starting with the `main.tf` file. The full code is available at the [o-leolleo/a-kubernetes-local-lab](https://github.com/o-leolleo/a-kubernetes-local-lab) repository.
+The code is discussed in parts, starting with the `main.tf` file. It's fully available at the [o-leolleo/a-kubernetes-local-lab](https://github.com/o-leolleo/a-kubernetes-local-lab) repository.
 
 ### main.tf
 
@@ -115,10 +115,10 @@ resource "helm_release" "fluent_bit" {
 }
 ```
 
-1. Name of the helm release as it appears in the cluster
+1. name of the helm release as it appears in the cluster
 2. values file to be used for the helm release - we'll soon discuss it
 
-The above will drive the same results as running the below.
+The above code is equivalent to running plain helm commands.
 
 ```bash
 helm repo add fluent https://fluent.github.io/helm-charts
@@ -131,11 +131,11 @@ helm install \
   --create-namespace
 ```
 
-here `fluent-bit` is the name of the helm release and `fluent/fluent-bit` is the chart to be installed, the rest is as per the [Terraform resource](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release).
+here `fluent-bit` is the name of the helm release and `fluent/fluent-bit` is the chart to be installed, the rest is the same as in the [Terraform resource](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release).
 
 <!-- TODO: Why `fluent/fluent-bit` but on terraform we specify `fluent-bit` only? -->
 
-The rest of `main.tf` is dedicated to the creation of minimalist deployments for Elasticsearch and Kibana.
+What's left of the `main.tf` is dedicated to the creation of Elasticsearch and Kibana minimalist deployments.
 
 ```terraform
 resource "kubernetes_manifest" "all" {
@@ -163,16 +163,16 @@ locals {
 }
 ```
 
-Though small there is quite a bit happening here, let's break it down.
+Though small, there is quite a bit happening here, let's break it down.
 
-1. We iterate over the local variable `manifests` which holds each manifest object - as a [terraform object](https://developer.hashicorp.com/terraform/language/expressions/types#map) - declared on `.yaml` files inside the `manifests` folder
-2. We assign the manifest object to the `manifest` attribute
-3. We ensure that these manifests are only created _after_ the `fluent-bit` helm release is created, thus _after_ our log collector is in place
-4. The `manifests` local variable is a map of the manifest objects, keyed by a combination of the `apiVersion`, `kind` and `metadata.name`. `_manifests` is a list of all the manifest objects
-5. for each file in the `manifests` folder (and its subfolders)
-6. decode the manifest file into a [terraform object](https://developer.hashicorp.com/terraform/language/expressions/types#map)
+1. We iterate over the local variable `manifests` which holds each manifest object - as a [terraform object](https://developer.hashicorp.com/terraform/language/expressions/types#map) - declared on `.yaml` files inside the `manifests` folder.
+2. We assign the manifest object to the `manifest` attribute.
+3. We ensure that these manifests are only created _after_ the `fluent-bit` helm release is created, thus _after_ our log collector is in place.
+4. The `manifests` local variable is a map of the manifest objects, keyed by a combination of the `apiVersion`, `kind` and `metadata.name`. `_manifests` is a list of all the manifest objects.
+5. for each file in the `manifests` folder (and its subfolders).
+6. decode the manifest file into a [terraform object](https://developer.hashicorp.com/terraform/language/expressions/types#map).
 
-I've breaken down the `manifests` variable into two (one temporary one) to make the expression more readable [^3].
+I've breaken down the `manifests` local variable into two (one intermediary one) to make the expression more readable [^3].
 
 [^3]: In case you're curious, this would be equivalent as a single local var
     ```terraform
@@ -187,15 +187,14 @@ I've breaken down the `manifests` variable into two (one temporary one) to make 
       }
     ```
 
-In the next section we get into the fluentbit values file details.
+In the next section we detail the fluentbit values file.
 
-I won't dig much into the Elasticsearch and Kibana deployments,
+I'm not detailing the Elasticsearch and Kibana deployments,
 they're pretty standard and can be found at the [o-leolleo/a-kubernetes-local-lab//fluentbit/manifests](https://github.com/o-leolleo/a-kubernetes-local-lab/tree/main/fluentbit/manifests) repository folder.
 
 ### The fluentbit configuration (values) file
 
-In the configuration, we specify, besides other things, the flow of a given log message across the fluentbit pipeline. Which is detailed on the diagram below. We achieve this by specifying configuration blocks corresponding to each of the stages of the pipeline, shown as boxes on the image.
-_We'll skip from our discussion the stages of this pipeline inside dashed boxes_.
+In the configuration, we specify, beside other things, the flow of a given log message across the fluentbit pipeline. This is detailed in the diagram below. In the fluentbit configuration file is comprised of sections corresponding to each of the stages of the pipeline, illustrated as boxes in the image. _We'll skip from our discussion the stages of this pipeline inside dashed boxes_.
 
 ```mermaid
 flowchart LR
@@ -211,12 +210,12 @@ flowchart LR
   Router --> Output3[Output 3]
 ```
 
-On the image:
-- Input corresponds to our log sources: log files, systemd, etc.
-- Filter is where we manipulate the log messages, removing or addding fields, skipping log entries, etc.
-- Output specifies our processed logs destinations, for example Elasticsearch, Kafka, etc.
+In the diagram:
+- **Input** corresponds to our log sources: log files, systemd, etc.
+- **Filter** is where we manipulate the log messages, removing or adding fields, skipping log entries, etc.
+- **Output** specifies our processed logs destinations, for example Elasticsearch, Kafka, etc.
 
-Since we're using helm to deploy fluentbit, we'll be using a values file to pass our configuration. You can check the full list of avaliable values [here](https://github.com/fluent/helm-charts/blob/main/charts/fluent-bit/values.yaml). Behind the scenes, each property of `config` is transformed into a section of the fluentbit configuration file.
+Since we're using helm to deploy fluentbit, we'll be using a values file to pass our configuration. You can check the full list of available values [here](https://github.com/fluent/helm-charts/blob/main/charts/fluent-bit/values.yaml). Behind the scenes, each property of `config` is transformed into a section of the fluentbit configuration file.
 
 The values file is detailed below.
 
@@ -290,13 +289,11 @@ Let's break it down:
 1. The `service` section is where we define the global configuration of fluentbit, such as the log level, flush interval, etc. This section is not a part of the data flow diagram above. The `{{ .Values.flush }}` here and the like are handled by the helm templating engine, and are replaced by the values informed on the `values.yaml` file, which have defaults defined by the helm chart. Notice that fluentbit also listens on a port for metrics, used by prometheus to scrape monitoring data.
 2. As `inputs` we specify both containerd logs from the kubernetes containers and the host systemd logs.
 3. Here we only use the kubernetes fluentbit built-in filter to parse the kubernetes logs.
-4. Both `outputs` send the logs to the same elasticsearch instance, but we output them to different Elasticsearch indexes, informed via the `Logstash_Prefix` property. Notice how we _route_ the logs based on the `Match` property, this is effecitevly the router stage on the diagram above, and we route the logs based on the tags we've informed on our `inputs`.
+4. Both `outputs` send the logs to the same elasticsearch instance, but we output them to different Elasticsearch indexes, informed via the `Logstash_Prefix` property. Notice how we _route_ the logs based on the `Match` property, this is effecitevly the router stage shown in the diagram above, and we route the logs based on the tags we've informed on our `inputs`.
 
-The relationship of the tail log filter and kubernetes logs is very well discussed on the [fluentbit documentation](https://docs.fluentbit.io/manual/pipeline/filters/kubernetes). I won't dig much into it here, but it's worth a read if you're interested.
+The relationship of the tail log filter and the kubernetes logs is very well discussed in the [fluentbit documentation](https://docs.fluentbit.io/manual/pipeline/filters/kubernetes). I'm not discussing it in much detail here, but it's worth a read if you're interested. For this post purposes, it's enough to know that the `.*` on `Tag kube.*` gets replaced by the absolute path of the monitored file, with slashes replaced by dots. Also, quoting the documentation:
 
-Summarizing, the `.*` on `Tag kube.*` gets replaced by the absolute path of the monitored file, with slashes replaced by dots. Also, quoting the documentation:
-
-> When Kubernetes Filter runs, it will try to match all records that starts with kube. (note the ending dot), so records from the file mentioned above will hit the matching rule and the filter will try to enrich the records
+> When Kubernetes Filter runs, it will try to match all records that starts with `kube.` (note the ending dot), so records from the file mentioned above will hit the matching rule and the filter will try to enrich the records
 
 This is also how we match the logs on the outputs section and also explains how the `hosts.*` tagged logs are being handled, it's a similar mechanism taking place.
 
@@ -362,4 +359,4 @@ With this set, after applying the changes through a `terraform apply`, we get th
 
 [![Logs split by type](logs-split-by-type.png)](logs-split-by-type.png)
 
-# Conclusion
+## Conclusion
