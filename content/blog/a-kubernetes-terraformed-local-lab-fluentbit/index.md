@@ -1,5 +1,5 @@
 ---
-title: "A Kubernetes local lab: Fluentbit"
+title: "A terraformed kubernetes local lab: Fluentbit"
 date: 2024-05-20T20:29:32+02:00
 draft: false
 language: en
@@ -297,7 +297,7 @@ The relationship of the tail log filter and the kubernetes logs is very well dis
 
 This is also how we match the logs on the outputs section and also explains how the `hosts.*` tagged logs are being handled, it's a similar mechanism taking place.
 
-## An example use case: splitting logs by type
+## A use case: splitting logs by type
 
 Now let's suppose that, for some reason, you wanted to save different logs to different indexes based on an arbitrary log category or type. For example, you might want to log `kube-system` and `logging` namespace logs to `system-*` indexes, istio logs to `istio-*` indexes and all the rest to `workloads-*` indexes. Or maybe you want a different set of categories. We could work out a solution for this by slightly modifying our fluentbit configuration (You can see the full config [here](https://github.com/o-leolleo/a-kubernetes-local-lab/blob/main/fluentbit/values-files/fluent-bit-split-by-type.values.yaml)).
 
@@ -360,3 +360,8 @@ With this set, after applying the changes through a `terraform apply`, we get th
 [![Logs split by type](logs-split-by-type.png)](logs-split-by-type.png)
 
 ## Conclusion
+
+Here we discussed how to create a local kubernetes lab with fluentbit using Terraform, where we could explore and experiment with its configuration. We used minimal deployments of Elasticsearch and Kibana to visualize the logs collected, and we also discussed how to split the logs by type using fluentbit filters. The code has also been discussed and it has been made available at the [o-leolleo/a-kubernetes-local-lab](https://github.com/o-leolleo/a-kubernetes-local-lab/tree/main/fluentbit) repo.
+
+The key here is that now we have a setup we can safely tweak and break, so as to test assumptions and experiment with.
+Feel free to give it a try and experiment with it as you wish!
