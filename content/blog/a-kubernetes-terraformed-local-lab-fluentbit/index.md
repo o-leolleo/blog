@@ -133,8 +133,6 @@ helm install \
 
 here `fluent-bit` is the name of the helm release and `fluent/fluent-bit` is the chart to be installed, the rest is the same as in the [Terraform resource](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release).
 
-<!-- TODO: Why `fluent/fluent-bit` but on terraform we specify `fluent-bit` only? -->
-
 What's left of the `main.tf` file is dedicated to the creation of the Elasticsearch and Kibana minimalist deployments.
 
 ```terraform
@@ -356,6 +354,8 @@ Here we only added the `Logstash_Prefix_Key` [^4] property (1) and changed the `
 With this set, after applying the changes through a `terraform apply`, we get the result shown on the image below, where we can see each log type specific index.
 
 [![Logs split by type](logs-split-by-type.png)](logs-split-by-type.png)
+
+Our indexes are in `yellow` state because we have only one Elasticsearch node (you can read more [here](https://stackoverflow.com/questions/60819814/what-does-it-mean-when-an-elasticsearch-index-has-yellow-health#:~:text=1%20common%20reason%20is%20if,indices%20would%20always%20be%20yellow.)).
 
 ## Conclusion
 
