@@ -50,7 +50,7 @@ and the below after confirmation:
 Once finished you should be able navigate to the Kibana installation at [http://localhost:5601](http://localhost:5601). Go ahead and click on the sandwich menu on the left corner and navigate to **Discover**. Click on **Create data view** and inform **Name** and **index-pattern** as `kube-*`[^1]. Click on **Save data view to Kibana** and you should see something similar to the below [^2]:
 
 [^1]: The index patterns  `k*`, `ku*`, `kub*` would also work, we only send kubernetes logs to Elasticsearch.
-[^2]: Realistically we could use terraform to create the index pattern, it's a good exercise in case you're curious about it. Maybe I'll update the code to include it in the future.
+[^2]: Realistically we could use Terraform to create the index pattern, it's a good exercise in case you're curious about it. Maybe I'll update the code to include it in the future.
 
 [![Kibana logs](kibana-logs.png)](kibana-logs.png)
 
@@ -64,7 +64,7 @@ kubectl logs -n logging -l app=fluent-bit -f
 
 ## The code
 
-The code is discussed in parts, starting with the `main.tf` file. It's fully available at the [o-leolleo/a-kubernetes-local-lab](https://github.com/o-leolleo/a-kubernetes-local-lab) repository.
+I'm starting by discussing the `main.tf` file, then will proceed to the others, one by one. The code is fully available at the [o-leolleo/a-kubernetes-local-lab](https://github.com/o-leolleo/a-kubernetes-local-lab) repository.
 
 ### main.tf
 
@@ -93,9 +93,9 @@ provider "kubernetes" {
 }
 ```
 
-1. Required version for the kubernetes provider (`version >= 2.30 and version < 3`), see more at [Version Constraints](https://developer.hashicorp.com/terraform/language/expressions/version-constraints)
-2. Path to our kubeconfig file
-3. Context to use (preferably a local one)
+1. Required version for the kubernetes provider (`version >= 2.30 and version < 3`), see more at [Version Constraints](https://developer.hashicorp.com/terraform/language/expressions/version-constraints).
+2. Path to our kubeconfig file.
+3. Context to use (preferably a local one).
 
 Here, targeting a remote cluster would be just a matter of changing the `config_context`, assuming the remote cluster is already configured in your [kubeconfig](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) file and accessible.
 
@@ -135,7 +135,7 @@ here `fluent-bit` is the name of the helm release and `fluent/fluent-bit` is the
 
 <!-- TODO: Why `fluent/fluent-bit` but on terraform we specify `fluent-bit` only? -->
 
-What's left of the `main.tf` is dedicated to the creation of Elasticsearch and Kibana minimalist deployments.
+What's left of the `main.tf` file is dedicated to the creation of the Elasticsearch and Kibana minimalist deployments.
 
 ```terraform
 resource "kubernetes_manifest" "all" {
@@ -172,7 +172,7 @@ Though small, there is quite a bit happening here, let's break it down.
 5. for each file in the `manifests` folder (and its subfolders).
 6. decode the manifest file into a [terraform object](https://developer.hashicorp.com/terraform/language/expressions/types#map).
 
-I've breaken down the `manifests` local variable into two (one intermediary one) to make the expression more readable [^3].
+I've broken down the `manifests` local variable into two (one intermediary one) to make the expression more readable [^3].
 
 [^3]: In case you're curious, this would be equivalent as a single local var
     ```terraform
@@ -187,14 +187,12 @@ I've breaken down the `manifests` local variable into two (one intermediary one)
       }
     ```
 
-In the next section we detail the fluentbit values file.
-
-I'm not detailing the Elasticsearch and Kibana deployments,
+I'm not detailing the Elasticsearch and Kibana deployments themselves,
 they're pretty standard and can be found at the [o-leolleo/a-kubernetes-local-lab//fluentbit/manifests](https://github.com/o-leolleo/a-kubernetes-local-lab/tree/main/fluentbit/manifests) repository folder.
 
 ### The fluentbit configuration (values) file
 
-In the configuration, we specify, beside other things, the flow of a given log message across the fluentbit pipeline. This is detailed in the diagram below. In the fluentbit configuration file is comprised of sections corresponding to each of the stages of the pipeline, illustrated as boxes in the image. _We'll skip from our discussion the stages of this pipeline inside dashed boxes_.
+In the configuration we specify, beside other things, the flow of a given log message across the fluentbit pipeline. This is detailed in the diagram below. The file is composed of sections corresponding to each of the stages of the pipeline, illustrated as boxes in the image. _We'll skip from our discussion the stages represented by dashed boxes_.
 
 ```mermaid
 flowchart LR
@@ -215,7 +213,7 @@ In the diagram:
 - **Filter** is where we manipulate the log messages, removing or adding fields, skipping log entries, etc.
 - **Output** specifies our processed logs destinations, for example Elasticsearch, Kafka, etc.
 
-Since we're using helm to deploy fluentbit, we'll be using a values file to pass our configuration. You can check the full list of available values [here](https://github.com/fluent/helm-charts/blob/main/charts/fluent-bit/values.yaml). Behind the scenes, each property of `config` is transformed into a section of the fluentbit configuration file.
+Since we're using helm to deploy fluentbit, we use a values file to pass our configuration. You can check the full list of available values [here](https://github.com/fluent/helm-charts/blob/main/charts/fluent-bit/values.yaml). Behind the scenes, each property of `config` is transformed into a section of the fluentbit configuration file.
 
 The values file is detailed below.
 
@@ -286,16 +284,16 @@ config:
 ```
 
 Let's break it down:
-1. The `service` section is where we define the global configuration of fluentbit, such as the log level, flush interval, etc. This section is not a part of the data flow diagram above. The `{{ .Values.flush }}` here and the like are handled by the helm templating engine, and are replaced by the values informed on the `values.yaml` file, which have defaults defined by the helm chart. Notice that fluentbit also listens on a port for metrics, used by prometheus to scrape monitoring data.
+1. The `service` section is where we define the global configuration of fluentbit, such as the log level, flush interval, etc. This section is not a part of the data flow diagram above. The `{{ .Values.flush }}` here and the like are handled by the helm template engine, and are replaced by the values informed on the `values.yaml` file, which have defaults defined by the helm chart. Notice that fluentbit also listens on a port for metrics, used by prometheus to scrape monitoring data.
 2. As `inputs` we specify both containerd logs from the kubernetes containers and the host systemd logs.
 3. Here we only use the kubernetes fluentbit built-in filter to parse the kubernetes logs.
-4. Both `outputs` send the logs to the same elasticsearch instance, but we output them to different Elasticsearch indexes, informed via the `Logstash_Prefix` property. Notice how we _route_ the logs based on the `Match` property, this is effecitevly the router stage shown in the diagram above, and we route the logs based on the tags we've informed on our `inputs`.
+4. Both `outputs` send the logs to the same elasticsearch instance, but we output them to different Elasticsearch indexes, informed via the `Logstash_Prefix` property. Notice how we _route_ the logs based on the `Match` property, this is effectively the router stage shown in the diagram above, and we route the logs based on the tags we've informed on our `inputs`.
 
 The relationship of the tail log filter and the kubernetes logs is very well discussed in the [fluentbit documentation](https://docs.fluentbit.io/manual/pipeline/filters/kubernetes). I'm not discussing it in much detail here, but it's worth a read if you're interested. For this post purposes, it's enough to know that the `.*` on `Tag kube.*` gets replaced by the absolute path of the monitored file, with slashes replaced by dots. Also, quoting the documentation:
 
 > When Kubernetes Filter runs, it will try to match all records that starts with `kube.` (note the ending dot), so records from the file mentioned above will hit the matching rule and the filter will try to enrich the records
 
-This is also how we match the logs on the outputs section and also explains how the `hosts.*` tagged logs are being handled, it's a similar mechanism taking place.
+This is also how we match the logs on the outputs section and it also explains how the `hosts.*` tagged logs are being handled, it's a similar mechanism taking place. For some reason I didn't get any `host.*` logs on my setup.
 
 ## A use case: splitting logs by type
 
@@ -326,12 +324,12 @@ filters:
 
 Here it's what we're doing:
 
-1. We instantiate the [`modify` filter](https://docs.fluentbit.io/manual/pipeline/filters/modify)
-2. For every log record matching the `kube.*` tag (or all kubernetes logs)
-3. If the `namespace_name` field matches `kube-system` or `logging`
-4. Add a new field `log_type` with the value `system`
-5. Else if the `namespace_name` field matches `istio-*`
-6. Add a new field `log_type` with the value `ingress`
+1. we instantiate the [`modify` filter](https://docs.fluentbit.io/manual/pipeline/filters/modify).
+2. for every log record matching the `kube.*` tag (or all kubernetes logs).
+3. if the `namespace_name` field matches `kube-system` or `logging`.
+4. add a new field `log_type` with the value `system`.
+5. else if the `namespace_name` field matches `istio-*`.
+6. add a new field `log_type` with the value `ingress`.
 
 With the above in place, we can slightly modify our `kube.*` elasticsearch output to:
 
@@ -353,7 +351,7 @@ outputs:
 
 Here we only added the `Logstash_Prefix_Key` [^4] property (1) and changed the `Logstash_Prefix` to `workloads` (2). Our logs will then be indexed as `$log_type-YYYY.MM.DD` if `$log_type` is not null, and `workloads-YYYY.MM.DD` otherwise.
 
-[^4]: The fact that `Logstash_Prefix_Key` accepts a [record acessor](https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/record-accessor) makes it very flexible, and avoids the need to create multiple outputs for each log type. In case you ever wanted to split logs by namespace, you could use `Logstash_Prefix_Key $kubernetes['namespace_name']` for example.
+[^4]: The fact that `Logstash_Prefix_Key` accepts a [record accessor](https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/record-accessor) makes it very flexible, and avoids the need to create multiple outputs for each log type. In case you ever wanted to split logs by namespace, you could use `Logstash_Prefix_Key $kubernetes['namespace_name']` for example.
 
 With this set, after applying the changes through a `terraform apply`, we get the result shown on the image below, where we can see each log type specific index.
 
@@ -363,5 +361,5 @@ With this set, after applying the changes through a `terraform apply`, we get th
 
 Here we discussed how to create a local kubernetes lab with fluentbit using Terraform, where we could explore and experiment with its configuration. We used minimal deployments of Elasticsearch and Kibana to visualize the logs collected, and we also discussed how to split the logs by type using fluentbit filters. The code has also been discussed and it has been made available at the [o-leolleo/a-kubernetes-local-lab](https://github.com/o-leolleo/a-kubernetes-local-lab/tree/main/fluentbit) repo.
 
-The key here is that now we have a setup we can safely tweak and break, so as to test assumptions and experiment with.
-Feel free to give it a try and experiment with it as you wish!
+The key here is that now we have a setup we can safely tweak and break, so as to test assumptions and get fast feedback.
+Feel free to give it a try!
