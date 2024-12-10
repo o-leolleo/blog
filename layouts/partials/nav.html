@@ -1,11 +1,13 @@
 <nav class="flex flex-row mb-3 md:mb-6 pt-8">
-  {{ $directory := cond .IsHome (printf "%s%s" "~" .Site.LanguagePrefix) (printf "%s%s" "~" .RelPermalink) | strings.TrimSuffix "/" | lower }}
+  {{ $directory := cond .IsHome (printf "%s%s" "~" .Site.LanguagePrefix) (printf "%s%s" "~" .RelPermalink) |
+  strings.TrimSuffix "/" | lower }}
   {{ $directory := cond .IsPage (path.Dir $directory) $directory }}
   {{ $command := cond .IsPage (printf "cat content.txt") (default "" .Params.Command) }}
 
   <div class="mr-auto">
     <a class="font-bold" href="{{ .Site.Home.Permalink }}" title="{{ .Site.Home.LinkTitle }}">
-      <span class="text-lime-500 dark:text-lime-400">leonardo-prado</span>:<span class="text-indigo-700 dark:text-indigo-400">{{ $directory
+      <span class="text-lime-500 dark:text-lime-400">leonardo-prado</span>:<span
+        class="text-indigo-700 dark:text-indigo-400">{{ $directory
         }}</span>$
     </a>
     {{ with $command }}
@@ -19,11 +21,8 @@
   {{ range .Site.Menus.main.ByWeight }}
   {{ $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) }}
   {{ $activeClass := cond $active "border-b-4 border-indigo-500" "" }}
-  <a
-    class="mr-6 hidden md:inline font-semibold hover:text-indigo-700 dark:hover:text-indigo-400 {{ $activeClass }}"
-    href="{{ .URL | relLangURL }}"
-    title="{{ .Title }}"
-  >
+  <a class="mr-6 hidden md:inline font-semibold hover:text-indigo-700 dark:hover:text-indigo-400 {{ $activeClass }}"
+    href="{{ .URL | relLangURL }}" title="{{ .Title }}">
     {{ .Name }}
   </a>
   {{ end }}
