@@ -1,0 +1,9 @@
+{{ $currentPage := . }}
+{{ range .Site.Menus.main.ByWeight }}
+{{ $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) }}
+{{ $activeClass := cond $active "border-b-4 border-indigo-500" "" }}
+<a class="first:mt-4 mb-2 md:first:mt-0 md:mb-0 md:mr-6 md:inline font-semibold hover:text-indigo-700 dark:hover:text-indigo-400 {{ $activeClass }}"
+  href="{{ .URL | relLangURL }}" title="{{ .Title }}">
+  {{ .Name }}
+</a>
+{{ end }}

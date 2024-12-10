@@ -1,50 +1,31 @@
-<nav class="flex flex-row mb-3 md:mb-6 pt-8">
-  {{ $directory := cond .IsHome (printf "%s%s" "~" .Site.LanguagePrefix) (printf "%s%s" "~" .RelPermalink) |
-  strings.TrimSuffix "/" | lower }}
-  {{ $directory := cond .IsPage (path.Dir $directory) $directory }}
-  {{ $command := cond .IsPage (printf "cat content.txt") (default "" .Params.Command) }}
+<nav class="flex flex-col md:flex-row mb-3 md:mb-6 pt-8">
+  <div class="flex md:flex-1 flex-row justify-between">
+    {{ partial "navPrompt.html" . }}
 
-  <div class="mr-auto">
-    <a class="font-bold" href="{{ .Site.Home.Permalink }}" title="{{ .Site.Home.LinkTitle }}">
-      <span class="text-lime-500 dark:text-lime-400">leonardo-prado</span>:<span
-        class="text-indigo-700 dark:text-indigo-400">{{ $directory
-        }}</span>$
-    </a>
-    {{ with $command }}
-    <span class="font-normal">{{ . }}</span>
-    {{ end }}
-    <span class="terminal-cursor">&#9610;</span>
-  </div>
-
-  {{ $currentPage := . }}
-
-  {{ range .Site.Menus.main.ByWeight }}
-  {{ $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) }}
-  {{ $activeClass := cond $active "border-b-4 border-indigo-500" "" }}
-  <a class="mr-6 hidden md:inline font-semibold hover:text-indigo-700 dark:hover:text-indigo-400 {{ $activeClass }}"
-    href="{{ .URL | relLangURL }}" title="{{ .Title }}">
-    {{ .Name }}
-  </a>
-  {{ end }}
-
-  {{ partial "allLanguages.html" .}}
-
-  <div class="inline-block">
-    <button id="dark-mode-btn" class="ml-6">
-      {{ partial "icons/moon.html" . }}
-      {{ partial "icons/sun.html" . }}
+    <button id="menu-button" class="inline md:hidden">
+      {{ partial "icons/menu.html" . }}
     </button>
   </div>
 
-</nav>
+  <div class="
+    flex
+    flex-col
+    border-b
+    border-b-gray-700
+    pb-1
+    items-center
+    md:border-b-0
+    md:pb-0
+    md:items-stretch
+    md:flex-1
+    md:flex-row
+    justify-end
+  ">
+    {{ partial "navItems.html" . }}
 
-<div class="flex flex-row items-center">
-  {{ range .Site.Menus.main.ByWeight }}
-  {{ $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) }}
-  {{ $activeClass := cond $active "border-b-4 border-indigo-500" "" }}
-  <a class="mr-6 inline md:hidden font-semibold hover:text-indigo-700 dark:hover:text-indigo-400 {{ $activeClass }}"
-    href="{{ .URL | relLangURL }}" title="{{ .Title }}">
-    {{ .Name }}
-  </a>
-  {{ end }}
-</div>
+    <div class="flex w-full md:w-auto justify-end flex-row mt-6 md:mt-0">
+      {{ partial "allLanguages.html" .}}
+      {{ partial "navThemeToggle.html" . }}
+    </div>
+  </div>
+</nav>
