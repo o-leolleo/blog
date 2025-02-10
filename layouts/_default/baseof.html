@@ -18,7 +18,7 @@
     {{ end }}
   {{ end }}
 
-  {{ $styles := resources.Get "css/index.css" | resources.PostCSS }}
+  {{ $styles := resources.Get "css/index.css" | css.PostCSS }}
 
   {{ if hugo.IsServer }}
     {{ $styles := $styles | resources.ExecuteAsTemplate (printf "css/index.dev.%v.css" now.UnixMilli) . }}
