@@ -2,16 +2,21 @@
   <div class="flex md:flex-1 flex-row justify-between">
     {{ partial "navPrompt.html" . }}
 
-    <button id="menu-button" class="inline md:hidden">
+    <button id="nav-menu-button" class="inline md:hidden">
       {{ partial "icons/menu.html" . }}
     </button>
   </div>
 
-  <div class="
+  <div id="nav-menu" class="
+    h-48
+    max-h-0
+    overflow-hidden
+    md:transition-none
+    md:h-auto
+    md:max-h-full
+    md:overflow-visible
     flex
     flex-col
-    border-b
-    border-b-gray-700
     pb-1
     items-center
     md:border-b-0

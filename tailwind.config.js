@@ -9,4 +9,11 @@ module.exports = {
   plugins: [
     require('@tailwindcss/typography')
   ],
+  theme: {
+    extend: {
+      transitionProperty: {
+        'max-height': 'max-height',
+      },
+    },
+  },
 }
