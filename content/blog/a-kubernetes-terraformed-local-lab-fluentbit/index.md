@@ -3,6 +3,8 @@ title: "A terraformed kubernetes local lab: Fluentbit"
 date: 2024-05-20T20:29:32+02:00
 draft: false
 language: en
+tags:
+
 ---
 
 I've been struggling to wrap my head around fluentbit configs, and as with EKS I needed a way to quickly experiment and confirm my assumptions. A bonus if it was also reproducible.
