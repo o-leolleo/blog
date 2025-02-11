@@ -1,5 +1,5 @@
 ---
-title: "TF Tip: You can use JSON to declare Terraform objects"
+title: "TF tip: You can use JSON to declare Terraform objects"
 date: 2025-02-10T19:16:21+01:00
 draft: false
 language: en
