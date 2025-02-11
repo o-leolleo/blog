@@ -8,12 +8,14 @@
   {{ partial "translatedBy.html" . }}
 </header>
 
+{{ if (default true .Page.Params.showTableOfContents) }}
 <aside class="max-w-prose mb-8 mx-auto">
   <h6 class="mb-4 text-sm">{{ i18n "inThisArticle" }}</h6>
   <div class="text-sm">
     {{ .TableOfContents }}
   </div>
 </aside>
+{{ end }}
 
 <article class="prose dark:prose-invert mx-auto mb-6">
   {{.Content}}
@@ -23,25 +25,25 @@
 
 <section class="max-w-prose mx-auto hidden dark:block">
   <script
-          src="https://utteranc.es/client.js"
-          repo="o-leolleo/blog"
-          issue-term="title"
-          label="comments"
-          theme="github-dark"
-          crossorigin="anonymous"
-          async>
+    src="https://utteranc.es/client.js"
+    repo="o-leolleo/blog"
+    issue-term="title"
+    label="comments"
+    theme="github-dark"
+    crossorigin="anonymous"
+    async>
   </script>
 </section>
 
 <section class="max-w-prose mx-auto block dark:hidden">
   <script
-          src="https://utteranc.es/client.js"
-          repo="o-leolleo/blog"
-          issue-term="title"
-          label="comments"
-          theme="github-light"
-          crossorigin="anonymous"
-          async>
+    src="https://utteranc.es/client.js"
+    repo="o-leolleo/blog"
+    issue-term="title"
+    label="comments"
+    theme="github-light"
+    crossorigin="anonymous"
+    async>
   </script>
 </section>
 {{ end }}
