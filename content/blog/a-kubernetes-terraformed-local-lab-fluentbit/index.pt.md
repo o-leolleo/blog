@@ -9,7 +9,7 @@ tags:
   - fluentbit
 ---
 
-Tenho lutado para entender a configuração do fluentbit, e como com o EKS eu precisava de uma forma de experimentar e confirmar minhas suposições. Um bônus se também fosse reproduzível.
+Enfrentei alguns problemas para entender a configuração do fluentbit e, assim como com o EKS, eu precisava de uma forma simples para testá-lo e quebrá-lo. Um bônus se também fosse reproduzível.
 
 Costumo utilizá-lo para coletar logs do kubernetes, então meu lab local é um lab kubernetes. Também sou experiente em Terraform, de modo que usá-lo no lab foi uma escolha natural. Isso nos leva aos [Pré-requisitos](#pré-requisitos).
 
@@ -19,7 +19,7 @@ Costumo utilizá-lo para coletar logs do kubernetes, então meu lab local é um 
 2. Terraform
 3. kubectl
 
-O Item 1 possui muitas opções, no meu caso estou usando o cluster local fornecido pelo [Docker Desktop](https://docs.docker.com/desktop). Outras opções incluem [minikube](https://minikube.sigs.k8s.io/docs/), [kind](https://kind.sigs.k8s.io/), [k3s](https://k3s-io.github.io/), etc.
+O Item 1 possui muitas opções, no meu caso estou usando o cluster local fornecido pelo [Docker Desktop](https://docs.docker.com/desktop). Outras opções incluem o[minikube](https://minikube.sigs.k8s.io/docs/), o [kind](https://kind.sigs.k8s.io/), o [k3s](https://k3s-io.github.io/), etc.
 
 Você pode instalar o Item 2 a partir do [site oficial](https://www.terraform.io/downloads.html). O mesmo vale para o [Item 3](https://kubernetes.io/docs/tasks/tools/).
 
@@ -32,7 +32,7 @@ Antes de partirmos para o código, vejamos como ele se parece. Para isso, clone 
 Depois, execute os seguintes comandos (certifique-se de que o cluster está em execução):
 
 ```bash
-# Certifique-se de que você está apontando para o cluster correto
+# Certifique-se de que o kubectl está configurado para o cluster correto
 # (docker-desktop no meu caso)
 kubectl config current-context
 
@@ -51,7 +51,7 @@ e o seguinte, após a confirmação:
 
 [![Saída do terraform _apply_](terraform-apply.png)](terraform-apply.png)
 
-Uma vez finalizado, você deve ser capaz de navegar até a instalação do Kibana em [http://localhost:5601](http://localhost:5601). Vá em frente, clique no menu sanduíche no canto superior esquerdo e navegue até **Discover**. Clique em **Create data view** e informe **Name** e **index-pattern** como `kube-*`[^1]. Clique em **Save data view to Kibana** e você deve ver algo similar ao abaixo [^2]:
+Uma vez finalizado, você deve ser capaz de acessar Kibana em [http://localhost:5601](http://localhost:5601). Vá em frente e clique no menu sanduíche, no canto superior esquerdo, e navegue até **Discover**. Clique em **Create data view** e informe **Name** e **index-pattern** como `kube-*`[^1]. Clique em **Save data view to Kibana** e você deve ver algo similar ao abaixo [^2]:
 
 [^1]: Os _index patterns_ `k*`, `ku*`, `kub*` também funcionariam, já que estamos enviando apenas _logs_ do kubernetes para o Elasticsearch.
 [^2]: Realisticamente, poderíamos usar Terraform para criar o _index pattern_, trata-se de um bom exercício caso você esteja curioso sobre. Talvez eu atualize o código para incluir esse detalhe no futuro.
@@ -68,12 +68,12 @@ kubectl logs -n logging -l app=fluent-bit -f
 
 ## O código
 
-Decidi começar a discussão a partir do arquivo `main.tf`, procedo então para os outros, um por um. O código está inteiramente disponível no repositório [o-leolleo/a-kubernetes-local-lab](https://github.com/o-leolleo/a-kubernetes-local-lab).
+Começaremos a discussão a partir do arquivo `main.tf`, procedendo então para os outros, um por um. O código está inteiramente disponível no repositório [o-leolleo/a-kubernetes-local-lab](https://github.com/o-leolleo/a-kubernetes-local-lab).
 
 
 ### main.tf
 
-Começamos definindo os nossos _providers_ necessários e instanciando-os.
+Iniciamos definindo os nossos _providers_ necessários e instanciando-os.
 
 ```terraform
 terraform {
@@ -99,7 +99,7 @@ provider "kubernetes" {
 ```
 
 1. Versão necessária para o _provider_ do kubernetes (`version >= 2.30 e version < 3`), veja mais em [Version Constraints](https://developer.hashicorp.com/terraform/language/expressions/version-constraints).
-2. Caminho para o nosso arquivo de configuração kubeconfig.
+2. Caminho para o nosso arquivo de configuração `kubeconfig`.
 3. _Context_ a ser utilizado (preferencialmente um local).
 
 Aqui, realizar as mudanças em um _cluster_ remoto seria apenas uma questão de mudarmos o `config_context`, assumindo que o _cluster_ remoto já está configurado no seu arquivo [kubeconfig](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) e é acessível.
@@ -120,12 +120,14 @@ resource "helm_release" "fluent_bit" {
 }
 ```
 
-1. Nome da release do helm como aparece no cluster
+1. Nome da release do helm como exibido no cluster
 2. Arquivo de valores a ser utilizado para a release do helm - discutiremos isso em breve
 
 O código acima é equivalente a executar os seguintes comandos.
 
 ```bash
+# Adiciona o repositório do helm, com o nome fluent localmente
+# não precisamos desse passo no terraform
 helm repo add fluent https://fluent.github.io/helm-charts
 
 helm install \
@@ -136,7 +138,7 @@ helm install \
   --create-namespace
 ```
 
-No exemplo, `fluent-bit` é o nome da release do helm e `fluent/fluent-bit` é o chart a ser instalado, o restante é o mesmo que o descrito na documentação do [resource do Terraform](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release).
+No exemplo, `fluent-bit` é o nome da release do helm e `fluent/fluent-bit` é o chart a ser instalado (no formato `<repositório>/<chart>`), o restante é o mesmo que o descrito na documentação do [resource do Terraform](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release).
 
 O que resta do arquivo `main.tf` é dedicado à criação de instalações minimalistas do Elasticsearch e do Kibana.
 
@@ -175,9 +177,9 @@ Apesar de pequeno, há muita coisa acontecendo aqui, analisemos cada parte.
 5. Para cada arquivo no diretório `manifests` (e seus subdiretórios).
 6. Decodificamos o arquivo manifesto em um [objeto do Terraform](https://developer.hashicorp.com/terraform/language/expressions/types#map).
 
-I've broken down the `manifests` local variable into two (one intermediary one) to make the expression more readable [^3].
+Eu quebrei a variável local `manifests` em duas (sendo uma uma intermediária) para tornar a expressão mais legível [^3].
 
-[^3]: In case you're curious, this would be equivalent as a single local var
+[^3]: Se você estiver curioso, isso seria o código resultante da utilização de uma única variável local
     ```terraform
       manifests = {
         for m in flatten([
@@ -190,12 +192,11 @@ I've broken down the `manifests` local variable into two (one intermediary one) 
       }
     ```
 
-I'm not detailing the Elasticsearch and Kibana deployments themselves,
-they're pretty standard and can be found at the [o-leolleo/a-kubernetes-local-lab//fluentbit/manifests](https://github.com/o-leolleo/a-kubernetes-local-lab/tree/main/fluentbit/manifests) repository folder.
+Não vou entrar em detalhes sobre os manifestos dos _deployments_ do Elasticsearch e do Kibana, eles são bem padrão e podem ser encontrados na pasta [o-leolleo/a-kubernetes-local-lab//fluentbit/manifests](https://github.com/o-leolleo/a-kubernetes-local-lab/tree/main/fluentbit/manifests).
 
-### The fluentbit configuration (values) file
+### O arquivo de configuração (_values_) do fluentbit
 
-In the configuration we specify, beside other things, the flow of a given log message across the fluentbit pipeline. This is detailed in the diagram below. The file is composed of sections corresponding to each of the stages of the pipeline, illustrated as boxes in the image. _We'll skip from our discussion the stages represented by dashed boxes_.
+Na configuração, especificamos, além de outras coisas, o fluxo de uma determinada mensagem de log através do _pipeline_ do fluentbit. Isso é detalhado no diagrama abaixo. O arquivo é composto por seções correspondentes a cada um dos estágios do _pipeline_, ilustrados como caixas na imagem. _Vamos deixar de fora da nossa discussão os estágios representados por caixas tracejadas_.
 
 ```mermaid
 flowchart LR
@@ -211,14 +212,14 @@ flowchart LR
   Router --> Output3[Output 3]
 ```
 
-In the diagram:
-- **Input** corresponds to our log sources: log files, systemd, etc.
-- **Filter** is where we manipulate the log messages, removing or adding fields, skipping log entries, etc.
-- **Output** specifies our processed logs destinations, for example Elasticsearch, Kafka, etc.
+No diagrama acima, temos:
+- **Input** corresponde às nossas fontes de log: arquivos de log, systemd, etc.
+- **Filter** é onde manipulamos as mensagens de log, removendo ou adicionando campos, omitindo entradas de log, etc.
+- **Output** especifica os destinos dos logs processados, por exemplo Elasticsearch, Kafka, etc.
 
-Since we're using helm to deploy fluentbit, we use a values file to pass our configuration. You can check the full list of available values [here](https://github.com/fluent/helm-charts/blob/main/charts/fluent-bit/values.yaml). Behind the scenes, each property of `config` is transformed into a section of the fluentbit configuration file.
+Como estamos utilizando o helm para instalar o fluentbit, usamos um arquivo de valores para passar nossa configuração. Você pode conferir a lista completa de valores disponíveis [aqui](https://github.com/fluent/helm-charts/blob/main/charts/fluent-bit/values.yaml). Nos bastidores, cada propriedade de `config` é transformada em uma seção do arquivo de configuração do fluentbit.
 
-The values file is detailed below.
+O arquivo de valores é detalhado abaixo.
 
 ```yaml
 config:
@@ -286,17 +287,18 @@ config:
         Replace_Dots On
 ```
 
-Let's break it down:
-1. The `service` section is where we define the global configuration of fluentbit, such as the log level, flush interval, etc. This section is not a part of the data flow diagram above. The `{{ .Values.flush }}` here and the like are handled by the helm template engine, and are replaced by the values informed on the `values.yaml` file, which have defaults defined by the helm chart. Notice that fluentbit also listens on a port for metrics, used by prometheus to scrape monitoring data.
-2. As `inputs` we specify both containerd logs from the kubernetes containers and the host systemd logs.
-3. Here we only use the kubernetes fluentbit built-in filter to parse the kubernetes logs.
-4. Both `outputs` send the logs to the same elasticsearch instance, but we output them to different Elasticsearch indexes, informed via the `Logstash_Prefix` property. Notice how we _route_ the logs based on the `Match` property, this is effectively the router stage shown in the diagram above, and we route the logs based on the tags we've informed on our `inputs`.
+Vamos analisá-lo:
+1. A seção `service` é onde definimos a configuração global do fluentbit, como o nível de log, intervalo de _flush_, etc. Esta seção não faz parte do diagrama de fluxo de dados acima. O `{{ .Values.flush }}` e semelhantes são tratados pelo mecanismo de template do helm, e são substituídos pelos valores informados no arquivo `values.yaml`, que têm padrões definidos pelo  _helm chart_. Observe que o fluentbit também escuta em uma porta para métricas, usadas pelo prometheus para coletar dados de monitoramento.
+2. Como `inputs`, especificamos tanto os logs do containerd dos containers kubernetes quanto os logs do systemd do host.
+3. Aqui, usamos apenas o filtro embutido do fluentbit para kubernetes para realizar o "_parse_" dos logs sendo processados.
+4. Ambos os `outputs` enviam os logs para a mesma instância do elasticsearch, porém para diferentes índices do Elasticsearch, informados pela propriedade `Logstash_Prefix`. Observe como roteamos os logs com base na propriedade `Match`, esta é efetivamente a etapa de roteamento mostrada no diagrama acima, e roteamos os logs com base nas tags que informamos em nossos `inputs`.
 
-The relationship of the tail log filter and the kubernetes logs is very well discussed in the [fluentbit documentation](https://docs.fluentbit.io/manual/pipeline/filters/kubernetes). I'm not discussing it in much detail here, but it's worth a read if you're interested. For this post purposes, it's enough to know that the `.*` on `Tag kube.*` gets replaced by the absolute path of the monitored file, with slashes replaced by dots. Also, quoting the documentation:
+A relação do filtro de log tail e os logs do kubernetes é muito bem discutida na [documentação do fluentbit](https://docs.fluentbit.io/manual/pipeline/filters/kubernetes). Não entrarei em muitos detalhes sobre, mas vale a pena dar uma lida se você estiver interessado. Para os propósitos deste post, é suficiente saber que o `.*` na `Tag kube.*` é substituído pelo caminho absoluto do arquivo monitorado, com as barras substituídas por pontos. Além disso, citando a própria documentação (em tradução livre):
 
-> When Kubernetes Filter runs, it will try to match all records that starts with `kube.` (note the ending dot), so records from the file mentioned above will hit the matching rule and the filter will try to enrich the records
+<!-- Conferir como melhorar essa tradução aqui :) -->
+> Quando o Filter Kubernetes é executado, ele tentará fazer a seleção de todos os registros que começam com `kube.` (note o ponto final), de modo que os registros do arquivo mencionado acima serão selecionados e enriquecidos
 
-This is also how we match the logs on the outputs section and it also explains how the `hosts.*` tagged logs are being handled, it's a similar mechanism taking place. For some reason I didn't get any `host.*` logs on my setup.
+Os logs na seção de outputs são tratados de modo semelhante, bem como os logs com a tag `hosts.*`. Por algum motivo, não obtive nenhum log `host.*` no meu lab local.
 
 ## A use case: splitting logs by type
 

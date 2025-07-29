@@ -51,7 +51,7 @@ and the below after confirmation:
 
 Once finished you should be able navigate to the Kibana installation at [http://localhost:5601](http://localhost:5601). Go ahead and click on the sandwich menu on the left corner and navigate to **Discover**. Click on **Create data view** and inform **Name** and **index-pattern** as `kube-*`[^1]. Click on **Save data view to Kibana** and you should see something similar to the below [^2]:
 
-[^1]: The index patterns  `k*`, `ku*`, `kub*` would also work, we only send kubernetes logs to Elasticsearch.
+[^1]: The index patterns  `k*`, `ku*`, `kub*` would also work, we're only sending kubernetes logs to Elasticsearch.
 [^2]: Realistically we could use Terraform to create the index pattern, it's a good exercise in case you're curious about it. Maybe I'll update the code to include it in the future.
 
 [![Kibana logs](kibana-logs.png)](kibana-logs.png)
@@ -96,7 +96,7 @@ provider "kubernetes" {
 ```
 
 1. Required version for the kubernetes provider (`version >= 2.30 and version < 3`), see more at [Version Constraints](https://developer.hashicorp.com/terraform/language/expressions/version-constraints).
-2. Path to our kubeconfig file.
+2. Path to our `kubeconfig` file.
 3. Context to use (preferably a local one).
 
 Here, targeting a remote cluster would be just a matter of changing the `config_context`, assuming the remote cluster is already configured in your [kubeconfig](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) file and accessible.
@@ -120,9 +120,11 @@ resource "helm_release" "fluent_bit" {
 1. name of the helm release as it appears in the cluster
 2. values file to be used for the helm release - we'll soon discuss it
 
-The above code is equivalent to running plain helm commands.
+The above code is equivalent to running the following plain helm commands.
 
 ```bash
+# Add the helm repository, with the name fluent locally
+# we don't need this step in terraform
 helm repo add fluent https://fluent.github.io/helm-charts
 
 helm install \
@@ -133,7 +135,7 @@ helm install \
   --create-namespace
 ```
 
-here `fluent-bit` is the name of the helm release and `fluent/fluent-bit` is the chart to be installed, the rest is the same as in the [Terraform resource](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release).
+Here, `fluent-bit` is the name of the helm release and `fluent/fluent-bit` (in the `<repository>/<chart>` format) is the chart to be installed, the rest is the same as in the [Terraform resource](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release).
 
 What's left of the `main.tf` file is dedicated to the creation of the Elasticsearch and Kibana minimalist deployments.
 
@@ -213,7 +215,7 @@ In the diagram:
 - **Filter** is where we manipulate the log messages, removing or adding fields, skipping log entries, etc.
 - **Output** specifies our processed logs destinations, for example Elasticsearch, Kafka, etc.
 
-Since we're using helm to deploy fluentbit, we use a values file to pass our configuration. You can check the full list of available values [here](https://github.com/fluent/helm-charts/blob/main/charts/fluent-bit/values.yaml). Behind the scenes, each property of `config` is transformed into a section of the fluentbit configuration file.
+Since we're using helm to install fluentbit, we use a values file to pass our configuration. You can check the full list of available values [here](https://github.com/fluent/helm-charts/blob/main/charts/fluent-bit/values.yaml). Behind the scenes, each property of `config` is transformed into a section of the fluentbit configuration file.
 
 The values file is detailed below.
 
