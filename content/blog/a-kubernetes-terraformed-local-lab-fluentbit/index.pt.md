@@ -9,9 +9,9 @@ tags:
   - fluentbit
 ---
 
-Enfrentei alguns problemas para entender a configuração do fluentbit e, assim como com o EKS, eu precisava de uma forma simples para testá-lo e quebrá-lo. Um bônus se também fosse reproduzível.
+Levei mais tempo do que gostaria de admitir para entender a configuração do fluentbit e, assim como com o EKS, eu senti a necessidade de uma forma simples para testá-lo e quebrá-lo. Um bônus se também fosse reproduzível.
 
-Costumo utilizá-lo para coletar logs do kubernetes, então meu lab local é um lab kubernetes. Também sou experiente em Terraform, de modo que usá-lo no lab foi uma escolha natural. Isso nos leva aos [Pré-requisitos](#pré-requisitos).
+Geralmente uso o fluentbit para coletar logs do kubernetes e, assim, meu lab local é um lab kubernetes. Além disso, mexo bastante com o Terraform, de modo que usá-lo no lab foi uma escolha natural. O que nos leva aos [Pré-requisitos](#pré-requisitos).
 
 ## Pré-requisitos
 
@@ -19,15 +19,15 @@ Costumo utilizá-lo para coletar logs do kubernetes, então meu lab local é um 
 2. Terraform
 3. kubectl
 
-O Item 1 possui muitas opções, no meu caso estou usando o cluster local fornecido pelo [Docker Desktop](https://docs.docker.com/desktop). Outras opções incluem o[minikube](https://minikube.sigs.k8s.io/docs/), o [kind](https://kind.sigs.k8s.io/), o [k3s](https://k3s-io.github.io/), etc.
+O Item 1 possui muitas opções, no meu caso estou usando o cluster local fornecido pelo [Docker Desktop](https://docs.docker.com/desktop). Outras opções incluem o [minikube](https://minikube.sigs.k8s.io/docs/), o [kind](https://kind.sigs.k8s.io/), o [k3s](https://k3s-io.github.io/), etc.
 
 Você pode instalar o Item 2 a partir do [site oficial](https://www.terraform.io/downloads.html). O mesmo vale para o [Item 3](https://kubernetes.io/docs/tasks/tools/).
 
-Com os itens acima em mãos, podemos prosseguir para a próxima seção.
+Ferramentas instaladas, podemos prosseguir para a próxima seção.
 
 ## Executando o lab
 
-Antes de partirmos para o código, vejamos como ele se parece. Para isso, clone o repositório [https://github.com/o-leolleo/a-kubernetes-local-lab](https://github.com/o-leolleo/a-kubernetes-local-lab) e navegue até o diretório `fluentbit`.
+Antes de partirmos para o código, vejamos como ele se parece quando funcionando. Para isso, clone o repositório [https://github.com/o-leolleo/a-kubernetes-local-lab](https://github.com/o-leolleo/a-kubernetes-local-lab) e navegue até o diretório `fluentbit`.
 
 Depois, execute os seguintes comandos (certifique-se de que o cluster está em execução):
 
@@ -47,20 +47,20 @@ O _apply_ deve mostrar um output similar ao seguinte:
 
 [![Saída do terraform _plan_](terraform-plan.png)](terraform-plan.png)
 
-e o seguinte, após a confirmação:
+e ao seguinte, após a confirmação:
 
 [![Saída do terraform _apply_](terraform-apply.png)](terraform-apply.png)
 
-Uma vez finalizado, você deve ser capaz de acessar Kibana em [http://localhost:5601](http://localhost:5601). Vá em frente e clique no menu sanduíche, no canto superior esquerdo, e navegue até **Discover**. Clique em **Create data view** e informe **Name** e **index-pattern** como `kube-*`[^1]. Clique em **Save data view to Kibana** e você deve ver algo similar ao abaixo [^2]:
+Depois disso, você deve conseguir acessar o Kibana em [http://localhost:5601](http://localhost:5601). Vá em frente e clique no menu sanduíche, no canto superior esquerdo, e navegue até **Discover**. Clique em **Create data view** e informe o **Name** e o **index-pattern** como `kube-*`[^1]. Clique em **Save data view to Kibana** e você deverá ver algo similar ao abaixo [^2]:
 
 [^1]: Os _index patterns_ `k*`, `ku*`, `kub*` também funcionariam, já que estamos enviando apenas _logs_ do kubernetes para o Elasticsearch.
-[^2]: Realisticamente, poderíamos usar Terraform para criar o _index pattern_, trata-se de um bom exercício caso você esteja curioso sobre. Talvez eu atualize o código para incluir esse detalhe no futuro.
+[^2]: Realisticamente, poderíamos usar Terraform para criar o _index pattern_, trata-se de um bom exercício caso você esteja curioso. Talvez eu inclua isso aqui no futuro.
 
 [![Kibana logs](kibana-logs.png)](kibana-logs.png)
 
-Esses são todos os _logs_ coletados pelo fluentbit do _cluster_ kubernetes, sinta-se à vontade para utilizá-lo e experimentar com ele um pouco!
+Esses são todos os _logs_ coletados pelo fluentbit do _cluster_ kubernetes, sinta-se à vontade para explorá-los!
 
-Também podemos debugar o fluentbit seguindo os seus logs via:
+Por fim, além do Kibana, também é possível debugar o fluentbit seguindo os seus logs via:
 
 ```bash
 kubectl logs -n logging -l app=fluent-bit -f
@@ -68,12 +68,12 @@ kubectl logs -n logging -l app=fluent-bit -f
 
 ## O código
 
-Começaremos a discussão a partir do arquivo `main.tf`, procedendo então para os outros, um por um. O código está inteiramente disponível no repositório [o-leolleo/a-kubernetes-local-lab](https://github.com/o-leolleo/a-kubernetes-local-lab).
+Iniciamos a partir do arquivo `main.tf`, procedendo então para os outros, um por um. O código está inteiramente disponível no repositório [o-leolleo/a-kubernetes-local-lab](https://github.com/o-leolleo/a-kubernetes-local-lab).
 
 
 ### main.tf
 
-Iniciamos definindo os nossos _providers_ necessários e instanciando-os.
+Primeiro, definimos os nossos _providers_ necessários e os instanciamos.
 
 ```terraform
 terraform {
@@ -104,7 +104,7 @@ provider "kubernetes" {
 
 Aqui, realizar as mudanças em um _cluster_ remoto seria apenas uma questão de mudarmos o `config_context`, assumindo que o _cluster_ remoto já está configurado no seu arquivo [kubeconfig](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) e é acessível.
 
-Procedemos então para a declaração da instalação do fluentbit via _resource_ [`helm_release`](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release).
+Seguimos então para a declaração da instalação do fluentbit via _resource_ [`helm_release`](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release).
 
 ```terraform
 resource "helm_release" "fluent_bit" {
@@ -123,7 +123,7 @@ resource "helm_release" "fluent_bit" {
 1. Nome da release do helm como exibido no cluster
 2. Arquivo de valores a ser utilizado para a release do helm - discutiremos isso em breve
 
-O código acima é equivalente a executar os seguintes comandos.
+Esse é equivalente a executar os seguintes comandos.
 
 ```bash
 # Adiciona o repositório do helm, com o nome fluent localmente
@@ -168,7 +168,7 @@ locals {
 }
 ```
 
-Apesar de pequeno, há muita coisa acontecendo aqui, analisemos cada parte.
+Apesar de pequeno, há muita coisa acontecendo aqui:
 
 1. Iteramos sobre a variável local `manifests` que contém cada manifesto kubernetes como um [objeto do Terraform](https://developer.hashicorp.com/terraform/language/expressions/types#map), declarado em arquivos `.yaml` dentro do diretório `manifests`.
 2. Atribuímos o objeto ao atributo `manifest`.
