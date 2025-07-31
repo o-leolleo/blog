@@ -300,11 +300,11 @@ A relação do filtro de log tail e os logs do kubernetes é muito bem discutida
 
 Os logs na seção de outputs são tratados de modo semelhante, bem como os logs com a tag `hosts.*`. Por algum motivo, não obtive nenhum log `host.*` no meu lab local.
 
-## A use case: splitting logs by type
+## Um caso de uso: separando os logs por tipo
 
-Now let's suppose that, for some reason, you wanted to save different logs to different indexes based on an arbitrary log category or type. For example, you might want to log `kube-system` and `logging` namespace logs to `system-*` indexes, istio logs to `istio-*` indexes and all the rest to `workloads-*` indexes. Or maybe you want a different set of categories. We could work out a solution for this by slightly modifying our fluentbit configuration (You can see the full config [here](https://github.com/o-leolleo/a-kubernetes-local-lab/blob/main/fluentbit/values-files/fluent-bit-split-by-type.values.yaml)).
+Agora, vamos supor que, por algum motivo, você quisesse salvar logs diferentes em índices diferentes com base em uma categoria ou tipo de log arbitrário. Por exemplo, você pode querer registrar os logs dos _namespaces_ `kube-system` e `logging` em índices `system-*`, logs do istio em índices `istio-*` e todos os outros em índices `workloads-*`. Ou, talvez, você busca um conjunto diferente de categorias. Isso pode ser resolvido modificando-se ligeiramente nossa configuração do fluentbit (configuração  completa neste [link](https://github.com/o-leolleo/a-kubernetes-local-lab/blob/main/fluentbit/values-files/fluent-bit-split-by-type.values.yaml)).
 
-We can add two more filters on top of the `kubernetes` one:
+Podemos adicionar mais dois filtros além do `kubernetes`:
 
 ```yaml
 filters:
@@ -327,16 +327,16 @@ filters:
       Add log_type ingress #6
 ```
 
-Here it's what we're doing:
+Aqui, fazemos o seguinte:
 
-1. we instantiate the [`modify` filter](https://docs.fluentbit.io/manual/pipeline/filters/modify).
-2. for every log record matching the `kube.*` tag (or all kubernetes logs).
-3. if the `namespace_name` field matches `kube-system` or `logging`.
-4. add a new field `log_type` with the value `system`.
-5. else if the `namespace_name` field matches `istio-*`.
-6. add a new field `log_type` with the value `ingress`.
+1. instanciamos o filtro [`modify`](https://docs.fluentbit.io/manual/pipeline/filters/modify).
+2. para cada registro de log que corresponde à tag `kube.*` (ou todos os logs do kubernetes).
+3. se o campo `namespace_name` corresponder a `kube-system` ou `logging`.
+4. adicionamos um novo campo `log_type` com o valor `system`.
+5. se o campo `namespace_name` corresponder a `istio-*`.
+6. adicionamos um novo campo `log_type` com o valor `ingress`.
 
-With the above in place, we can slightly modify our `kube.*` elasticsearch output to:
+Com isso, podemos modificar ligeiramente nossa saída do elasticsearch, para a tag `kube.*`, para:
 
 ```yaml
 outputs:
@@ -354,19 +354,19 @@ outputs:
       Replace_Dots On
 ```
 
-Here we only added the `Logstash_Prefix_Key` [^4] property (1) and changed the `Logstash_Prefix` to `workloads` (2). Our logs will then be indexed as `$log_type-YYYY.MM.DD` if `$log_type` is not null, and `workloads-YYYY.MM.DD` otherwise.
+Aqui, apenas adicionamos a propriedade `Logstash_Prefix_Key` [^4] (1) e mudamos o `Logstash_Prefix` para `workloads` (2). Nossos logs serão indexados como `$log_type-YYYY.MM.DD` se `$log_type` não for nulo, e `workloads-YYYY.MM.DD` caso contrário.
 
-[^4]: The fact that `Logstash_Prefix_Key` accepts a [record accessor](https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/record-accessor) makes it very flexible, and avoids the need to create multiple outputs for each log type. In case you ever wanted to split logs by namespace, you could use `Logstash_Prefix_Key $kubernetes['namespace_name']` for example.
+[^4]: O fato de `Logstash_Prefix_Key` aceitar um [acessador de registro](https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/record-accessor) o torna muito flexível e evita a necessidade de criar várias saídas para cada tipo de log. Caso você queira dividir logs por namespace, poderia usar `Logstash_Prefix_Key $kubernetes['namespace_name']`, por exemplo.
 
-With this set, after applying the changes through a `terraform apply`, we get the result shown on the image below, where we can see each log type specific index.
+Com isso, após aplicar as alterações através de um `terraform apply`, obtemos o resultado mostrado na imagem abaixo, onde podemos ver cada índice específico do tipo de log.
 
 [![Logs split by type](logs-split-by-type.png)](logs-split-by-type.png)
 
-Our indexes are in `yellow` state because we have only one Elasticsearch node (you can read more [here](https://stackoverflow.com/questions/60819814/what-does-it-mean-when-an-elasticsearch-index-has-yellow-health#:~:text=1%20common%20reason%20is%20if,indices%20would%20always%20be%20yellow.)).
+Nossos índices estão em estado `yellow` porque temos apenas um nó Elasticsearch (você pode ler mais [aqui](https://stackoverflow.com/questions/60819814/what-does-it-mean-when-an-elasticsearch-index-has-yellow-health#:~:text=1%20common%20reason%20is%20if,indices%20would%20always%20be%20yellow.)).
 
-## Conclusion
+## Conclusão
 
-Here we discussed how to create a local kubernetes lab with fluentbit using Terraform, where we could explore and experiment with its configuration. We used minimal deployments of Elasticsearch and Kibana to visualize the logs collected, and we also discussed how to split the logs by type using fluentbit filters. The code has also been discussed and it has been made available at the [o-leolleo/a-kubernetes-local-lab](https://github.com/o-leolleo/a-kubernetes-local-lab/tree/main/fluentbit) repo.
+Aqui, discutimos como criar um laboratório local de kubernetes com fluentbit usando Terraform, onde pudemos explorar e experimentar sua configuração. Usamos implantações mínimas do Elasticsearch e Kibana para visualizar os logs coletados e também discutimos como dividir os logs por tipo usando filtros do fluentbit. O código também foi discutido e está disponível no repositório [o-leolleo/a-kubernetes-local-lab](https://github.com/o-leolleo/a-kubernetes-local-lab/tree/main/fluentbit).
 
-The key here is that now we have a setup we can safely tweak and break, so as to test assumptions and get fast feedback.
-Feel free to give it a try!
+A chave aqui é que agora temos uma configuração que podemos ajustar e quebrar com segurança, a fim de testar suposições e obter feedback rápido.
+Sinta-se à vontade para experimentar!
