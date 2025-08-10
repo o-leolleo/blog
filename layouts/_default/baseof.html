@@ -42,18 +42,6 @@
   <title>{{ .Page.Title }}</title>
 </head>
 
-{{ if and (not hugo.IsServer) .Site.Params.GoogleAnalyticsTag }}
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id={{ .Site.Params.GoogleAnalyticsTag }}"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', '{{ .Site.Params.GoogleAnalyticsTag }}');
-</script>
-{{ end }}
-
 <body class="font-mono dark:bg-stone-900 dark:text-white h-screen container mx-auto px-10 max-w-screen-lg flex flex-col">
   {{ partial "nav.html" . }}
 
@@ -78,6 +66,9 @@
   {{ $params := dict "hasMermaid" (.Store.Get "hasMermaid") }}
   {{ $js := resources.Get "js/index.js" | js.Build (dict "params" $params) | resources.Minify | fingerprint }}
   <script src="{{ $js.Permalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+  {{ if not hugo.IsServer }}
+  {{ partial "google_analytics.html" . }}
+  {{ end }}
 </body>
 
 </html>
