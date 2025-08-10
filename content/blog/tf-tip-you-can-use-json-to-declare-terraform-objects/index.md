@@ -1,5 +1,5 @@
 ---
-title: "TF tip: You can use JSON to declare Terraform objects"
+title: "TF tip: You can use JSON to declare objects in Terraform"
 date: 2025-02-10T19:16:21+01:00
 draft: false
 language: en
@@ -21,7 +21,7 @@ resource "aws_iam_role" "test_role" {
   name = "test_role"
 
   # Terraform's "jsonencode" function converts a
-  # Terraform expression result to valid JSON syntax.
+  # Terraform expression result to valid JSON string.
   assume_role_policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
@@ -70,6 +70,7 @@ resource "aws_ecr_repository" "test_repo" {
       }
     ]
   })
+}
 ```
 
 That's all, this is something I've been using for quite a while now and that I didn't find much discussions about. I hope you can find this tip useful and that it can save you some time. Happy coding!
