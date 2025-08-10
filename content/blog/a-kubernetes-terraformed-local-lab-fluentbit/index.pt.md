@@ -9,7 +9,7 @@ tags:
   - fluentbit
 ---
 
-Levei mais tempo do que gostaria de admitir para entender a configuração do fluentbit e, assim como com o EKS, eu senti a necessidade de uma forma simples para testá-lo e quebrá-lo. Um bônus se também fosse reproduzível.
+Levei mais tempo do que gostaria de admitir para entender a configuração do fluentbit e, assim como com o EKS, senti a necessidade de uma forma simples para testá-lo e quebrá-lo. Um bônus se também fosse reproduzível.
 
 Geralmente uso o fluentbit para coletar logs do kubernetes e, assim, meu lab local é um lab kubernetes. Além disso, mexo bastante com o Terraform, de modo que usá-lo no lab foi uma escolha natural. O que nos leva aos [Pré-requisitos](#pré-requisitos).
 
@@ -123,7 +123,7 @@ resource "helm_release" "fluent_bit" {
 1. Nome da release do helm como exibido no cluster
 2. Arquivo de valores a ser utilizado para a release do helm - discutiremos isso em breve
 
-Esse é equivalente a executar os seguintes comandos.
+O código acima é equivalente a executar os seguintes comandos.
 
 ```bash
 # Adiciona o repositório do helm, com o nome fluent localmente
@@ -172,7 +172,7 @@ Apesar de pequeno, há muita coisa acontecendo aqui:
 
 1. Iteramos sobre a variável local `manifests` que contém cada manifesto kubernetes como um [objeto do Terraform](https://developer.hashicorp.com/terraform/language/expressions/types#map), declarado em arquivos `.yaml` dentro do diretório `manifests`.
 2. Atribuímos o objeto ao atributo `manifest`.
-3. Garantimos que esses manifestos são criados somente após a release do helm `fluent-bit` ser criada, ou seja, após nosso coletor de logs estar em execução.
+3. Garantimos que esses manifestos são criados somente após a release do _helm chart_ `fluent-bit` ser criada, ou seja, após nosso coletor de logs estar em execução.
 4. A variável local `manifests` é um mapa de objetos (manifestos kubernetes), indexados pela combinação de `apiVersion`, `kind` e `metadata.name`. `_manifests` é uma lista de todos os objetos.
 5. Para cada arquivo no diretório `manifests` (e seus subdiretórios).
 6. Decodificamos o arquivo manifesto em um [objeto do Terraform](https://developer.hashicorp.com/terraform/language/expressions/types#map).
@@ -219,7 +219,7 @@ No diagrama acima, temos:
 
 Como estamos utilizando o helm para instalar o fluentbit, usamos um arquivo de valores para passar nossa configuração. Você pode conferir a lista completa de valores disponíveis [aqui](https://github.com/fluent/helm-charts/blob/main/charts/fluent-bit/values.yaml). Nos bastidores, cada propriedade de `config` é transformada em uma seção do arquivo de configuração do fluentbit.
 
-O arquivo de valores é detalhado abaixo.
+O arquivo é detalhado abaixo.
 
 ```yaml
 config:
@@ -291,7 +291,7 @@ Vamos analisá-lo:
 1. A seção `service` é onde definimos a configuração global do fluentbit, como o nível de log, intervalo de _flush_, etc. Esta seção não faz parte do diagrama de fluxo de dados acima. O `{{ .Values.flush }}` e semelhantes são tratados pelo mecanismo de template do helm, e são substituídos pelos valores informados no arquivo `values.yaml`, que têm padrões definidos pelo  _helm chart_. Observe que o fluentbit também escuta em uma porta para métricas, usadas pelo prometheus para coletar dados de monitoramento.
 2. Como `inputs`, especificamos tanto os logs do containerd dos containers kubernetes quanto os logs do systemd do host.
 3. Aqui, usamos apenas o filtro embutido do fluentbit para kubernetes para realizar o "_parse_" dos logs sendo processados.
-4. Ambos os `outputs` enviam os logs para a mesma instância do elasticsearch, porém para diferentes índices do Elasticsearch, informados pela propriedade `Logstash_Prefix`. Observe como roteamos os logs com base na propriedade `Match`, esta é efetivamente a etapa de roteamento mostrada no diagrama acima, e roteamos os logs com base nas tags que informamos em nossos `inputs`.
+4. Ambos os `outputs` enviam os logs para a mesma instância do Elasticsearch, porém para diferentes índices, informados pela propriedade `Logstash_Prefix`. Observe como roteamos os logs com base na propriedade `Match`, esta é efetivamente a etapa de roteamento mostrada no diagrama acima, e roteamos os logs com base nas tags que informamos em nossos `inputs`.
 
 A relação do filtro de log tail e os logs do kubernetes é muito bem discutida na [documentação do fluentbit](https://docs.fluentbit.io/manual/pipeline/filters/kubernetes). Não entrarei em muitos detalhes sobre, mas vale a pena dar uma lida se você estiver interessado. Para os propósitos deste post, é suficiente saber que o `.*` na `Tag kube.*` é substituído pelo caminho absoluto do arquivo monitorado, com as barras substituídas por pontos. Além disso, citando a própria documentação (em tradução livre):
 
@@ -362,11 +362,11 @@ Com isso, após aplicar as alterações através de um `terraform apply`, obtemo
 
 [![Logs split by type](logs-split-by-type.png)](logs-split-by-type.png)
 
-Nossos índices estão em estado `yellow` porque temos apenas um nó Elasticsearch (você pode ler mais [aqui](https://stackoverflow.com/questions/60819814/what-does-it-mean-when-an-elasticsearch-index-has-yellow-health#:~:text=1%20common%20reason%20is%20if,indices%20would%20always%20be%20yellow.)).
+Nossos índices estão em estado `yellow` porque temos apenas um nó Elasticsearch (leia mais [aqui](https://stackoverflow.com/questions/60819814/what-does-it-mean-when-an-elasticsearch-index-has-yellow-health#:~:text=1%20common%20reason%20is%20if,indices%20would%20always%20be%20yellow.)).
 
 ## Conclusão
 
-Aqui, discutimos como criar um laboratório local de kubernetes com fluentbit usando Terraform, onde pudemos explorar e experimentar sua configuração. Usamos implantações mínimas do Elasticsearch e Kibana para visualizar os logs coletados e também discutimos como dividir os logs por tipo usando filtros do fluentbit. O código também foi discutido e está disponível no repositório [o-leolleo/a-kubernetes-local-lab](https://github.com/o-leolleo/a-kubernetes-local-lab/tree/main/fluentbit).
+Aqui, discutimos como criar um laboratório local de kubernetes com fluentbit usando Terraform, onde pudemos explorar e experimentar sua configuração. Usamos _deploys_ mínimos do Elasticsearch e Kibana para visualizar os logs coletados e também discutimos como dividir os logs por tipo usando filtros do fluentbit. O código também foi discutido e está disponível no repositório [o-leolleo/a-kubernetes-local-lab](https://github.com/o-leolleo/a-kubernetes-local-lab/tree/main/fluentbit).
 
-A chave aqui é que agora temos uma configuração que podemos ajustar e quebrar com segurança, a fim de testar suposições e obter feedback rápido.
+O ponto chave é que agora temos uma configuração que podemos ajustar e quebrar com segurança, a fim de testar suposições e obter _feedback_ rápido.
 Sinta-se à vontade para experimentar!
