@@ -70,6 +70,7 @@ resource "aws_ecr_repository" "test_repo" {
       }
     ]
   })
+}
 ```
 
 Isso é tudo, e é algo que venho usando há bastante tempo e que não encontrei muitas discussões sobre. Espero que você ache essa dica útil e que ela possa te economizar algum tempo. Boa codificação!
