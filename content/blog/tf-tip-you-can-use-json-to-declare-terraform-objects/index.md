@@ -70,6 +70,7 @@ resource "aws_ecr_repository" "test_repo" {
       }
     ]
   })
+}
 ```
 
 That's all, this is something I've been using for quite a while now and that I didn't find much discussions about. I hope you can find this tip useful and that it can save you some time. Happy coding!
