@@ -64,7 +64,7 @@ As alegações mostraram-se verdadeiras, e você pode verificar abaixo um trecho
 @tailwind utilities;
 
 @layer components {
-  /* Isso apenas fornece um alias para um conjunto de classes 
+  /* Isso apenas fornece um alias para um conjunto de classes
      do Tailwind comumente usadas juntas. */
   .anchor {
     @apply
@@ -107,7 +107,7 @@ O Wrangler (a CLI) também possui uma biblioteca oficial [GitHub action](https:/
 
 ## GitHub Actions
 
-Esta é a ferramenta CI/CD integrada ao GitHub. Além de ser uma solução nativa, é uma ferramenta muito fácil de usar com uma comunidade extensa ao seu redor. Você pode encontrar uma ação para praticamente tudo e também criar a sua própria quando as existentes não se encaixam. 
+Esta é a ferramenta CI/CD integrada ao GitHub. Além de ser uma solução nativa, é uma ferramenta muito fácil de usar com uma comunidade extensa ao seu redor. Você pode encontrar uma ação para praticamente tudo e também criar a sua própria quando as existentes não se encaixam.
 Tem uma documentação muito boa e uma estrutura muito clara. Não precisei pensar muito e fui direto usá-la.
 
 ## Conclusão
