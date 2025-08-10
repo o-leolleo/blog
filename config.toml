@@ -14,7 +14,15 @@ summaryLength = 40
 [params]
   dateFormat = 'Jan 02, 2006'
   iconSize = '40px'
-  googleAnalyticsTag = 'G-C6FZCFZCC4'
+
+[services]
+  [services.googleAnalytics]
+    id = 'G-C6FZCFZCC4'
+
+[privacy]
+  [privacy.googleAnalytics]
+    disabled = false
+    respectDoNotTrack = true
 
 [menu]
   [[menu.main]]
