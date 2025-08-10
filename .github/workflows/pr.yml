@@ -56,12 +56,8 @@ jobs:
           name: build
           path: public
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
       - name: Publish app
-        uses: cloudflare/wrangler-action@2.0.0
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           command: pages deploy --branch pr-${{ github.event.number }} --project-name blog ./public
