@@ -7,6 +7,6 @@ translatedBy: amanda-sato
 
 # Olá 👋
 
-Eu sou Leo, e este é o meu blog, meu espaço pessoal na web. Em breve, estarei escrevendo sobre tecnologia e alguns outros tópicos interessantes.
+Eu sou Leo, e este é o meu blog, meu espaço pessoal na web. Escrevi sobre tecnologia e tópicos que me interessam.
 
 Espero que você goste da leitura!

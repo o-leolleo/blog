@@ -6,6 +6,6 @@ command: cd ~
 
 # Hello 👋
 
-I'm Leo, this is my blog and my own place on the web. Soon I'm writing about tech and some interesting topics.
+I'm Leo, this is my blog and my own place on the web. I write about tech and topics that interest me the most.
 
 Hope you enjoy the reading!
