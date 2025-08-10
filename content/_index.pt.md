@@ -10,4 +10,3 @@ translatedBy: amanda-sato
 Eu sou Leo, e este é o meu blog, meu espaço pessoal na web. Em breve, estarei escrevendo sobre tecnologia e alguns outros tópicos interessantes.
 
 Espero que você goste da leitura!
-

@@ -3,6 +3,8 @@ title: "A terraformed kubernetes local lab: Fluentbit"
 date: 2024-05-20T20:29:32+02:00
 draft: false
 language: en
+tags:
+
 ---
 
 I've been struggling to wrap my head around fluentbit configs, and as with EKS I needed a way to quickly experiment and confirm my assumptions. A bonus if it was also reproducible.
@@ -49,7 +51,7 @@ and the below after confirmation:
 
 Once finished you should be able navigate to the Kibana installation at [http://localhost:5601](http://localhost:5601). Go ahead and click on the sandwich menu on the left corner and navigate to **Discover**. Click on **Create data view** and inform **Name** and **index-pattern** as `kube-*`[^1]. Click on **Save data view to Kibana** and you should see something similar to the below [^2]:
 
-[^1]: The index patterns  `k*`, `ku*`, `kub*` would also work, we only send kubernetes logs to Elasticsearch.
+[^1]: The index patterns  `k*`, `ku*`, `kub*` would also work, we're only sending kubernetes logs to Elasticsearch.
 [^2]: Realistically we could use Terraform to create the index pattern, it's a good exercise in case you're curious about it. Maybe I'll update the code to include it in the future.
 
 [![Kibana logs](kibana-logs.png)](kibana-logs.png)
@@ -94,7 +96,7 @@ provider "kubernetes" {
 ```
 
 1. Required version for the kubernetes provider (`version >= 2.30 and version < 3`), see more at [Version Constraints](https://developer.hashicorp.com/terraform/language/expressions/version-constraints).
-2. Path to our kubeconfig file.
+2. Path to our `kubeconfig` file.
 3. Context to use (preferably a local one).
 
 Here, targeting a remote cluster would be just a matter of changing the `config_context`, assuming the remote cluster is already configured in your [kubeconfig](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/) file and accessible.
@@ -118,9 +120,11 @@ resource "helm_release" "fluent_bit" {
 1. name of the helm release as it appears in the cluster
 2. values file to be used for the helm release - we'll soon discuss it
 
-The above code is equivalent to running plain helm commands.
+The above code is equivalent to running the following plain helm commands.
 
 ```bash
+# Add the helm repository, with the name fluent locally
+# we don't need this step in terraform
 helm repo add fluent https://fluent.github.io/helm-charts
 
 helm install \
@@ -131,7 +135,7 @@ helm install \
   --create-namespace
 ```
 
-here `fluent-bit` is the name of the helm release and `fluent/fluent-bit` is the chart to be installed, the rest is the same as in the [Terraform resource](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release).
+Here, `fluent-bit` is the name of the helm release and `fluent/fluent-bit` (in the `<repository>/<chart>` format) is the chart to be installed, the rest is the same as in the [Terraform resource](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release).
 
 What's left of the `main.tf` file is dedicated to the creation of the Elasticsearch and Kibana minimalist deployments.
 
@@ -211,7 +215,7 @@ In the diagram:
 - **Filter** is where we manipulate the log messages, removing or adding fields, skipping log entries, etc.
 - **Output** specifies our processed logs destinations, for example Elasticsearch, Kafka, etc.
 
-Since we're using helm to deploy fluentbit, we use a values file to pass our configuration. You can check the full list of available values [here](https://github.com/fluent/helm-charts/blob/main/charts/fluent-bit/values.yaml). Behind the scenes, each property of `config` is transformed into a section of the fluentbit configuration file.
+Since we're using helm to install fluentbit, we use a values file to pass our configuration. You can check the full list of available values [here](https://github.com/fluent/helm-charts/blob/main/charts/fluent-bit/values.yaml). Behind the scenes, each property of `config` is transformed into a section of the fluentbit configuration file.
 
 The values file is detailed below.
 
@@ -285,7 +289,7 @@ Let's break it down:
 1. The `service` section is where we define the global configuration of fluentbit, such as the log level, flush interval, etc. This section is not a part of the data flow diagram above. The `{{ .Values.flush }}` here and the like are handled by the helm template engine, and are replaced by the values informed on the `values.yaml` file, which have defaults defined by the helm chart. Notice that fluentbit also listens on a port for metrics, used by prometheus to scrape monitoring data.
 2. As `inputs` we specify both containerd logs from the kubernetes containers and the host systemd logs.
 3. Here we only use the kubernetes fluentbit built-in filter to parse the kubernetes logs.
-4. Both `outputs` send the logs to the same elasticsearch instance, but we output them to different Elasticsearch indexes, informed via the `Logstash_Prefix` property. Notice how we _route_ the logs based on the `Match` property, this is effectively the router stage shown in the diagram above, and we route the logs based on the tags we've informed on our `inputs`.
+4. Both `outputs` send the logs to the same elasticsearch instance, but we output them to different indexes, informed via the `Logstash_Prefix` property. Notice how we _route_ the logs based on the `Match` property, this is effectively the router stage shown in the diagram above, and we route the logs based on the tags we've informed on our `inputs`.
 
 The relationship of the tail log filter and the kubernetes logs is very well discussed in the [fluentbit documentation](https://docs.fluentbit.io/manual/pipeline/filters/kubernetes). I'm not discussing it in much detail here, but it's worth a read if you're interested. For this post purposes, it's enough to know that the `.*` on `Tag kube.*` gets replaced by the absolute path of the monitored file, with slashes replaced by dots. Also, quoting the documentation:
 

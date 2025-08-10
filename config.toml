@@ -1,4 +1,4 @@
-baseURL = '/'
+baseURL = 'http://leolleo.dev'
 defaultContentLanguage = 'en'
 title = 'Leonardo Prado'
 sectionPagesMenu = "main"

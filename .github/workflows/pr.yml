@@ -14,11 +14,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      HUGO_VERSION: 0.142.0
+      HUGO_VERSION: 0.148.2
     steps:
       - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
 
       - name: Install Hugo CLI
         run: |
@@ -57,7 +57,7 @@ jobs:
           path: public
 
       - name: Publish app
-        uses: cloudflare/wrangler-action@2.0.0
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           command: pages deploy --branch pr-${{ github.event.number }} --project-name blog ./public
