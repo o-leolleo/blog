@@ -3,7 +3,7 @@
 {{ $image := $image.Resize "400x"}}
 <div class="flex flex-col md:flex-row items-center pt-8">
   <div class="shrink-0 mb-12 md:mr-12">
-    <img class="rounded-full brightness-200 dark:brightness-100 dark:-hue-rotate-60" src="{{ $image.RelPermalink }}" width="{{ $image.Width }}" height="{{ $image.Height }}">
+    <img class="rounded-full" src="{{ $image.RelPermalink }}" width="{{ $image.Width }}" height="{{ $image.Height }}">
   </div>
 
   <div class="flex flex-col">
