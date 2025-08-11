@@ -14,6 +14,14 @@
   #TableOfContents li:not(nav > ul > li) {
     @apply ml-5
   }
+
+  .prose a:not(h2 > a) {
+    @apply text-indigo-700 no-underline hover:underline;
+  }
+
+  .dark .dark\:prose-invert a:not(h2 > a) {
+    @apply text-indigo-400 no-underline hover:underline;
+  }
 }
 
 .terminal-cursor {
