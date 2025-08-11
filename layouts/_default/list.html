@@ -11,7 +11,9 @@
     {{ $len := len .Pages }}
     {{ range $i, $p := .Pages.ByLastmod.Reverse }}
     <li class="pl-0 flex flex-col">
-      <h2 class="mt-1">{{ $p.Title }}</h2>
+      <h2 class="mt-1 not-prose">
+        <a class="no-underline hover:underline" href="{{ $p.Permalink }}">{{ $p.Title }}</a>
+      </h2>
       <p class="text-sm my-0">{{ $p.Date.Format .Site.Params.DateFormat }} - {{ partial "minread.html" $p }}</p>
       {{ $p.Summary }}
       <div class="not-prose my-0">
