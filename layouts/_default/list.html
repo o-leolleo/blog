@@ -9,7 +9,7 @@
 <article class="prose dark:prose-invert mx-auto mt-6 mb-6">
   <ul class="pl-0 list-outside">
     {{ $len := len .Pages }}
-    {{ range $i, $p :=.Pages.ByLastmod.Reverse }}
+    {{ range $i, $p := .Pages.ByLastmod.Reverse }}
     <li class="pl-0 flex flex-col">
       <h2 class="mt-1">{{ $p.Title }}</h2>
       <p class="text-sm my-0">{{ $p.Date.Format .Site.Params.DateFormat }} - {{ partial "minread.html" $p }}</p>
@@ -17,7 +17,7 @@
       <div class="not-prose my-0">
         <a class="anchor" href="{{ $p.Permalink }}">{{ i18n "readMore" }} &#x21C0;</a>
       </div>
-      {{ if add $i 1 | eq $len | not }}
+      {{ if lt (add $i 1) $len }}
       <hr class="my-6"/>
       {{ end }}
     </li>
